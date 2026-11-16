@@ -67,16 +67,17 @@
   .toggles{display:grid; gap:10px}
   .toggle{display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:600; font-size:14.5px; cursor:pointer}
   .toggle small{display:block; font-weight:400; color:var(--muted); font-size:12.5px}
-  .switch{position:relative; width:50px; height:28px; flex:none}
+  .switch{position:relative; width:52px; height:30px; flex:none}
   .switch input{opacity:0; width:0; height:0; position:absolute}
-  .switch span{position:absolute; inset:0; background:#E6DFD2; border:2.5px solid var(--ink); border-radius:999px; transition:.2s}
-  .switch span::after{content:""; position:absolute; width:18px; height:18px; left:3px; top:2.5px; background:#fff; border:2px solid var(--ink); border-radius:50%; transition:.2s}
+  .switch span{position:absolute; inset:0; display:flex; align-items:center; padding:0 3px; background:#E6DFD2; border:2.5px solid var(--ink); border-radius:999px; transition:background .2s}
+  .switch span::after{content:""; display:block; flex:none; width:19px; height:19px; background:#fff; border:2px solid var(--ink); border-radius:50%; transition:transform .2s}
   .switch input:checked + span{background:var(--pink)}
-  .switch input:checked + span::after{transform:translateX(21px)}
+  .switch input:checked + span::after{transform:translateX(21px)}  /* 52 - 2×2.5 border - 2×3 padding - 19 dot = 22; 21 keeps a hairline gap */
   .switch input:focus-visible + span{outline:3px solid var(--teal); outline-offset:2px}
 
-  .stage{display:flex; flex-direction:column; align-items:center}
-  .wheel-wrap{position:relative; width:min(92vw,500px); aspect-ratio:1; margin-top:8px}
+  .stage{display:flex; flex-direction:column; align-items:center; padding:0 6px}
+  .wheel-wrap{position:relative; width:min(calc(100vw - 72px), 500px); aspect-ratio:1; margin:48px auto 12px}
+  @media (max-width:860px){ .wheel-wrap{margin-top:56px} }
   .wheel-wrap::before{content:""; position:absolute; inset:-14px; border-radius:50%; background:var(--ink);
     box-shadow:0 10px 0 rgba(34,34,74,.25)}
   .bulbs{position:absolute; inset:-14px; pointer-events:none}
@@ -85,7 +86,7 @@
   .bulbs.chase i:nth-child(even){animation:blink .25s .125s infinite alternate}
   @keyframes blink{to{background:#5a4b2a; box-shadow:none}}
   canvas#wheel{position:relative; width:100%; height:100%; display:block; border-radius:50%}
-  .pointer{position:absolute; left:50%; top:-30px; transform:translateX(-50%); width:44px; height:56px; z-index:3; transform-origin:50% 20%}
+  .pointer{position:absolute; left:50%; top:-36px; transform:translateX(-50%); width:48px; height:64px; overflow:visible; z-index:3; transform-origin:50% 20%}
   .pointer.tick{animation:tick .09s ease-out}
   @keyframes tick{0%{transform:translateX(-50%) rotate(0)} 50%{transform:translateX(-50%) rotate(-18deg)} 100%{transform:translateX(-50%) rotate(0)}}
   .hub{all:unset; cursor:pointer; position:absolute; left:50%; top:50%; width:27%; aspect-ratio:1; transform:translate(-50%,-50%);
@@ -123,6 +124,14 @@
   .cost{display:flex; justify-content:space-between; gap:10px; padding:9px 14px; font-size:14px; border-bottom:2px dashed #E6DFD2}
   .cost b{white-space:nowrap}
   .cost.total{background:var(--mustard); border-bottom:0; font-weight:800; font-size:15.5px}
+  .socials{max-width:440px; margin:0 auto 16px; display:grid; gap:8px}
+  .soc-h{font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .soc-row{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:4px}
+  .soc-tag{grid-column:1/-1; font-weight:800; font-size:15px; text-align:center; overflow-wrap:anywhere}
+  .soc{text-decoration:none; font-weight:800; font-size:12.5px; padding:7px 11px; border:2.5px solid var(--ink); border-radius:999px; box-shadow:0 2px 0 var(--ink); color:#fff; white-space:nowrap; text-align:center}
+  .soc.ig{background:linear-gradient(45deg,#F58529,#DD2A7B 55%,#8134AF)}
+  .soc.tt{background:#111; }
+  .soc:active{transform:translateY(2px); box-shadow:none}
   .todo-h{font-family:"Shrikhand",cursive; font-weight:400; font-size:24px; margin:4px 0 12px; color:var(--ink)}
   .acts{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; text-align:left; margin-bottom:18px}
   @media (max-width:560px){ .acts{grid-template-columns:1fr} }
@@ -265,7 +274,7 @@
   <section class="stage" aria-label="Roulette wheel">
     <div class="wheel-wrap" id="wheelWrap">
       <div class="bulbs" id="bulbs"></div>
-      <svg class="pointer" id="pointer" viewBox="0 0 44 56" aria-hidden="true">
+      <svg class="pointer" id="pointer" viewBox="-2 -6 48 64" overflow="visible" aria-hidden="true">
         <path d="M22 54 L4 16 A18 18 0 1 1 40 16 Z" fill="#FFB627" stroke="#22224A" stroke-width="4" stroke-linejoin="round"/>
         <circle cx="22" cy="17" r="6" fill="#22224A"/>
       </svg>
@@ -294,6 +303,7 @@
       <p class="blurb" id="resBlurb"></p>
       <div class="costs" id="resCost"></div>
       <div class="facts" id="resFacts"></div>
+      <div class="socials" id="resSocials"></div>
       <div class="perf"></div>
       <h3 class="todo-h">Things to do</h3>
       <div class="acts" id="resActs"></div>
@@ -1022,6 +1032,19 @@ function renderCosts(d){
     <div class="cost"><span>💸 Spending (${fmt(daily)}/day × ${state.nights})</span><b>~${fmt(spend)}</b></div>
     <div class="cost total"><span>🧾 ${state.nights}-night trip, per person</span><b>~${fmt(f.fare+spend)}</b></div>`;
 }
+const TAG_OVERRIDE = {"Antigua":"antiguaguatemala","Ella":"ellasrilanka","Sucre":"sucrebolivia","Reykjavík & Ring Road":"iceland","Ubud, Bali":"ubud","Split & Hvar":"hvar","Petra & Wadi Rum":"petra",
+  "Serengeti Safari":"serengeti","Antarctica Expedition":"antarctica","Fiji Private Island":"fiji","Monaco & Riviera":"monaco",
+  "The Maldives":"maldives","Rajasthan Palaces":"rajasthan","New York City":"nyc","Amalfi Coast":"amalficoast","Machu Picchu":"machupicchu"};
+function tagFor(d){
+  return TAG_OVERRIDE[d.name] || d.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+}
+function renderSocials(d){
+  const t = tagFor(d), tags = [t, t + "travel"];
+  $("resSocials").innerHTML = `<div class="soc-h">Watch it on socials</div>` + tags.map(tag=>`
+    <div class="soc-row"><span class="soc-tag">#${tag}</span>
+      <a class="soc ig" href="https://www.instagram.com/explore/tags/${tag}/" target="_blank" rel="noopener">📸 Instagram</a>
+      <a class="soc tt" href="https://www.tiktok.com/tag/${tag}" target="_blank" rel="noopener">🎵 TikTok</a></div>`).join("");
+}
 function showResult(d){
   const b = BUDGETS.find(x=>x.id===d.tier);
   $("resEmoji").textContent = d.emoji; $("resName").textContent = d.name; $("resCountry").textContent = d.country;
@@ -1030,6 +1053,7 @@ function showResult(d){
   $("resFacts").innerHTML = [`🗓️ Best: ${d.best}`, `${b.icon} ${b.t}`, ...d.vibes.map(v=>VIBES[v])]
     .map(f=>`<span class="fact">${f}</span>`).join("");
   renderActs(d);
+  renderSocials(d);
   $("flightsLink").href = "https://www.google.com/travel/flights?q=" + encodeURIComponent(`flights from ${ORIGIN.city} to ${DEST_AIR[d.name][4]} ${d.country}`);
   $("respinNote").textContent = RESPIN_LINES[Math.min(state.respins, RESPIN_LINES.length-1)];
   $("overlay").classList.add("show"); $("lockBtn").focus({preventScroll:true});
