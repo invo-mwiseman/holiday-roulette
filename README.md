@@ -10,7 +10,7 @@ Pick where you're flying from, a budget and a vibe, then spin the wheel to find 
 - "Know before you go": live 5-day weather, season check, time difference & landing time, live exchange rate, entry-rules link, estimated cheapest months
 - Globe flight animation, scratch-off reveal in mystery mode, ambient soundscapes, trip countdown with packing list, passport book with badges
 - Vibe filters (beach, city, adventure, culture, foodie, snow), with a top-up from nearby budgets if a combo is thin
-- Each result shows four things to do with photos, plus a trip total for 4–14 nights
+- Each result shows four things to do with photos, a trip total, and a date picker with Booking.com flight and hotel searches pre-filled (airports, dates, travellers)
 - Lock in a destination for an animated passport stamp (with sound effects)
 - Mystery mode, no-repeat spins and saved passport stamps
 

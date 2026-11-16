@@ -125,6 +125,18 @@
   .cost{display:flex; justify-content:space-between; gap:10px; padding:9px 14px; font-size:14px; border-bottom:2px dashed #E6DFD2}
   .cost b{white-space:nowrap}
   .cost.total{background:var(--mustard); border-bottom:0; font-weight:800; font-size:15.5px}
+  .bookbox{max-width:440px; margin:0 auto 14px; background:#003B95; color:#fff; border:2.5px solid var(--ink); border-radius:14px; padding:12px; box-shadow:0 3px 0 var(--ink); text-align:left}
+  .bk-dates{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end; margin-bottom:10px}
+  .bk-date{display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:800; letter-spacing:.06em}
+  .bk-date input{font:inherit; font-size:15px; font-weight:800; color:var(--ink); padding:8px 10px; border:2px solid var(--ink); border-radius:10px; background:#fff; width:100%}
+  .bk-back{display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:800; letter-spacing:.06em; text-align:right}
+  .bk-back b{font-size:14px; letter-spacing:0; padding:9px 0}
+  .bk-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .bk{display:block; text-align:center; text-decoration:none; font-weight:800; font-size:15px; padding:11px 8px; border-radius:10px; border:2.5px solid var(--ink); box-shadow:0 3px 0 var(--ink)}
+  .bk-fl{background:#FFB700; color:#1A1A1A} .bk-ho{background:#fff; color:#003B95}
+  .bk[hidden] + .bk{grid-column:1/-1}
+  .bk:active{transform:translateY(2px); box-shadow:none}
+  .bk-note{font-size:11.5px; opacity:.8; margin-top:8px; text-align:center}
   .socials{max-width:440px; margin:0 auto 16px; display:grid; gap:8px}
   .soc-h{font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
   .soc-chips{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
@@ -452,6 +464,17 @@
       <div class="country" id="resCountry"></div>
       <p class="blurb" id="resBlurb"></p>
       <div class="costs" id="resCost"></div>
+      <div class="bookbox" id="bookBox">
+        <div class="bk-dates">
+          <label class="bk-date">📅 Depart<input type="date" id="resDate"></label>
+          <div class="bk-back"><span>Back</span><b id="resBack"></b></div>
+        </div>
+        <div class="bk-btns">
+          <a class="bk bk-fl" id="bkFlights" href="#" target="_blank" rel="noopener">✈️ Flights</a>
+          <a class="bk bk-ho" id="bkHotels" href="#" target="_blank" rel="noopener">🏨 Hotels</a>
+        </div>
+        <div class="bk-note">Opens Booking.com with your airports, dates and travellers filled in.</div>
+      </div>
       <div class="facts" id="resFacts"></div>
       <div class="socials" id="resSocials"></div>
       <div id="resInfo"></div>
@@ -462,7 +485,6 @@
       <div class="row">
         <button class="btn primary" id="lockBtn">📌 Lock it in</button>
         <button class="btn alt" id="againBtn">🎲 Nah, spin again</button>
-        <a class="btn" id="flightsLink" href="#" target="_blank" rel="noopener">🛫 Look up flights</a>
       </div>
       <div class="respin-note" id="respinNote"></div>
     </div>
@@ -1557,7 +1579,7 @@ document.querySelectorAll(".st-btn").forEach(b=> b.onclick = ()=>{
   const k = b.dataset.p, v = state[k] + +b.dataset.d; if(k==="adults" ? (v<1||v>9) : (v<0||v>8)) return;
   state[k] = v; renderParty(); sfx("pop");
   try{ localStorage.setItem("hr_party", JSON.stringify({a:state.adults, k:state.kids})); }catch(e){}
-  if($("overlay").classList.contains("show") && state.current) renderCosts(state.current);
+  if($("overlay").classList.contains("show") && state.current){ renderCosts(state.current); renderBooking(state.current); }
 });
 try{ const pp = JSON.parse(localStorage.getItem("hr_party")||"null"); if(pp){ state.adults = Math.min(9,Math.max(1,pp.a|0)); state.kids = Math.min(8,Math.max(0,pp.k|0)); } }catch(e){}
 renderParty();
@@ -1798,8 +1820,8 @@ function showResult(d){
   renderActs(d);
   renderSocials(d);
   renderInfo(d);
+  renderBooking(d);
   Ambient.forDest(d);
-  $("flightsLink").href = "https://www.google.com/travel/flights?q=" + encodeURIComponent(`flights from ${ORIGIN.city} to ${DEST_AIR[d.name][4]} ${d.country}`);
   $("respinNote").textContent = RESPIN_LINES[Math.min(state.respins, RESPIN_LINES.length-1)];
   $("overlay").classList.add("show"); $("lockBtn").focus({preventScroll:true});
   document.querySelector(".ticket .body").scrollTop = 0;
@@ -1943,7 +1965,7 @@ async function passportStamp(d){
     fx.classList.remove("shake"); fx.classList.add("lift"); fxSound("lift"); await wait(450);
     fx.classList.add("done"); fxSound("fanfare"); confetti();
   }
-  $("pfxDate").value = ""; $("pfxDate").min = new Date().toISOString().slice(0,10);
+  $("pfxDate").min = new Date().toISOString().slice(0,10); $("pfxDate").value = tripDates(d).dep;
   $("pfxDone").focus({preventScroll:true});
   await new Promise(r=> pfxResolve = r);
   if($("pfxDate").value && state.stamps[0] && state.stamps[0].n===d.name){ state.stamps[0].t = $("pfxDate").value; saveStamps(); }
@@ -2255,6 +2277,63 @@ const Ambient = (()=>{
 })();
 $("ambient").addEventListener("change", ()=>{ if(!$("ambient").checked) Ambient.stop(); });
 $("sound").addEventListener("change", ()=>{ if(!$("sound").checked) Ambient.stop(); });
+
+
+// ---------- Booking.com deep links ----------
+// Codes Booking.com accepts: "XXX.AIRPORT" or "XXX.CITY" (city codes cover every airport in that city)
+const ORIGIN_CODE = {uk:"LON.CITY", ukman:"MAN.AIRPORT", ukbhx:"BHX.AIRPORT", ukedi:"EDI.AIRPORT", ukgla:"GLA.AIRPORT", ukbrs:"BRS.AIRPORT",
+  ukncl:"NCL.AIRPORT", ukbfs:"BFS.AIRPORT", ie:"DUB.AIRPORT", fr:"PAR.CITY", de:"FRA.AIRPORT", nl:"AMS.AIRPORT", es:"MAD.AIRPORT",
+  use:"NYC.CITY", usw:"LAX.AIRPORT", ca:"YYZ.AIRPORT", ae:"DXB.AIRPORT", in:"DEL.AIRPORT", th:"BKK.AIRPORT", sg:"SIN.AIRPORT",
+  hk:"HKG.AIRPORT", jp:"TYO.CITY", au:"SYD.AIRPORT", nz:"AKL.AIRPORT", za:"JNB.AIRPORT"};
+const DEST_CODE = {"Hoi An":"DAD","Luang Prabang":"LPQ","Pokhara":"PKR","Goa":"GOI","Siem Reap":"SAI","Antigua":"GUA","Ella":"CMB","Yogyakarta":"YIA",
+  "Rishikesh":"DED","Sucre":"SRE","Hanoi":"HAN","Manali":"KUU","Chiang Mai":"CNX","Tbilisi":"TBS","Oaxaca":"OAX","Budapest":"BUD","Kraków":"KRK",
+  "Istanbul":"IST","Marrakech":"RAK","Medellín":"MDE","Penang":"PEN","Ksamil":"CFU","Ubud, Bali":"DPS","Bansko":"SOF","Lisbon":"LIS","Seoul":"ICN",
+  "Tokyo":"TYO.CITY","Taipei":"TPE","Cape Town":"CPT","Naxos":"JNX","Split & Hvar":"SPU","Petra & Wadi Rum":"AMM","Buenos Aires":"EZE","Barcelona":"BCN",
+  "Hokkaido":"CTS","Reykjavík & Ring Road":"KEF","Amalfi Coast":"NAP","Kyoto":"KIX","Santorini":"JTR","Zermatt":"GVA","New York City":"NYC.CITY",
+  "Banff":"YYC","Patagonia":"PUQ","Copenhagen":"CPH","Queenstown":"ZQN","The Maldives":"MLE","Bora Bora":"BOB","Serengeti Safari":"JRO",
+  "Antarctica Expedition":"USH","Seychelles":"SEZ","Okavango Delta":"MUB","St. Moritz":"ZRH","Fiji Private Island":"NAN","Monaco & Riviera":"NCE",
+  "Venice":"VCE","Rajasthan Palaces":"JAI","Machu Picchu":"CUZ","Orlando":"MCO","Disneyland Paris":"PAR.CITY","Legoland Billund":"BLL",
+  "PortAventura":"REU","Antalya":"AYT","Side & Belek":"AYT","Bodrum":"BJV","Ölüdeniz":"DLM","Tenerife":"TFS","Lanzarote":"ACE","Majorca":"PMI",
+  "Costa del Sol":"AGP","Benidorm":"ALC","Algarve":"FAO","Crete":"HER","Rhodes":"RHO","Corfu":"CFU","Zante":"ZTH","Paphos":"PFO","Hurghada":"HRG",
+  "Sharm el-Sheikh":"SSH","Dubai":"DXB","Riviera Maya":"CUN","Punta Cana":"PUJ","Barbados":"BGI","Jamaica":"MBJ","Mauritius":"MRU","Phuket":"HKT",
+  "Gold Coast":"OOL","Singapore":"SIN","Lake Garda":"VRN","Europa-Park":"BSL","Sunny Beach":"BOJ","Hammamet":"NBE","Cape Verde":"SID","Malta":"MLA"};
+// Where to search for hotels (the activity hub rather than the airport)
+const HOTEL_PLACE = {"Ella":"Ella, Sri Lanka","Rishikesh":"Rishikesh","Manali":"Manali","Ksamil":"Ksamil, Albania","Ubud, Bali":"Ubud","Bansko":"Bansko",
+  "Split & Hvar":"Hvar","Petra & Wadi Rum":"Wadi Musa, Jordan","Hokkaido":"Niseko","Reykjavík & Ring Road":"Reykjavik","Amalfi Coast":"Positano",
+  "Zermatt":"Zermatt","Patagonia":"Puerto Natales","Serengeti Safari":"Serengeti National Park","Antarctica Expedition":"Ushuaia","Okavango Delta":"Maun",
+  "St. Moritz":"St. Moritz","Fiji Private Island":"Mamanuca Islands, Fiji","Monaco & Riviera":"Monaco","Rajasthan Palaces":"Jaipur","Machu Picchu":"Aguas Calientes",
+  "Orlando":"Lake Buena Vista, Florida","Disneyland Paris":"Disneyland Paris","Legoland Billund":"Billund","PortAventura":"Salou","Side & Belek":"Belek",
+  "Ölüdeniz":"Oludeniz","Lake Garda":"Peschiera del Garda","Europa-Park":"Rust, Germany","Cape Verde":"Santa Maria, Sal","Riviera Maya":"Playa del Carmen",
+  "Jamaica":"Montego Bay","Gold Coast":"Surfers Paradise","Costa del Sol":"Marbella","Algarve":"Albufeira","Sunny Beach":"Sunny Beach","Hammamet":"Hammamet"};
+const CHILD_AGE = 8;                                    // children's ages aren't asked for, so assume 8
+const isoDay = d => new Date(d.getTime() - d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const addDays = (iso, n) => { const d = new Date(iso+"T12:00:00"); d.setDate(d.getDate()+n); return isoDay(d); };
+// Default departure: the first in-season date at least 3 weeks away (or 6 weeks out if it's in season all year)
+function defaultDepart(d){
+  const best = bestMonths(d.best), start = new Date(); start.setDate(start.getDate()+21);
+  if(best.has(start.getMonth()) || best.size===0 || best.size===12) return isoDay(start);
+  for(let k=1;k<=12;k++){ const t = new Date(start.getFullYear(), start.getMonth()+k, 1); if(best.has(t.getMonth())) return isoDay(t); }
+  return isoDay(start);
+}
+let userDate = null;                                     // a date the user picked sticks across spins
+function tripDates(d){ const dep = userDate || defaultDepart(d); return {dep, ret: addDays(dep, state.nights)}; }
+function code(c){ return c.includes(".") ? c : c + ".AIRPORT"; }
+function renderBooking(d){
+  const {dep, ret} = tripDates(d), f = flightFor(d, ORIGIN);
+  $("resDate").min = isoDay(new Date()); $("resDate").value = dep;
+  $("resBack").textContent = new Date(ret+"T12:00").toLocaleDateString("en-GB",{weekday:"short", day:"numeric", month:"short"}) + ` · ${state.nights} night${state.nights>1?"s":""}`;
+  const kids = Array(state.kids).fill(CHILD_AGE);
+  const from = ORIGIN_CODE[ORIGIN.id], to = code(DEST_CODE[d.name] || "");
+  const fq = new URLSearchParams({type:"ROUNDTRIP", adults:state.adults, cabinClass:"ECONOMY", children:kids.join(","), from, to,
+    depart:dep, return:ret, sort:"BEST", travelPurpose:"leisure"});
+  $("bkFlights").href = `https://flights.booking.com/flights/${from}-${to}/?${fq}`;
+  $("bkFlights").hidden = f.home || !from || !DEST_CODE[d.name];
+  const hq = new URLSearchParams({ss: HOTEL_PLACE[d.name] || `${d.name.split(/ [&(]/)[0]}, ${d.country}`, checkin:dep, checkout:ret,
+    group_adults:state.adults, group_children:state.kids, no_rooms: Math.max(1, Math.ceil(state.adults/2)), selected_currency: ORIGIN_META[ORIGIN.id][1]});
+  kids.forEach(a=> hq.append("age", a));
+  $("bkHotels").href = `https://www.booking.com/searchresults.html?${hq}`;
+}
+$("resDate").addEventListener("change", e=>{ if(e.target.value){ userDate = e.target.value; if(state.current) renderBooking(state.current); sfx("pop"); } });
 
 // ---------- Confirm sheet ----------
 let confirmFn = null;
