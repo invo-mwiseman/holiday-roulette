@@ -47,7 +47,7 @@
   .budget .ico{font-size:24px; width:32px; text-align:center}
   .budget .t{font-weight:800; font-size:15px}
   .budget .d{font-size:12.5px; color:var(--muted)}
-  .budget .money{margin-left:auto; font-weight:800; color:var(--teal); letter-spacing:1px}
+  .budget .money{margin-left:auto; white-space:nowrap; font-size:13px; font-weight:800; color:var(--teal); letter-spacing:1px}
   .budget[aria-pressed="true"]{background:var(--mustard); transform:translateY(1px); box-shadow:0 2px 0 var(--ink)}
   .budget[aria-pressed="true"] .money{color:var(--ink)}
 
@@ -59,6 +59,11 @@
   .chip[aria-pressed="true"]{background:var(--teal); color:#fff}
   .hint{font-size:12.5px; color:var(--muted); margin-top:8px}
 
+  .select-wrap{position:relative}
+  .select-wrap::after{content:"▾"; position:absolute; right:14px; top:50%; transform:translateY(-50%); pointer-events:none; font-size:16px; font-weight:800}
+  #origin{appearance:none; -webkit-appearance:none; width:100%; font:inherit; font-weight:800; font-size:15px; color:var(--ink); padding:12px 38px 12px 14px;
+    border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:0 3px 0 var(--ink); cursor:pointer}
+  #origin:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
   .toggles{display:grid; gap:10px}
   .toggle{display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:600; font-size:14.5px; cursor:pointer}
   .toggle small{display:block; font-weight:400; color:var(--muted); font-size:12.5px}
@@ -127,6 +132,13 @@
   @keyframes dealIn{from{opacity:0; transform:translateY(20px) rotate(4deg)}}
   .act .art{position:relative; aspect-ratio:16/9; border-bottom:2.5px solid var(--ink); overflow:hidden}
   .act .art svg{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .act .art img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .4s}
+  .act .art.has-photo img{opacity:1}
+  .act .art.has-photo .sticker{left:auto; top:auto; right:10px; bottom:10px; transform:rotate(-6deg); width:46px; height:46px; font-size:24px}
+  .act .credit{margin-top:8px; font-size:11px; color:var(--muted); line-height:1.35}
+  .act .credit a{font-size:11px; color:var(--muted); border-bottom:1px solid currentColor; font-weight:600}
+  .act .sticker{z-index:2; transition:all .3s}
+  .act .tag{z-index:2}
   .act .sticker{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(-6deg); width:68px; height:68px; border-radius:50%;
     background:#fff; border:3px solid var(--ink); display:grid; place-items:center; font-size:36px; box-shadow:0 4px 0 rgba(34,34,74,.35)}
   .act .tag{position:absolute; left:10px; top:10px; background:var(--ink); color:var(--cream); font-size:10.5px; font-weight:800; letter-spacing:.12em;
@@ -151,7 +163,60 @@
   .close{all:unset; cursor:pointer; font-size:20px; line-height:1; color:#fff}
   .respin-note{font-size:13px; color:var(--muted); margin-top:12px; min-height:18px}
 
-  #confetti{position:fixed; inset:0; pointer-events:none; z-index:30}
+  /* ---------- Passport stamp FX ---------- */
+  .pfx{position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; flex-direction:column;
+    background:radial-gradient(circle at 50% 45%, rgba(43,45,110,.55), rgba(20,20,50,.85)); perspective:1600px; overflow:hidden}
+  .pfx.show{display:flex; animation:fadeIn .25s ease-out}
+  @keyframes fadeIn{from{opacity:0}}
+  .pfx-stage{position:relative; width:480px; height:340px; transform:scale(var(--s,1)); transform-origin:center}
+  .pfx.shake .pfx-stage{animation:shake .35s cubic-bezier(.36,.07,.19,.97)}
+  @keyframes shake{10%,90%{translate:-2px 1px} 20%,80%{translate:4px -2px} 30%,50%,70%{translate:-6px 3px} 40%,60%{translate:6px -3px}}
+  .passport{position:absolute; left:0; top:0; width:480px; height:340px; transform-style:preserve-3d;
+    transform:translate(-120px, 120vh) rotate(-14deg); transition:transform .7s cubic-bezier(.2,1.25,.4,1)}
+  .pfx.in .passport{transform:translate(-120px,0) rotate(-3deg)}
+  .pfx.open .passport{transform:translate(0,0) rotate(0deg); transition:transform .8s cubic-bezier(.3,1,.4,1)}
+  .pfx.out .passport{transform:translate(0,-10px) scale(.25) rotate(8deg); opacity:0; transition:transform .55s ease-in, opacity .55s ease-in}
+  .ppage{position:absolute; top:0; width:240px; height:340px; background:#FFF8EA; border:3px solid var(--ink); overflow:hidden;
+    background-image:repeating-radial-gradient(circle at 120px 170px, rgba(31,162,160,.10) 0 2px, transparent 2px 9px)}
+  .ppage.left{left:0; border-radius:16px 4px 4px 16px; border-right-width:1.5px; padding:22px 18px; box-shadow:inset -14px 0 18px -12px rgba(0,0,0,.25)}
+  .ppage.right{left:240px; border-radius:4px 16px 16px 4px; border-left-width:1.5px; box-shadow:inset 14px 0 18px -12px rgba(0,0,0,.25)}
+  .pcover{position:absolute; left:240px; top:0; width:240px; height:340px; transform-origin:left center; transform-style:preserve-3d;
+    transition:transform .8s cubic-bezier(.5,0,.3,1); z-index:3}
+  .pfx.open .pcover{transform:rotateY(-178deg)}
+  .pcover .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border:3px solid var(--ink); border-radius:4px 16px 16px 4px}
+  .pcover .front{background:linear-gradient(135deg,#2B2D6E,#1C1D52); color:#F5C451; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    box-shadow:inset 0 0 0 8px #232463, inset 0 0 0 10px rgba(245,196,81,.5)}
+  .pcover .front .crest{font-size:64px; filter:sepia(1) saturate(4) hue-rotate(5deg) brightness(1.1)}
+  .pcover .front .t1{font-family:"Shrikhand",cursive; font-size:30px; letter-spacing:.04em}
+  .pcover .front .t2{font-weight:800; font-size:11px; letter-spacing:.32em; text-transform:uppercase; text-align:center; line-height:1.6}
+  .pcover .back{transform:rotateY(180deg); border-radius:16px 4px 4px 16px; border-right-width:1.5px; padding:22px 18px; background:#FFF8EA;
+    background-image:repeating-radial-gradient(circle at 120px 170px, rgba(255,90,54,.08) 0 2px, transparent 2px 9px); box-shadow:inset -14px 0 18px -12px rgba(0,0,0,.25)}
+  .pid h5{margin:0 0 10px; font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:var(--teal)}
+  .pid .photo{width:82px; height:100px; border:2.5px solid var(--ink); border-radius:8px; background:#FFD9A8; display:grid; place-items:center; font-size:50px; margin-bottom:12px}
+  .pid .field{font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+  .pid .val{font-weight:800; font-size:14px; margin-bottom:7px}
+  .pid .mrz{position:absolute; left:14px; right:14px; bottom:14px; font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.04em; color:#45446a; word-break:break-all; white-space:pre-line; line-height:1.5}
+  .oldstamp{position:absolute; opacity:.45; filter:saturate(.7)}
+  .newstamp{position:absolute; left:50%; top:50%; width:200px; transform:translate(-50%,-50%) rotate(var(--rot,-8deg)) scale(1.6); opacity:0}
+  .pfx.stamped .newstamp{animation:ink .22s cubic-bezier(.2,1.6,.4,1) forwards}
+  @keyframes ink{0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--rot)) scale(1.6)} 60%{opacity:1; transform:translate(-50%,-50%) rotate(var(--rot)) scale(.96)} 100%{opacity:.93; transform:translate(-50%,-50%) rotate(var(--rot)) scale(1)}}
+  .splat{position:absolute; border-radius:50%; opacity:0; background:var(--ink-c)}
+  .pfx.stamped .splat{animation:splat .4s ease-out forwards}
+  @keyframes splat{0%{opacity:.9; transform:translate(0,0) scale(.3)} 100%{opacity:.75; transform:translate(var(--dx),var(--dy)) scale(1)}}
+  .stamper{position:absolute; left:360px; top:0; width:150px; height:230px; margin-left:-75px; transform:translateY(-130vh) rotate(-8deg); z-index:5;
+    filter:drop-shadow(0 18px 14px rgba(0,0,0,.35))}
+  .pfx.hover .stamper{transform:translateY(-120px) rotate(-4deg); transition:transform .45s cubic-bezier(.2,1.4,.4,1)}
+  .pfx.slam .stamper{transform:translateY(-8px) rotate(-8deg) scaleY(.94); transition:transform .1s cubic-bezier(.7,0,1,.6)}
+  .pfx.lift .stamper{transform:translateY(-130vh) rotate(6deg); transition:transform .6s cubic-bezier(.5,-0.4,.7,.3)}
+  .pfx-caption{position:relative; margin-top:calc(26px * var(--s,1)); text-align:center; color:#fff; opacity:0; transform:scale(.6)}
+  .pfx-caption b{display:block; font-family:"Shrikhand",cursive; font-weight:400; font-size:clamp(30px,7vw,46px); color:var(--mustard); text-shadow:3px 3px 0 var(--ink)}
+  .pfx-caption span{font-weight:600; font-size:15px; opacity:.9}
+  .pfx.done .pfx-caption{opacity:1; transform:scale(1); transition:all .45s cubic-bezier(.2,1.6,.4,1)}
+  .pfx-btns{margin-top:16px; opacity:0; pointer-events:none}
+  .pfx.done .pfx-btns{opacity:1; pointer-events:auto; transition:opacity .3s .25s}
+  @media (prefers-reduced-motion: reduce){ .passport,.pcover,.stamper{transition:none!important} .pfx .newstamp{animation-duration:.01s!important} }
+
+  #confetti{position:fixed; inset:0; pointer-events:none; z-index:50}
   footer{text-align:center; color:var(--muted); font-size:12.5px; padding:0 16px 30px}
   @media (prefers-reduced-motion: reduce){ .bulbs i{animation:none!important} .ticket{animation:none} }
 </style>
@@ -165,6 +230,11 @@
 
 <main>
   <aside class="panel" aria-label="Trip settings">
+    <div class="section">
+      <h2><span class="num">✈</span> Flying from</h2>
+      <div class="select-wrap"><select id="origin" aria-label="Starting country"></select></div>
+      <div class="hint">Sets flight times, fares and the currency for everything.</div>
+    </div>
     <div class="section">
       <h2><span class="num">1</span> Budget per person / day</h2>
       <div class="budgets" id="budgets"></div>
@@ -238,17 +308,47 @@
   </div>
 </div>
 
+<div class="pfx" id="pfx" role="dialog" aria-modal="true" aria-label="Passport stamped">
+  <div class="pfx-stage" id="pfxStage">
+    <div class="passport">
+      <div class="ppage left"></div>
+      <div class="ppage right" id="pfxPage"></div>
+      <div class="pcover">
+        <div class="face front"><div class="crest">🌍</div><div class="t1">Passport</div><div class="t2">Holiday Roulette<br>Wanderlust Division</div></div>
+        <div class="face back pid">
+        <h5>Republic of Holiday Roulette</h5>
+        <div class="photo">🧳</div>
+        <div class="field">Holder</div><div class="val">Lucky Traveller</div>
+        <div class="field">Flying from</div><div class="val" id="pfxFrom"></div>
+        <div class="field">Stamps collected</div><div class="val" id="pfxCount"></div>
+        <div class="mrz" id="pfxMrz"></div>
+        </div>
+      </div>
+    </div>
+    <svg class="stamper" viewBox="0 0 150 230" aria-hidden="true">
+      <ellipse cx="75" cy="40" rx="34" ry="30" fill="#FF5A36" stroke="#22224A" stroke-width="4"/>
+      <ellipse cx="64" cy="30" rx="10" ry="7" fill="#fff" opacity=".45"/>
+      <path d="M62 66 L56 150 H94 L88 66Z" fill="#B5652A" stroke="#22224A" stroke-width="4" stroke-linejoin="round"/>
+      <rect x="14" y="148" width="122" height="36" rx="8" fill="#FFB627" stroke="#22224A" stroke-width="4"/>
+      <rect x="20" y="182" width="110" height="20" rx="4" fill="#22224A"/>
+      <rect x="24" y="200" width="102" height="10" rx="3" id="stamperInk" fill="#FF5A36" stroke="#22224A" stroke-width="2"/>
+    </svg>
+  </div>
+  <div class="pfx-caption" id="pfxCaption"><b>Bon voyage!</b><span id="pfxSub"></span></div>
+  <div class="pfx-btns row"><button class="btn primary" id="pfxDone">✈️ Let's go!</button></div>
+</div>
+
 <canvas id="confetti"></canvas>
-<footer>All costs are rough estimates per person. Daily spend covers your stay, food and getting around. Flights are a typical economy return from London booked a couple of months ahead, outside school holidays. Prices swing a lot with season, so treat them as a guide, not a quote.</footer>
+<footer>All costs are rough estimates per person. Daily spend covers your stay, food and getting around. Flights are an estimated economy return from your starting city, booked a couple of months ahead, outside school holidays. Currency conversions are approximate. Prices swing a lot with season, so treat them as a guide, not a quote. Activity photos come from Wikimedia Commons; credits are shown on each photo.</footer>
 
 <script>
 const BUDGETS = [
-  {id:0, icon:"🎒", t:"Shoestring",        d:"Hostels, street food, buses",  money:"£",     range:"under £40/day"},
-  {id:1, icon:"🍜", t:"Cheap & cheerful",  d:"Guesthouses and good local eats", money:"££",  range:"£40–80/day"},
-  {id:2, icon:"🛏️", t:"Comfy middle",      d:"Nice hotels, the odd splurge", money:"£££",   range:"£80–160/day"},
-  {id:3, icon:"🥂", t:"Treat yourself",    d:"Boutique stays, fancy dinners", money:"££££", range:"£160–320/day"},
-  {id:4, icon:"💎", t:"Money no object",   d:"Overwater villas, private guides", money:"£££££", range:"£320+/day"},
-  {id:-1,icon:"🎰", t:"Surprise me",       d:"Every budget on the wheel",    money:"?",     range:"anything"}
+  {id:0, icon:"🎒", t:"Shoestring",        d:"Hostels, street food, buses",     lo:0,   hi:50},
+  {id:1, icon:"🍜", t:"Cheap & cheerful",  d:"Guesthouses and good local eats", lo:50,  hi:100},
+  {id:2, icon:"🛏️", t:"Comfy middle",      d:"Nice hotels, the odd splurge",    lo:100, hi:200},
+  {id:3, icon:"🥂", t:"Treat yourself",    d:"Boutique stays, fancy dinners",   lo:200, hi:400},
+  {id:4, icon:"💎", t:"Money no object",   d:"Overwater villas, private guides",lo:400, hi:0},
+  {id:-1,icon:"🎰", t:"Surprise me",       d:"Every budget on the wheel"}
 ];
 const VIBES = {beach:"🏖️ Beach", city:"🏙️ City", adventure:"🥾 Adventure", culture:"🏛️ Culture", food:"🍜 Foodie", snow:"❄️ Snow"};
 
@@ -265,6 +365,8 @@ const RAW = [
   ["Yogyakarta","Indonesia","🏯",0,["culture","food"],"Borobudur at sunrise, batik workshops and the best gudeg in Java.","~$30","May–Sep"],
   ["Rishikesh","India","🧘",0,["adventure","culture"],"Yoga capital of the world, with white-water rafting for when you're done being zen.","~$25","Sep–Nov"],
   ["Sucre","Bolivia","🦖",0,["culture","adventure"],"Whitewashed colonial gem with real dinosaur footprints up a cliff. Spanish school, anyone?","~$30","May–Sep"],
+  ["Hanoi","Vietnam","🛵",0,["city","food","culture"],"Motorbike-swarmed Old Quarter, beer on tiny plastic stools and the world's best pho for pocket change.","~$35","Oct–Apr"],
+  ["Manali","India","🏔️",0,["snow","adventure"],"Himalayan hill town with snowy passes, apple orchards, hot springs and backpacker cafés in Old Manali.","~$30","Dec–Feb (snow), May–Jun"],
   // Cheap & cheerful
   ["Chiang Mai","Thailand","🐘",1,["culture","food","adventure"],"Temples on every corner, khao soi in every bowl, and jungle just beyond the moat.","~$60","Nov–Feb"],
   ["Tbilisi","Georgia","🍷",1,["city","food","culture"],"Sulphur baths, cheesy boat-shaped bread and 8,000 years of winemaking.","~$60","May–Jun, Sep–Oct"],
@@ -277,6 +379,7 @@ const RAW = [
   ["Penang","Malaysia","🍢",1,["food","culture","beach"],"Street art in George Town and hawker stalls that could make a grown foodie cry.","~$55","Dec–Feb"],
   ["Ksamil","Albania","🏝️",1,["beach"],"Caribbean-coloured water at Balkan prices. Europe's best-kept beach secret (shh).","~$65","Jun–Sep"],
   ["Ubud, Bali","Indonesia","🌾",1,["culture","adventure","food"],"Rice terraces, monkey forests, sunrise volcano treks and a smoothie bowl in every café.","~$70","Apr–Oct"],
+  ["Bansko","Bulgaria","⛷️",1,["snow","food"],"Europe's bargain ski resort: Pirin mountain slopes, a cobbled old town and hearty tavern feasts.","~$90","Dec–Mar"],
   // Comfy middle
   ["Lisbon","Portugal","🚋",2,["city","food","culture"],"Rattling yellow trams, pastel de nata still warm, fado drifting out of Alfama bars.","~$150","Apr–Jun, Sep–Oct"],
   ["Seoul","South Korea","🏮",2,["city","food","culture"],"Palaces by day, Korean BBQ and noraebang by night. Bring stretchy trousers.","~$140","Apr–May, Sep–Nov"],
@@ -310,42 +413,128 @@ const RAW = [
   ["St. Moritz","Switzerland","🥂",4,["snow","city"],"Champagne skiing, horse races on a frozen lake and glamour since 1864.","~$800","Dec–Mar"],
   ["Fiji Private Island","Fiji","🏝️",4,["beach"],"Your own island, your own staff, and a 'do not disturb' sign the size of the Pacific.","~$1,500","May–Oct"],
   ["Monaco & Riviera","Monaco","🏎️",4,["city","beach","food"],"Superyachts, Michelin stars and a casino that dress-codes your bank balance.","~$900","May–Sep"],
+  ["Venice","Italy","🛶",4,["culture","food","city"],"Palazzo hotels on the Grand Canal, private gondolas, Titians in the churches and cicchetti at dusk.","~$700","Apr–Jun, Sep–Oct"],
+  ["Rajasthan Palaces","India","🏰",4,["culture","food","adventure"],"Sleep like a maharaja, from Udaipur's lake palace to Jaipur's pink city, with royal dinners under the stars.","~$600","Oct–Mar"],
+  ["Machu Picchu","Peru","🦙",4,["culture","adventure"],"Ride a luxury train through the Sacred Valley to the Inca citadel in the clouds.","~$750","Apr–Oct"],
 ];
-// Typical economy return fare per person from London (GBP), booked a couple of months ahead, outside school holidays
-const FLIGHTS = {
+// ---------- Where you're flying from ----------
+// rate = units of local currency per 1 USD (approximate)
+const ORIGINS = [
+  {id:"uk", flag:"🇬🇧", name:"United Kingdom", city:"London",      lat:51.47, lon:-0.45,   sym:"£",   pip:"£", rate:0.78},
+  {id:"ie", flag:"🇮🇪", name:"Ireland",        city:"Dublin",      lat:53.42, lon:-6.27,   sym:"€",   pip:"€", rate:0.92},
+  {id:"fr", flag:"🇫🇷", name:"France",         city:"Paris",       lat:49.01, lon:2.55,    sym:"€",   pip:"€", rate:0.92},
+  {id:"de", flag:"🇩🇪", name:"Germany",        city:"Frankfurt",   lat:50.03, lon:8.57,    sym:"€",   pip:"€", rate:0.92},
+  {id:"nl", flag:"🇳🇱", name:"Netherlands",    city:"Amsterdam",   lat:52.31, lon:4.76,    sym:"€",   pip:"€", rate:0.92},
+  {id:"es", flag:"🇪🇸", name:"Spain",          city:"Madrid",      lat:40.49, lon:-3.57,   sym:"€",   pip:"€", rate:0.92},
+  {id:"use",flag:"🇺🇸", name:"USA (East)",     city:"New York",    lat:40.64, lon:-73.78,  sym:"US$", pip:"$", rate:1},
+  {id:"usw",flag:"🇺🇸", name:"USA (West)",     city:"Los Angeles", lat:33.94, lon:-118.41, sym:"US$", pip:"$", rate:1},
+  {id:"ca", flag:"🇨🇦", name:"Canada",         city:"Toronto",     lat:43.68, lon:-79.63,  sym:"C$",  pip:"$", rate:1.38},
+  {id:"ae", flag:"🇦🇪", name:"UAE",            city:"Dubai",       lat:25.25, lon:55.36,   sym:"AED ",pip:"$", rate:3.67},
+  {id:"in", flag:"🇮🇳", name:"India",          city:"Delhi",       lat:28.56, lon:77.10,   sym:"₹",   pip:"₹", rate:84},
+  {id:"th", flag:"🇹🇭", name:"Thailand",       city:"Bangkok",     lat:13.69, lon:100.75,  sym:"฿",   pip:"฿", rate:35},
+  {id:"sg", flag:"🇸🇬", name:"Singapore",      city:"Singapore",   lat:1.36,  lon:103.99,  sym:"S$",  pip:"$", rate:1.34},
+  {id:"hk", flag:"🇭🇰", name:"Hong Kong",      city:"Hong Kong",   lat:22.31, lon:113.91,  sym:"HK$", pip:"$", rate:7.8},
+  {id:"jp", flag:"🇯🇵", name:"Japan",          city:"Tokyo",       lat:35.55, lon:139.78,  sym:"¥",   pip:"¥", rate:150},
+  {id:"au", flag:"🇦🇺", name:"Australia",      city:"Sydney",      lat:-33.94,lon:151.18,  sym:"A$",  pip:"$", rate:1.53},
+  {id:"nz", flag:"🇳🇿", name:"New Zealand",    city:"Auckland",    lat:-37.01,lon:174.79,  sym:"NZ$", pip:"$", rate:1.68},
+  {id:"za", flag:"🇿🇦", name:"South Africa",   city:"Johannesburg",lat:-26.14,lon:28.24,   sym:"R",   pip:"R", rate:18}
+];
+// Arrival airport per destination: [lat, lon, reach, price multiplier, airport]
+// reach: 3 global hub, 2 big international, 1 regional, 0 small (usually needs a connection)
+const DEST_AIR = {
+  "Hoi An":[16.04,108.20,1,1,"Da Nang"],"Luang Prabang":[19.90,102.16,1,1.1,"Luang Prabang"],"Pokhara":[28.20,83.98,0,1,"Pokhara"],
+  "Goa":[15.38,73.83,1,1,"Goa"],"Siem Reap":[13.37,104.22,1,1,"Siem Reap"],"Antigua":[14.58,-90.53,1,1,"Guatemala City"],
+  "Ella":[7.18,79.88,1,1,"Colombo"],"Yogyakarta":[-7.90,110.06,1,1,"Yogyakarta"],"Rishikesh":[30.19,78.18,0,1,"Dehradun"],
+  "Sucre":[-19.25,-65.15,0,1.2,"Sucre"],"Chiang Mai":[18.77,98.96,1,1,"Chiang Mai"],"Tbilisi":[41.67,44.95,1,1,"Tbilisi"],
+  "Oaxaca":[17.00,-96.73,1,1,"Oaxaca"],"Budapest":[47.44,19.26,1,1,"Budapest"],"Kraków":[50.08,19.78,1,1,"Kraków"],
+  "Istanbul":[41.26,28.74,3,1,"Istanbul"],"Marrakech":[31.61,-8.04,1,1,"Marrakech"],"Medellín":[6.16,-75.42,1,1,"Medellín"],
+  "Penang":[5.30,100.28,1,1,"Penang"],"Ksamil":[39.60,19.91,1,1,"Corfu"],"Ubud, Bali":[-8.75,115.17,1,1,"Denpasar"],
+  "Lisbon":[38.77,-9.13,2,1,"Lisbon"],"Seoul":[37.46,126.44,3,1,"Seoul"],"Tokyo":[35.55,139.78,3,1,"Tokyo"],
+  "Taipei":[25.08,121.23,2,1,"Taipei"],"Cape Town":[-33.97,18.60,2,1,"Cape Town"],"Naxos":[37.08,25.37,0,1,"Naxos"],
+  "Split & Hvar":[43.54,16.30,1,1,"Split"],"Petra & Wadi Rum":[31.72,35.99,1,1,"Amman"],"Buenos Aires":[-34.82,-58.54,2,1,"Buenos Aires"],
+  "Barcelona":[41.30,2.08,2,1,"Barcelona"],"Hokkaido":[42.78,141.69,1,1,"Sapporo"],"Reykjavík & Ring Road":[63.99,-22.62,1,1,"Reykjavík"],
+  "Amalfi Coast":[40.88,14.29,1,1,"Naples"],"Kyoto":[34.43,135.23,2,1,"Osaka"],"Santorini":[36.40,25.48,1,1,"Santorini"],
+  "Zermatt":[46.24,6.11,2,1,"Geneva"],"New York City":[40.64,-73.78,3,1,"New York"],"Banff":[51.13,-114.01,2,1,"Calgary"],
+  "Patagonia":[-53.00,-70.85,0,1.25,"Punta Arenas"],"Copenhagen":[55.62,12.65,2,1,"Copenhagen"],"Queenstown":[-45.02,168.74,1,1.15,"Queenstown"],
+  "The Maldives":[4.19,73.53,2,1.05,"Malé"],"Bora Bora":[-16.44,-151.75,0,1.6,"Bora Bora"],"Serengeti Safari":[-3.43,37.07,1,1.1,"Kilimanjaro"],
+  "Antarctica Expedition":[-54.84,-68.30,0,1.3,"Ushuaia"],"Seychelles":[-4.67,55.52,1,1.1,"Mahé"],"Okavango Delta":[-19.97,23.43,0,1.3,"Maun"],
+  "St. Moritz":[47.46,8.55,3,1,"Zurich"],"Fiji Private Island":[-17.76,177.44,1,1.1,"Nadi"],"Monaco & Riviera":[43.66,7.21,2,1,"Nice"],
+  "Hanoi":[21.22,105.81,1,1,"Hanoi"],"Manali":[31.88,77.15,0,1,"Kullu"],"Bansko":[42.69,23.41,1,1,"Sofia"],
+  "Venice":[45.50,12.35,2,1,"Venice"],"Rajasthan Palaces":[26.82,75.81,1,1,"Jaipur"],"Machu Picchu":[-13.54,-71.94,0,1.1,"Cusco"]
+};
+// Hand-checked figures from London (economy return in GBP; [hours, stops]) take priority over the model for the UK
+const UK_FARE = {
   "Hoi An":750,"Luang Prabang":800,"Pokhara":700,"Goa":550,"Siem Reap":750,"Antigua":850,"Ella":650,"Yogyakarta":800,"Rishikesh":550,"Sucre":1000,
   "Chiang Mai":700,"Tbilisi":300,"Oaxaca":750,"Budapest":90,"Kraków":70,"Istanbul":180,"Marrakech":120,"Medellín":700,"Penang":700,"Ksamil":150,"Ubud, Bali":750,
   "Lisbon":100,"Seoul":750,"Tokyo":850,"Taipei":750,"Cape Town":700,"Naxos":220,"Split & Hvar":130,"Petra & Wadi Rum":350,"Buenos Aires":900,"Barcelona":90,"Hokkaido":950,
   "Reykjavík & Ring Road":150,"Amalfi Coast":120,"Kyoto":850,"Santorini":200,"Zermatt":120,"New York City":450,"Banff":650,"Patagonia":1200,"Copenhagen":100,"Queenstown":1400,
-  "The Maldives":750,"Bora Bora":1800,"Serengeti Safari":800,"Antarctica Expedition":1100,"Seychelles":800,"Okavango Delta":1100,"St. Moritz":120,"Fiji Private Island":1300,"Monaco & Riviera":110
+  "The Maldives":750,"Bora Bora":1800,"Serengeti Safari":800,"Antarctica Expedition":1100,"Seychelles":800,"Okavango Delta":1100,"St. Moritz":120,"Fiji Private Island":1300,"Monaco & Riviera":110,
+  "Hanoi":650,"Manali":600,"Bansko":120,"Venice":120,"Rajasthan Palaces":650,"Machu Picchu":1000
 };
-const FLY_VIA = {"Ksamil":"via Corfu","Pokhara":"via Kathmandu","Rishikesh":"via Delhi","Amalfi Coast":"to Naples","Zermatt":"to Geneva","St. Moritz":"to Zurich","Monaco & Riviera":"to Nice",
-  "Antarctica Expedition":"to Ushuaia","Serengeti Safari":"to Kilimanjaro","Okavango Delta":"to Maun","Banff":"to Calgary","Kyoto":"to Osaka","Hokkaido":"to Sapporo","Hoi An":"to Da Nang","Ella":"to Colombo","Yogyakarta":"","Petra & Wadi Rum":"to Amman","Patagonia":"to Punta Arenas"};
-// Typical one-way journey time from London: [hours, stops]
-const FLY_TIME = {
-  "Hoi An":[17,1],"Luang Prabang":[18,1],"Pokhara":[16,1],"Goa":[11,1],"Siem Reap":[16,1],"Antigua":[16,1],"Ella":[13,1],"Yogyakarta":[18,1],"Rishikesh":[9,0],"Sucre":[20,2],
+const UK_TIME = {
+  "Hoi An":[17,1],"Luang Prabang":[18,1],"Pokhara":[16,1],"Goa":[11,1],"Siem Reap":[16,1],"Antigua":[16,1],"Ella":[13,1],"Yogyakarta":[18,1],"Rishikesh":[11,1],"Sucre":[20,2],
   "Chiang Mai":[16,1],"Tbilisi":[7,1],"Oaxaca":[15,1],"Budapest":[2.5,0],"Kraków":[2.5,0],"Istanbul":[4,0],"Marrakech":[3.75,0],"Medellín":[14,1],"Penang":[16,1],"Ksamil":[3,0],"Ubud, Bali":[17,1],
   "Lisbon":[2.75,0],"Seoul":[14.5,0],"Tokyo":[14,0],"Taipei":[14.5,0],"Cape Town":[11.5,0],"Naxos":[5,1],"Split & Hvar":[2.5,0],"Petra & Wadi Rum":[5,0],"Buenos Aires":[13.5,0],"Barcelona":[2,0],"Hokkaido":[17,1],
   "Reykjavík & Ring Road":[3,0],"Amalfi Coast":[2.75,0],"Kyoto":[16,1],"Santorini":[4,0],"Zermatt":[1.75,0],"New York City":[8,0],"Banff":[9,0],"Patagonia":[20,2],"Copenhagen":[2,0],"Queenstown":[27,2],
-  "The Maldives":[10.5,0],"Bora Bora":[24,2],"Serengeti Safari":[12,1],"Antarctica Expedition":[19,2],"Seychelles":[12,1],"Okavango Delta":[16,2],"St. Moritz":[1.75,0],"Fiji Private Island":[24,2],"Monaco & Riviera":[2,0]
+  "The Maldives":[10.5,0],"Bora Bora":[24,2],"Serengeti Safari":[12,1],"Antarctica Expedition":[19,2],"Seychelles":[12,1],"Okavango Delta":[16,2],"St. Moritz":[1.75,0],"Fiji Private Island":[24,2],"Monaco & Riviera":[2,0],
+  "Hanoi":[15,1],"Manali":[14,1],"Bansko":[3,0],"Venice":[2,0],"Rajasthan Palaces":[11,1],"Machu Picchu":[19,2]
 };
-function flyTime(name){
-  const t = FLY_TIME[name]; if(!t) return "";
-  const h = Math.floor(t[0]), m = Math.round((t[0]-h)*60);
-  return `~${h}h${m?` ${m}m`:""} · ${t[1]===0?"direct":t[1]===1?"1 stop":t[1]+" stops"}`;
+const REACH_KM = [0, 5000, 7500, 12500];
+function distKm(a1,o1,a2,o2){
+  const R=6371, t=Math.PI/180, dA=(a2-a1)*t, dO=(o2-o1)*t;
+  const h=Math.sin(dA/2)**2+Math.cos(a1*t)*Math.cos(a2*t)*Math.sin(dO/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
 }
-const USD_GBP = 0.78;
-const gbpRound = n => Math.round(n/5)*5;
-const fmt = n => "£" + n.toLocaleString("en-GB");
-const DESTS = RAW.map(([name,country,emoji,tier,vibes,blurb,cost,best],i)=>{
-  const usd = +cost.replace(/[^0-9]/g,"");
-  return {i,name,country,emoji,tier,vibes,blurb,best, daily:gbpRound(usd*USD_GBP), flight:FLIGHTS[name]||0};
-});
+// Returns {home, hours, stops, fare (local currency), airport}
+function flightFor(d, o){
+  const [lat,lon,reach,mult,airport] = DEST_AIR[d.name];
+  const km = distKm(o.lat,o.lon,lat,lon);
+  if(km < 120) return {home:true, hours:0, stops:0, fare:0, airport};
+  if(o.id==="uk" && UK_FARE[d.name]) return {hours:UK_TIME[d.name][0], stops:UK_TIME[d.name][1], fare:UK_FARE[d.name], airport};
+  let stops = (km < 600 || km <= REACH_KM[reach]) ? 0 : (km > 15000 || (reach===0 && km > 9000)) ? 2 : 1;
+  const hours = stops===0 ? km/800 + 0.6 : km*1.12/800 + 0.6 + stops*2.5;
+  let usd = km < 600 ? 80 : km < 2500 ? 50 + km*0.05 : 150 + km*0.072;
+  if(stops && km < 2500) usd *= 1.4;
+  usd *= mult;
+  return {hours, stops, fare: nice(usd*o.rate), airport};
+}
+function nice(x){ if(x<=0) return 0; const m = 10**Math.max(0, Math.floor(Math.log10(x))-1); return Math.round(x/m)*m; }
+function fmtHours(t){ const h=Math.floor(t), m=Math.round((t-h)*4)*15; return m===60 ? `~${h+1}h` : `~${h}h${m?` ${m}m`:""}`; }
+function stopsText(n){ return n===0 ? "direct" : n===1 ? "1 stop" : n+" stops"; }
+let ORIGIN = ORIGINS[0];
+const fmt = n => ORIGIN.sym + Math.round(n).toLocaleString("en-GB");
+const local = usd => nice(usd*ORIGIN.rate);
+const DESTS = RAW.map(([name,country,emoji,tier,vibes,blurb,cost,best],i)=>
+  ({i,name,country,emoji,tier,vibes,blurb,best, dailyUSD:+cost.replace(/[^0-9]/g,"")}));
 const NIGHTS = [4,7,10,14];
 
 // ---------- Things to do: emoji|category|title|description ----------
 // categories: w water/beach, n nature, c culture, f food, x night, s snow, u city, a wildlife, d thrills
 const ACTS = {
+"Hanoi":`🍜|f|Pho & bún chả crawl|Slurp your way through the Old Quarter's street kitchens.
+🚂|u|Train Street|Coffee on the tracks while a train squeezes past inches away.
+🍺|x|Beer corner|Fresh bia hoi for pennies on plastic stools at Ta Hien.
+🎭|c|Water puppet show|A centuries-old art performed on a pool of water.`,
+"Manali":`❄️|s|Solang Valley snow|Skiing, snow tubing and paragliding with Himalayan views.
+🏔️|d|Atal Tunnel to Sissu|Drive through a 9km Himalayan tunnel to frozen waterfalls.
+🛕|c|Hadimba Temple|A wooden pagoda temple in a cedar forest.
+♨️|n|Vashisht hot springs|Soak in natural hot pools in a stone village.`,
+"Bansko":`⛷️|s|Ski the Pirin slopes|Wide runs and cheap lift passes in a UNESCO national park.
+🍖|f|Tavern feast|Slow-cooked kapama and live folk music in a stone mehana.
+♨️|w|Thermal pools in Banya|Hot mineral springs in the village down the road.
+🏘️|c|Old town wander|Cobbled lanes, stone houses and the Holy Trinity Church.`,
+"Venice":`🛶|w|Private gondola at sunset|Glide through quiet back canals with your own gondolier.
+🏛️|c|After-hours St Mark's|Golden mosaics with the crowds gone.
+🍷|f|Cicchetti & spritz crawl|Tiny snacks and Aperol in bacaro bars.
+🎨|c|Murano & Burano|Glassblowers and rainbow fishermen's houses.`,
+"Rajasthan Palaces":`🏰|c|Amber Fort|A hilltop fort palace with mirror-studded halls.
+🛶|w|Lake Pichola by boat|Udaipur's floating Lake Palace at sunset.
+🐪|d|Thar desert camp|Camel ride into the dunes near Jaisalmer.
+🍛|f|Royal thali dinner|A maharaja's feast in a palace courtyard.`,
+"Machu Picchu":`🏔️|c|Sunrise at the citadel|Machu Picchu emerging from the clouds.
+🚂|n|Luxury Sacred Valley train|Brunch and cocktails rolling through the Andes.
+🌈|d|Rainbow Mountain|Striped peaks at 5,000 metres.
+🏛️|c|Cusco & Sacsayhuamán|Inca stonework and colonial plazas.`,
 "Hoi An":`🏮|c|Lantern night on the river|Float a paper lantern from a little boat as the old town glows.
 👔|u|Get tailored overnight|Pick a fabric in the morning, collect a perfectly fitted suit tomorrow.
 🚲|n|Cycle to Tra Que village|Pedal through rice paddies to an organic herb-farming village.
@@ -551,6 +740,7 @@ const ACTS = {
 🏎️|u|Walk the Grand Prix circuit|Hairpins and harbour views on foot.
 🍽️|f|Michelin lunch in Èze|A cliff-top village with a world-class table.`
 };
+const PHOTOS = /*PHOTOS*/{"Hoi An|0":{"src":"img/hoi-an-0.jpg","artist":"lumoplank","license":"CC0","page":"https://commons.wikimedia.org/wiki/File:Hoi_An_-_HoiAn1441.jpg"},"Hoi An|1":{"src":"img/hoi-an-1.jpg","artist":"Vuong Tri Binh","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Ants_Silk_Tailoring_shop_of_Hoi_An_in_2015.jpg"},"Hoi An|3":{"src":"img/hoi-an-3.jpg","artist":"Alexkom000","license":"CC BY 4.0","page":"https://commons.wikimedia.org/wiki/File:2024-11-23_An_Bang_Beach_in_Hoi_An_in_November.jpg"},"Luang Prabang|0":{"src":"img/luang-prabang-0.jpg","artist":"Benh LIEU SONG","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/wiki/File:Luang_Prabang_Monks_Alm_Dawn_02.jpg"},"Luang Prabang|1":{"src":"img/luang-prabang-1.jpg","artist":"Basile Morin","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Kuang_Si_Falls_and_a_turquoise_water_pool_in_Luang_Prabang_province_Laos.jpg"},"Luang Prabang|2":{"src":"img/luang-prabang-2.jpg","artist":"Balon Greyjoy","license":"Public domain","page":"https://commons.wikimedia.org/wiki/File:20191212_Luang_Prabang_view_Phousi_Hill-10.jpg"},"Luang Prabang|3":{"src":"img/luang-prabang-3.jpg","artist":"Ekrem Canli","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Luang_Prabang_Night_Market_2016(3).jpg"},"Pokhara|0":{"src":"img/pokhara-0.jpg","artist":"Rudolph.A.furtado","license":"CC0","page":"https://commons.wikimedia.org/wiki/File:%27Tandem_Paragliding%27_over_Pokhara.(Tuesday_22-11-2011).JPG"},"Pokhara|1":{"src":"img/pokhara-1.jpg","artist":"Gaurav Dhwaj Khadka","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Sunrise_from_Sarangkot_1.jpg"},"Pokhara|2":{"src":"img/pokhara-2.jpg","artist":"Bijay chaurasia","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Phewa_lake_2604.jpg"},"Pokhara|3":{"src":"img/pokhara-3.jpg","artist":"Ermakae","license":"CC0","page":"https://commons.wikimedia.org/wiki/File:Poon_Hill_PANO_20180323_075733.jpg"},"Goa|0":{"src":"img/goa-0.jpg","artist":"Satyajit Nayak","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Palolem_beach.jpg"},"Goa|1":{"src":"img/goa-1.jpg","artist":"iMahesh","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Side_Elevation_of_Basilica_of_Bom_Jesus.jpg"},"Goa|2":{"src":"img/goa-2.jpg","artist":"Fredericknoronha","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Goan_typical_meal_--_fish,_curry_and_rice.jpg"},"Goa|3":{"src":"img/goa-3.jpg","artist":"Vyacheslav Argenberg","license":"CC BY 4.0","page":"https://commons.wikimedia.org/wiki/File:Anjuna,_Goa,_India,_Anjuna_Flea_Market_2.jpg"},"Siem Reap|0":{"src":"img/siem-reap-0.jpg","artist":"Reinhard Onasch","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/wiki/File:Angkor_Wat_Sunrise_(209237385).jpeg"},"Siem Reap|1":{"src":"img/siem-reap-1.jpg","artist":"Pierre André Leclercq","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:2014-Cambodge_Ta_Prohm_(14).jpg"},"Siem Reap|2":{"src":"img/siem-reap-2.jpg","artist":"james_antrobus","license":"CC BY 2.0","page":"https://www.flickr.com/photos/96862558@N03/14233542442"},"Siem Reap|3":{"src":"img/siem-reap-3.jpg","artist":"Krzysztof Golik","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Kampong_Phlouk_(32).jpg"},"Antigua|0":{"src":"img/antigua-0.jpg","artist":"Javier Ruata","license":"CC BY 2.0","page":"https://commons.wikimedia.org/wiki/File:Volcan_de_Fuego_y_Acatenango.jpg"},"Antigua|1":{"src":"img/antigua-1.jpg","artist":"rohsstreetcafe","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/39502867@N00/2277849628"},"Antigua|2":{"src":"img/antigua-2.jpg","artist":"Erik Cleves Kristensen","license":"CC BY 2.0","page":"https://commons.wikimedia.org/wiki/File:The_morning_after_-_Santa_Catalina_Arch,_Antigua_Guatemala,_New_Year_2024.jpg"},"Ella|1":{"src":"img/ella-1.jpg","artist":"Ishan shanuka","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Nine_arch_bridge,_Ella,_Sri_lanka.jpg"},"Ella|2":{"src":"img/ella-2.jpg","artist":"Ankur Panchbudhe","license":"CC BY 2.0","page":"https://commons.wikimedia.org/wiki/File:Hike_to_Little_Adam%27s_Peak_-_Ella_Rock.jpg"},"Ella|3":{"src":"img/ella-3.jpg","artist":"A.Davey","license":"CC BY 2.0","page":"https://www.flickr.com/photos/40595948@N00/398237730"},"Yogyakarta|0":{"src":"img/yogyakarta-0.jpg","artist":"Justine Hong","license":"CC BY 2.0","page":"https://commons.wikimedia.org/wiki/File:Borobudur_Sunrise_2012-01-05.jpg"},"Yogyakarta|1":{"src":"img/yogyakarta-1.jpg","artist":"CEphoto, Uwe Aranas","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/wiki/File:Yogyakarta_Indonesia_Prambanan-temple-complex-02.jpg"},"Yogyakarta|2":{"src":"img/yogyakarta-2.jpg","artist":"Danangfirmanto","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Pengrajin_Batik_Tulis.jpg"},"Yogyakarta|3":{"src":"img/yogyakarta-3.jpg","artist":"Wrsrachma","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Lava_Tour_Jogja.jpg"},"Rishikesh|0":{"src":"img/rishikesh-0.jpg","artist":"Arpan Mahajan","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Rishikesh_(Ganges_View).jpg"},"Rishikesh|1":{"src":"img/rishikesh-1.jpg","artist":"Goutam1962","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:River_Rafting_in_Ganga_Near_Ram_Jhula_Rishikesh_03.jpg"},"Rishikesh|2":{"src":"img/rishikesh-2.jpg","artist":"Ken Wieland","license":"CC BY-SA 2.0","page":"https://commons.wikimedia.org/wiki/File:Ken_Wieland_Ganga_Aarti_in_Rishikesh_(2).jpg"},"Rishikesh|3":{"src":"img/rishikesh-3.jpg","artist":"McKay Savage from London, UK","license":"CC BY 2.0","page":"https://commons.wikimedia.org/wiki/File:Rishikesh,_Lakshman_Jhula.jpg"},"Sucre|0":{"src":"img/sucre-0.jpg","artist":"Pierre André Leclercq","license":"CC BY 4.0","page":"https://commons.wikimedia.org/wiki/File:Dinosaur_Valley_in_Cal_Orcko_Bolivia_(photos_canned).jpg"},"Sucre|1":{"src":"img/sucre-1.jpg","artist":"Ainatania504","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/wiki/File:Casa_de_la_Libertad_(Sucre).jpg"},"Sucre|2":{"src":"img/sucre-2.jpg","artist":"Maria Cristina Tajima","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Catedral_(plaza_principal_Sucre_).jpg"},"Chiang Mai|0":{"src":"img/chiang-mai-0.jpg","artist":"ผู้สร้างสรรค์ผลงาน/ส่งข้อมูลเก็บในคลังข้อมูลเสรีวิกิมีเดียคอมมอนส์ - เทวประภาส ม","license":"CC BY 3.0","page":"https://commons.wikimedia.org/wiki/File:Phra_That_Doi_Suthep_01.jpg"},"Chiang Mai|1":{"src":"img/chiang-mai-1.jpg","artist":"paularps","license":"CC BY 2.0","page":"https://www.flickr.com/photos/21160385@N02/15643972143"},"Chiang Mai|2":{"src":"img/chiang-mai-2.jpg","artist":"Alexander Klink. If you enjoy this photo and have a Flattr account, I'd apprecia","license":"CC BY 3.0","page":"https://commons.wikimedia.org/wiki/File:Elephas_Maximus_Eye_Closeup_cropped.jpg"},"Chiang Mai|3":{"src":"img/chiang-mai-3.jpg","artist":"Takeaway","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Chiang_Mai_sunday_evening_walking_street.jpg"},"Tbilisi|0":{"src":"img/tbilisi-0.jpg","artist":"Wowan1978","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Roofs_of_the_sulfur_baths_in_Tbilisi.jpg"},"Tbilisi|1":{"src":"img/tbilisi-1.jpg","artist":"shankar s.","license":"CC BY 2.0","page":"https://commons.wikimedia.org/wiki/File:Looking_towards_Narikala_Fortress_from_the_cable_car_station.jpg"},"Oaxaca|0":{"src":"img/oaxaca-0.jpg","artist":"ProtoplasmaKid","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Mole_negro_de_Oaxaca_con_arroz.jpg"},"Oaxaca|2":{"src":"img/oaxaca-2.jpg","artist":"nsaum75 !Dígame¡‎","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/wiki/File:Monte_Alban_West_Side_Platform.jpg"},"Oaxaca|3":{"src":"img/oaxaca-3.jpg","artist":"Fvaldezrom","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/wiki/File:Hierve_el_Agua.jpg"},"Budapest|0":{"src":"img/budapest-0.jpg","artist":"Marc Ryckaert (MJJR)","license":"CC BY 3.0","page":"https://commons.wikimedia.org/wiki/File:Budapest_Sz%C3%A9chenyi_Baths_R01.jpg"},"Budapest|1":{"src":"img/budapest-1.jpg","artist":"Yelkrokoyade","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/wiki/File:Szimpla_Kert_Budapest_1.jpg"},"Budapest|2":{"src":"img/budapest-2.jpg","artist":"Perituss","license":"CC0","page":"https://commons.wikimedia.org/wiki/File:Fisherman%27s_Bastion_2014.jpg"},"Antigua|3":{"src":"img/antigua-3.jpg","artist":"Christopher Crouzet","license":"CC BY 2.0","page":"https://www.flickr.com/photos/25338288@N05/11878707975"},"Ella|0":{"src":"img/ella-0.jpg","artist":"World of Travolution360","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/168569883@N04/51890087077"},"Oaxaca|1":{"src":"img/oaxaca-1.jpg","artist":"Nsaum75","license":"CC BY-SA 4.0","page":"https://commons.wikimedia.org/w/index.php?curid=11410825"},"Budapest|3":{"src":"img/budapest-3.jpg","artist":"Unknown","license":"CC0 1.0","page":"https://www.rawpixel.com/image/5920201/photo-image-light-public-domain-water"},"Kraków|0":{"src":"img/krak-w-0.jpg","artist":"Arian Zwegers","license":"CC BY 2.0","page":"https://www.flickr.com/photos/67769030@N07/6381659163"},"Kraków|1":{"src":"img/krak-w-1.jpg","artist":"Dimitry B","license":"CC BY 2.0","page":"https://www.flickr.com/photos/61533954@N00/5067569070"},"Kraków|2":{"src":"img/krak-w-2.jpg","artist":"Deror_avi","license":"CC BY-SA 3.0","page":"https://commons.wikimedia.org/w/index.php?curid=27251225"},"Istanbul|0":{"src":"img/istanbul-0.jpg","artist":"fusion-of-horizons","license":"CC BY 2.0","page":"https://www.flickr.com/photos/9019841@N08/19498778375"},"Istanbul|1":{"src":"img/istanbul-1.jpg","artist":"shioshvili","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/70601645@N00/167095649"},"Istanbul|2":{"src":"img/istanbul-2.jpg","artist":"MrHicks46","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/14868775@N07/8857898259"},"Marrakech|0":{"src":"img/marrakech-0.jpg","artist":"Martin Hesketh","license":"CC BY 2.0","page":"https://www.flickr.com/photos/16754010@N06/16146338389"},"Marrakech|1":{"src":"img/marrakech-1.jpg","artist":"mhiguera","license":"CC BY 2.0","page":"https://www.flickr.com/photos/26535919@N04/6443571165"},"Marrakech|2":{"src":"img/marrakech-2.jpg","artist":"Carlos ZGZ","license":"CC0 1.0","page":"https://www.flickr.com/photos/31810462@N07/15561675440"},"Medellín|0":{"src":"img/medell-n-0.jpg","artist":"joshuaheller","license":"CC BY 2.0","page":"https://www.flickr.com/photos/31960803@N07/3090185772"},"Medellín|1":{"src":"img/medell-n-1.jpg","artist":"Nigel Burgher","license":"CC BY 2.0","page":"https://www.flickr.com/photos/134672109@N08/32190403061"},"Medellín|2":{"src":"img/medell-n-2.jpg","artist":"mckaysavage","license":"CC BY 2.0","page":"https://www.flickr.com/photos/56796376@N00/8808037070"},"Penang|0":{"src":"img/penang-0.jpg","artist":"Adam Jones, Ph.D. - Global Photo Archive","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/41000732@N04/35295517972"},"Penang|1":{"src":"img/penang-1.jpg","artist":"avlxyz","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/10559879@N00/3595219716"},"Penang|3":{"src":"img/penang-3.jpg","artist":"Ah Wei (Lung Wei)","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/90853225@N07/28077148093"},"Ksamil|0":{"src":"img/ksamil-0.jpg","artist":"Artur Malinowski","license":"CC BY 2.0","page":"https://www.flickr.com/photos/57387723@N04/6514796499"},"Ksamil|1":{"src":"img/ksamil-1.jpg","artist":"Geoff Wong","license":"CC BY 2.0","page":"https://commons.wikimedia.org/w/index.php?curid=19063091"},"Ubud, Bali|0":{"src":"img/ubud-bali-0.jpg","artist":"mckaysavage","license":"CC BY 2.0","page":"https://www.flickr.com/photos/56796376@N00/9696099727"},"Ubud, Bali|1":{"src":"img/ubud-bali-1.jpg","artist":"Jumilla","license":"CC BY 2.0","page":"https://www.flickr.com/photos/70363447@N03/16581354929"},"Ubud, Bali|2":{"src":"img/ubud-bali-2.jpg","artist":"TeddyBuddy44","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/135673958@N05/21480083209"},"Ubud, Bali|3":{"src":"img/ubud-bali-3.jpg","artist":"Arian Zwegers","license":"CC BY 2.0","page":"https://www.flickr.com/photos/67769030@N07/6843336498"},"Lisbon|0":{"src":"img/lisbon-0.jpg","artist":"Giuseppe Milo (www.pixael.com)","license":"CC BY 2.0","page":"https://www.flickr.com/photos/87690240@N03/25581838571"},"Lisbon|1":{"src":"img/lisbon-1.jpg","artist":"claralieu","license":"CC BY 2.0","page":"https://www.flickr.com/photos/189561381@N07/52122394599"},"Lisbon|2":{"src":"img/lisbon-2.jpg","artist":"Rocco Lucia","license":"CC BY 2.0","page":"https://www.flickr.com/photos/40394128@N00/72450801"},"Lisbon|3":{"src":"img/lisbon-3.jpg","artist":"Ray in Manila","license":"CC BY 2.0","page":"https://www.flickr.com/photos/21186555@N07/48806840888"},"Seoul|1":{"src":"img/seoul-1.jpg","artist":"marcus nunes","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/94686600@N00/2955868838"},"Seoul|2":{"src":"img/seoul-2.jpg","artist":"Kevin.Qiu","license":"CC BY 2.0","page":"https://www.flickr.com/photos/8629290@N04/3727476753"},"Kraków|3":{"src":"img/krak-w-3.jpg","artist":"Un ragazzo chiamato Bi","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/57688343@N00/25874836984"},"Penang|2":{"src":"img/penang-2.jpg","artist":"shankar s.","license":"CC BY 2.0","page":"https://www.flickr.com/photos/77742560@N06/12254702084"},"Ksamil|2":{"src":"img/ksamil-2.jpg","artist":"D-Stanley","license":"CC BY 2.0","page":"https://www.flickr.com/photos/79721788@N00/31849334438"},"Ksamil|3":{"src":"img/ksamil-3.jpg","artist":"fifikins","license":"CC BY 2.0","page":"https://www.flickr.com/photos/25925793@N00/4730020394"},"Seoul|0":{"src":"img/seoul-0.jpg","artist":"KOREA.NET - Official page of the Republic of Korea","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/42438955@N05/51845763109"},"Seoul|3":{"src":"img/seoul-3.jpg","artist":"golbenge (골뱅이)","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/59899594@N00/5007654430"},"Tokyo|0":{"src":"img/tokyo-0.jpg","artist":"Jun Seita","license":"CC BY 2.0","page":"https://www.flickr.com/photos/90454079@N00/14386369085"},"Tokyo|1":{"src":"img/tokyo-1.jpg","artist":"2benny","license":"CC BY 2.0","page":"https://www.flickr.com/photos/61845874@N07/17945985193"},"Tokyo|2":{"src":"img/tokyo-2.jpg","artist":"shiranai","license":"CC BY 2.0","page":"https://www.flickr.com/photos/39240342@N08/9122772787"},"Tokyo|3":{"src":"img/tokyo-3.jpg","artist":"foilman","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/24484507@N00/2737796211"},"Taipei|0":{"src":"img/taipei-0.jpg","artist":"mckaysavage","license":"CC BY 2.0","page":"https://www.flickr.com/photos/56796376@N00/9736176565"},"Taipei|1":{"src":"img/taipei-1.jpg","artist":"Rutger van der Maar","license":"CC BY 2.0","page":"https://www.flickr.com/photos/83468718@N06/48091507701"},"Taipei|2":{"src":"img/taipei-2.jpg","artist":"Tydence","license":"CC BY 2.0","page":"https://www.flickr.com/photos/10426830@N08/4119486276"},"Taipei|3":{"src":"img/taipei-3.jpg","artist":"edwin.11","license":"CC BY 2.0","page":"https://www.flickr.com/photos/97681386@N00/5438682679"},"Cape Town|0":{"src":"img/cape-town-0.jpg","artist":"Gurney5","license":"CC BY 2.0","page":"https://www.flickr.com/photos/15404046@N02/5083860426"},"Cape Town|1":{"src":"img/cape-town-1.jpg","artist":"the tinz","license":"CC BY 2.0","page":"https://www.flickr.com/photos/24791293@N00/43571823102"},"Cape Town|2":{"src":"img/cape-town-2.jpg","artist":"NH53","license":"CC BY 2.0","page":"https://www.flickr.com/photos/33143388@N04/5165313050"},"Cape Town|3":{"src":"img/cape-town-3.jpg","artist":"South African Tourism","license":"CC BY 2.0","page":"https://www.flickr.com/photos/25779097@N08/6253258256"},"Naxos|0":{"src":"img/naxos-0.jpg","artist":"Random_fotos","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/27607826@N03/4057713877"},"Naxos|1":{"src":"img/naxos-1.jpg","artist":"Tilemahos Efthimiadis","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/64379474@N00/6032668563"},"Split & Hvar|1":{"src":"img/split-hvar-1.jpg","artist":"Arnie Papp","license":"CC BY 2.0","page":"https://www.flickr.com/photos/39470346@N05/35014224926"},"Split & Hvar|2":{"src":"img/split-hvar-2.jpg","artist":"lostajy","license":"CC BY 2.0","page":"https://www.flickr.com/photos/15192926@N00/2954251949"},"Split & Hvar|3":{"src":"img/split-hvar-3.jpg","artist":"marcostetter","license":"PDM","page":"https://www.flickr.com/photos/149556095@N03/41957707822"},"Split & Hvar|0":{"src":"img/split-hvar-0.jpg","artist":"brownpau","license":"CC BY 2.0","page":"https://www.flickr.com/photos/44124483743@N01/7176159319"},"Petra & Wadi Rum|0":{"src":"img/petra-wadi-rum-0.jpg","artist":"Jorge Lascar","license":"CC BY 2.0","page":"https://www.flickr.com/photos/8721758@N06/12293045415"},"Petra & Wadi Rum|1":{"src":"img/petra-wadi-rum-1.jpg","artist":"audrey_sel","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/92126232@N00/3692295445"},"Petra & Wadi Rum|3":{"src":"img/petra-wadi-rum-3.jpg","artist":"askii","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/52170751@N07/7077619607"},"Buenos Aires|0":{"src":"img/buenos-aires-0.jpg","artist":"Prayitno / Thank you for (12 millions +) view","license":"CC BY 2.0","page":"https://www.flickr.com/photos/34128007@N04/4647664610"},"Petra & Wadi Rum|2":{"src":"img/petra-wadi-rum-2.jpg","artist":"flashpacker-travelguide.de","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/149324445@N08/33922668053"},"Buenos Aires|2":{"src":"img/buenos-aires-2.jpg","artist":"felipe_gabaldon","license":"CC BY 2.0","page":"https://www.flickr.com/photos/25716821@N04/2955796294"},"Buenos Aires|1":{"src":"img/buenos-aires-1.jpg","artist":"Ruanon","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/70873497@N02/8133093406"},"Buenos Aires|3":{"src":"img/buenos-aires-3.jpg","artist":"Denise Mayumi","license":"CC BY 2.0","page":"https://www.flickr.com/photos/29584669@N00/3216605354"},"Barcelona|0":{"src":"img/barcelona-0.jpg","artist":"dkblnt","license":"CC0 1.0","page":"https://www.flickr.com/photos/121988714@N05/20739458229"},"Barcelona|2":{"src":"img/barcelona-2.jpg","artist":"austinevan","license":"CC BY 2.0","page":"https://www.flickr.com/photos/19762676@N00/503390502"},"Barcelona|1":{"src":"img/barcelona-1.jpg","artist":"anne arnould","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/95103456@N03/10294074675"},"Barcelona|3":{"src":"img/barcelona-3.jpg","artist":"Wolfgang Staudt","license":"CC BY 2.0","page":"https://www.flickr.com/photos/53074617@N00/2052664615"},"Hokkaido|0":{"src":"img/hokkaido-0.jpg","artist":"dave.see","license":"CC BY 2.0","page":"https://www.flickr.com/photos/9639178@N08/14676795333"},"Hokkaido|2":{"src":"img/hokkaido-2.jpg","artist":"Gary Soup","license":"CC BY 2.0","page":"https://www.flickr.com/photos/87117631@N00/6676839905"},"Hokkaido|3":{"src":"img/hokkaido-3.jpg","artist":"SteFou!","license":"CC BY 2.0","page":"https://www.flickr.com/photos/41614647@N04/6081276057"},"Hokkaido|1":{"src":"img/hokkaido-1.jpg","artist":"bryan...","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/91049143@N00/33938288288"},"Reykjavík & Ring Road|0":{"src":"img/reykjav-k-ring-road-0.jpg","artist":"o palsson","license":"CC BY 2.0","page":"https://www.flickr.com/photos/45713725@N00/3905929777"},"Reykjavík & Ring Road|1":{"src":"img/reykjav-k-ring-road-1.jpg","artist":"Nouhailler","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/7737054@N07/5348688811"},"Reykjavík & Ring Road|3":{"src":"img/reykjav-k-ring-road-3.jpg","artist":"Milan Nykodym","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/48292765@N02/15592051755"},"Reykjavík & Ring Road|2":{"src":"img/reykjav-k-ring-road-2.jpg","artist":"Dimitry B","license":"CC BY 2.0","page":"https://www.flickr.com/photos/61533954@N00/10777642904"},"Amalfi Coast|0":{"src":"img/amalfi-coast-0.jpg","artist":"ell brown","license":"CC BY 2.0","page":"https://www.flickr.com/photos/39415781@N06/7574695408"},"Amalfi Coast|1":{"src":"img/amalfi-coast-1.jpg","artist":"ustung","license":"CC BY 2.0","page":"https://www.flickr.com/photos/126397594@N03/30754146381"},"Amalfi Coast|3":{"src":"img/amalfi-coast-3.jpg","artist":"VV Nincic","license":"CC BY 2.0","page":"https://www.flickr.com/photos/133904091@N04/26369695525"},"Amalfi Coast|2":{"src":"img/amalfi-coast-2.jpg","artist":"Rick McCharles","license":"CC BY 2.0","page":"https://www.flickr.com/photos/71035721@N00/5051474277"},"Kyoto|1":{"src":"img/kyoto-1.jpg","artist":".curt.","license":"CC BY 2.0","page":"https://www.flickr.com/photos/81195835@N00/2410193828"},"Kyoto|2":{"src":"img/kyoto-2.jpg","artist":"Japanexperterna.se","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/68532869@N08/16381938209"},"Kyoto|0":{"src":"img/kyoto-0.jpg","artist":"coniferconifer","license":"CC BY 2.0","page":"https://www.flickr.com/photos/7656600@N06/17723027214"},"Santorini|0":{"src":"img/santorini-0.jpg","artist":"Navin75","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/23597588@N00/2677500329"},"Kyoto|3":{"src":"img/kyoto-3.jpg","artist":"DocChewbacca","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/49462908@N00/2746772644"},"Santorini|1":{"src":"img/santorini-1.jpg","artist":"Navin75","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/23597588@N00/2654091984"},"Santorini|2":{"src":"img/santorini-2.jpg","artist":"jpitha","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/38476864@N06/11717800764"},"Zermatt|0":{"src":"img/zermatt-0.jpg","artist":"Philip Larson","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/22098403@N00/442961444"},"Santorini|3":{"src":"img/santorini-3.jpg","artist":"Klearchos Kapoutsis","license":"CC BY 2.0","page":"https://www.flickr.com/photos/8383084@N06/620098348"},"Zermatt|1":{"src":"img/zermatt-1.jpg","artist":"Fæ","license":"CC BY 2.0","page":"https://www.flickr.com/photos/50398299@N08/16521771866"},"Zermatt|2":{"src":"img/zermatt-2.jpg","artist":"pedro_cerqueira","license":"CC BY 2.0","page":"https://www.flickr.com/photos/26397320@N03/5402321948"},"Zermatt|3":{"src":"img/zermatt-3.jpg","artist":"G.Galeotti","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/158797895@N07/52357910576"},"New York City|0":{"src":"img/new-york-city-0.jpg","artist":"ShedBOy^","license":"CC BY 2.0","page":"https://www.flickr.com/photos/17111264@N00/3681317374"},"New York City|1":{"src":"img/new-york-city-1.jpg","artist":"David Paul Ohmer","license":"CC BY 2.0","page":"https://www.flickr.com/photos/50965924@N00/2938163687"},"New York City|3":{"src":"img/new-york-city-3.jpg","artist":"Ka!zen","license":"CC BY 2.0","page":"https://www.flickr.com/photos/83525200@N07/7833479654"},"Banff|0":{"src":"img/banff-0.jpg","artist":"edwademd","license":"CC BY 2.0","page":"https://www.flickr.com/photos/30180712@N08/7724815278"},"New York City|2":{"src":"img/new-york-city-2.jpg","artist":"Wonderlane","license":"CC BY 2.0","page":"https://www.flickr.com/photos/71401718@N00/5429507390"},"Banff|1":{"src":"img/banff-1.jpg","artist":"kevin dooley","license":"CC BY 2.0","page":"https://www.flickr.com/photos/12836528@N00/12529666563"},"Banff|2":{"src":"img/banff-2.jpg","artist":"JonoMueller","license":"CC BY 2.0","page":"https://www.flickr.com/photos/45939540@N05/5991565284"},"Patagonia|0":{"src":"img/patagonia-0.jpg","artist":"Doug Scortegagna","license":"CC BY 2.0","page":"https://www.flickr.com/photos/56551021@N06/16091423578"},"Banff|3":{"src":"img/banff-3.jpg","artist":"Bods","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/54741099@N00/6095494101"},"Patagonia|1":{"src":"img/patagonia-1.jpg","artist":"Dimitry B","license":"CC BY 2.0","page":"https://www.flickr.com/photos/61533954@N00/8858219533"},"Patagonia|3":{"src":"img/patagonia-3.jpg","artist":"magical-world","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/10630381@N03/3058319747"},"Patagonia|2":{"src":"img/patagonia-2.jpg","artist":"TravelingOtter","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/14146962@N07/5350650695"},"Copenhagen|0":{"src":"img/copenhagen-0.jpg","artist":"Mikael Colville-Andersen","license":"CC BY 2.0","page":"https://www.flickr.com/photos/96425387@N00/4316215139"},"Copenhagen|1":{"src":"img/copenhagen-1.jpg","artist":"Mustang Joe","license":"CC0 1.0","page":"https://www.flickr.com/photos/63234672@N04/7541745348"},"Copenhagen|3":{"src":"img/copenhagen-3.jpg","artist":"Mustang Joe","license":"CC0 1.0","page":"https://www.flickr.com/photos/63234672@N04/7625253038"},"Copenhagen|2":{"src":"img/copenhagen-2.jpg","artist":"illustir","license":"CC BY 2.0","page":"https://www.flickr.com/photos/12505664@N00/12993282534"},"Queenstown|0":{"src":"img/queenstown-0.jpg","artist":"chee.hong","license":"CC BY 2.0","page":"https://www.flickr.com/photos/40135642@N00/6885520480"},"Queenstown|1":{"src":"img/queenstown-1.jpg","artist":"Bernard Spragg","license":"CC0 1.0","page":"https://www.flickr.com/photos/88123769@N02/23724021264"},"Queenstown|2":{"src":"img/queenstown-2.jpg","artist":"Jo@net","license":"CC BY 2.0","page":"https://www.flickr.com/photos/15411972@N00/5425797129"},"Queenstown|3":{"src":"img/queenstown-3.jpg","artist":"My Aching Head","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/29981276@N05/4789461105"},"The Maldives|1":{"src":"img/the-maldives-1.jpg","artist":"TANAKA Juuyoh (田中十洋)","license":"CC BY 2.0","page":"https://www.flickr.com/photos/13910409@N05/1568138762"},"The Maldives|0":{"src":"img/the-maldives-0.jpg","artist":"PiktourUK","license":"CC BY 2.0","page":"https://www.flickr.com/photos/69706441@N03/9361466123"},"The Maldives|2":{"src":"img/the-maldives-2.jpg","artist":"FamilyRalph","license":"CC BY 2.0","page":"https://www.flickr.com/photos/30772477@N06/8171655266"},"Bora Bora|0":{"src":"img/bora-bora-0.jpg","artist":"Alessandro Caproni","license":"CC BY 2.0","page":"https://www.flickr.com/photos/37575130@N02/9173331217"},"Bora Bora|2":{"src":"img/bora-bora-2.jpg","artist":"jonrawlinson","license":"CC BY 2.0","page":"https://www.flickr.com/photos/94571281@N00/5074159809"},"Bora Bora|3":{"src":"img/bora-bora-3.jpg","artist":"veroyama","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/13132576@N00/468140654"},"Bora Bora|1":{"src":"img/bora-bora-1.jpg","artist":"wkmux","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/96922481@N00/146333555"},"Serengeti Safari|1":{"src":"img/serengeti-safari-1.jpg","artist":"Wajahat Mahmood","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/26116471@N03/6417186763"},"Serengeti Safari|0":{"src":"img/serengeti-safari-0.jpg","artist":"NH53","license":"CC BY 2.0","page":"https://www.flickr.com/photos/33143388@N04/5144147178"},"Serengeti Safari|2":{"src":"img/serengeti-safari-2.jpg","artist":"wwarby","license":"CC BY 2.0","page":"https://www.flickr.com/photos/26782864@N00/2404496853"},"Serengeti Safari|3":{"src":"img/serengeti-safari-3.jpg","artist":"wwarby","license":"CC BY 2.0","page":"https://www.flickr.com/photos/26782864@N00/2405537004"},"Antarctica Expedition|1":{"src":"img/antarctica-expedition-1.jpg","artist":"mckaysavage","license":"CC BY 2.0","page":"https://www.flickr.com/photos/56796376@N00/9976460786"},"Antarctica Expedition|0":{"src":"img/antarctica-expedition-0.jpg","artist":"D-Stanley","license":"CC BY 2.0","page":"https://www.flickr.com/photos/79721788@N00/16048405889"},"Antarctica Expedition|3":{"src":"img/antarctica-expedition-3.jpg","artist":"Tips For Travellers","license":"CC BY 2.0","page":"https://www.flickr.com/photos/8327374@N02/51742157764"},"Seychelles|1":{"src":"img/seychelles-1.jpg","artist":"VicunaR","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/144510328@N03/47232576481"},"Antarctica Expedition|2":{"src":"img/antarctica-expedition-2.jpg","artist":"Christopher.Michel","license":"CC BY 2.0","page":"https://www.flickr.com/photos/50979393@N00/24822414112"},"Okavango Delta|0":{"src":"img/okavango-delta-0.jpg","artist":"indii.org / Lawrence Murray","license":"CC BY 2.0","page":"https://www.flickr.com/photos/22699083@N04/3047590417"},"Seychelles|2":{"src":"img/seychelles-2.jpg","artist":"ReservasdeCoches.com","license":"CC BY 2.0","page":"https://www.flickr.com/photos/33083165@N02/7555805536"},"Seychelles|3":{"src":"img/seychelles-3.jpg","artist":"Olivier GRYSON","license":"CC BY 2.0","page":"https://www.flickr.com/photos/48864960@N03/4478069651"},"Okavango Delta|1":{"src":"img/okavango-delta-1.jpg","artist":"Obliot","license":"CC BY 2.0","page":"https://www.flickr.com/photos/38238828@N00/4845369039"},"Okavango Delta|2":{"src":"img/okavango-delta-2.jpg","artist":"Sara&Joachim","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/8942661@N02/2675181510"},"Okavango Delta|3":{"src":"img/okavango-delta-3.jpg","artist":"MalcolmMacgregor","license":"CC BY 2.0","page":"https://www.flickr.com/photos/57856031@N02/6158363864"},"St. Moritz|0":{"src":"img/st-moritz-0.jpg","artist":"Terry Kearney","license":"CC0 1.0","page":"https://www.flickr.com/photos/24490288@N04/12064073804"},"Seychelles|0":{"src":"img/seychelles-0.jpg","artist":"dibaer","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/12940826@N02/4239672043"},"St. Moritz|1":{"src":"img/st-moritz-1.jpg","artist":"Cesar I. Martins","license":"CC BY 2.0","page":"https://www.flickr.com/photos/55125784@N04/8746331414"},"St. Moritz|3":{"src":"img/st-moritz-3.jpg","artist":"Kecko","license":"CC BY 2.0","page":"https://www.flickr.com/photos/70981241@N00/15885656269"},"St. Moritz|2":{"src":"img/st-moritz-2.jpg","artist":"ell brown","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/39415781@N06/28615563465"},"Fiji Private Island|2":{"src":"img/fiji-private-island-2.jpg","artist":"bdearth","license":"CC BY 2.0","page":"https://www.flickr.com/photos/23728403@N00/7499484598"},"Fiji Private Island|3":{"src":"img/fiji-private-island-3.jpg","artist":"Jeff Rowley Big Wave Surfer","license":"CC BY 2.0","page":"https://www.flickr.com/photos/74040983@N03/6675131685"},"Monaco & Riviera|0":{"src":"img/monaco-riviera-0.jpg","artist":"christing-O-","license":"CC BY 2.0","page":"https://www.flickr.com/photos/76187282@N00/5870643818"},"Monaco & Riviera|1":{"src":"img/monaco-riviera-1.jpg","artist":"M McBey","license":"CC BY 2.0","page":"https://www.flickr.com/photos/158652122@N02/31316750447"},"Monaco & Riviera|2":{"src":"img/monaco-riviera-2.jpg","artist":"lajotaylape","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/39856806@N05/4161170844"},"Monaco & Riviera|3":{"src":"img/monaco-riviera-3.jpg","artist":"archer10 (Dennis)","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/22490717@N02/15795207148"},"Hanoi|2":{"src":"img/hanoi-2.jpg","artist":"David McKelvey","license":"CC BY 2.0","page":"https://www.flickr.com/photos/94735786@N00/7069090993"},"Hanoi|1":{"src":"img/hanoi-1.jpg","artist":"radkuch.13","license":"CC BY 2.0","page":"https://www.flickr.com/photos/137294100@N08/51955804948"},"Hanoi|0":{"src":"img/hanoi-0.jpg","artist":"jonolist","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/46635911@N00/726927729"},"Hanoi|3":{"src":"img/hanoi-3.jpg","artist":"Paul Mannix","license":"CC BY 2.0","page":"https://www.flickr.com/photos/19511776@N00/33700298506"},"Manali|0":{"src":"img/manali-0.jpg","artist":"_Virdi_","license":"CC BY 2.0","page":"https://www.flickr.com/photos/35529648@N00/183128168"},"Manali|1":{"src":"img/manali-1.jpg","artist":"Anks","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/49503160233@N01/2936677153"},"Manali|2":{"src":"img/manali-2.jpg","artist":"ruffin_ready","license":"CC BY 2.0","page":"https://www.flickr.com/photos/51668926@N00/6907141039"},"Manali|3":{"src":"img/manali-3.jpg","artist":"Adam Jones, Ph.D. - Global Photo Archive","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/41000732@N04/26588653616"},"Bansko|2":{"src":"img/bansko-2.jpg","artist":"kirilhristov","license":"CC BY 2.0","page":"https://www.flickr.com/photos/92040338@N08/11776307566"},"Bansko|0":{"src":"img/bansko-0.jpg","artist":"Balcon del Mundo","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/132862914@N04/23917454674"},"Bansko|3":{"src":"img/bansko-3.jpg","artist":"summonedbyfells","license":"CC BY 2.0","page":"https://www.flickr.com/photos/8521690@N02/12908763283"},"Venice|2":{"src":"img/venice-2.jpg","artist":"Durickova","license":"CC BY 2.0","page":"https://www.flickr.com/photos/98873911@N07/15428710735"},"Venice|0":{"src":"img/venice-0.jpg","artist":"Ray in Manila","license":"CC BY 2.0","page":"https://www.flickr.com/photos/21186555@N07/28182099584"},"Venice|3":{"src":"img/venice-3.jpg","artist":"kevinpoh","license":"CC BY 2.0","page":"https://www.flickr.com/photos/7679455@N03/7149560087"},"Venice|1":{"src":"img/venice-1.jpg","artist":"Dimitry B","license":"CC BY 2.0","page":"https://www.flickr.com/photos/61533954@N00/2376078723"},"Rajasthan Palaces|1":{"src":"img/rajasthan-palaces-1.jpg","artist":"estetika","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/57065019@N00/3135304712"},"Rajasthan Palaces|2":{"src":"img/rajasthan-palaces-2.jpg","artist":"Manoj Kengudelu","license":"CC BY 2.0","page":"https://www.flickr.com/photos/11767573@N02/4289777719"},"Rajasthan Palaces|3":{"src":"img/rajasthan-palaces-3.jpg","artist":"shankar s.","license":"CC BY 2.0","page":"https://www.flickr.com/photos/77742560@N06/7637467762"},"Machu Picchu|0":{"src":"img/machu-picchu-0.jpg","artist":"fortherock","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/29925020@N03/3930074171"},"Machu Picchu|2":{"src":"img/machu-picchu-2.jpg","artist":"Backpackreiziger","license":"CC BY 2.0","page":"https://www.flickr.com/photos/101061161@N06/48183223957"},"Rajasthan Palaces|0":{"src":"img/rajasthan-palaces-0.jpg","artist":"Fulvio Spada","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/78722206@N00/8029322541"},"Machu Picchu|3":{"src":"img/machu-picchu-3.jpg","artist":"wallygrom","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/33037982@N04/3682356359"},"Machu Picchu|1":{"src":"img/machu-picchu-1.jpg","artist":"krossbow","license":"CC BY 2.0","page":"https://www.flickr.com/photos/13194817@N00/49327006067"},"Istanbul|3":{"src":"img/istanbul-3.jpg","artist":"Miguel Virkkunen Carvalho","license":"CC BY 2.0","page":"https://www.flickr.com/photos/46076152@N05/14200532775"},"Sucre|3":{"src":"img/sucre-3.jpg","artist":"Matthew Straubmuller","license":"CC BY 2.0","page":"https://www.flickr.com/photos/51344631@N06/8372147773"},"Marrakech|3":{"src":"img/marrakech-3.jpg","artist":"lokate366","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/22334306@N02/2712645927"},"Tbilisi|3":{"src":"img/tbilisi-3.jpg","artist":"Fif'","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/24236053@N00/9059347972"},"Naxos|2":{"src":"img/naxos-2.jpg","artist":"kalleboo","license":"CC BY 2.0","page":"https://www.flickr.com/photos/82365211@N00/9090643249"},"Tbilisi|2":{"src":"img/tbilisi-2.jpg","artist":"salvagekat","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/10579374@N05/5602170315"},"Medellín|3":{"src":"img/medell-n-3.jpg","artist":"life's too short","license":"CC BY-SA 2.0","page":"https://www.flickr.com/photos/48889054970@N01/83802590"},"Hoi An|2":{"src":"img/hoi-an-2.jpg","artist":"tocaptureitonce","license":"CC BY 2.0","page":"https://www.flickr.com/photos/110887682@N04/11411689465"},"The Maldives|3":{"src":"img/the-maldives-3.jpg","artist":"Mohmed Althani","license":"CC BY 2.0","page":"https://www.flickr.com/photos/33707373@N03/3244203468"},"Fiji Private Island|1":{"src":"img/fiji-private-island-1.jpg","artist":"Christian Haugen","license":"CC BY 2.0","page":"https://www.flickr.com/photos/34073237@N04/3526766899"},"Bansko|1":{"src":"img/bansko-1.jpg","artist":"cezzie901","license":"CC BY 2.0","page":"https://www.flickr.com/photos/10053858@N05/17873916620"},"Fiji Private Island|0":{"src":"img/fiji-private-island-0.jpg","artist":"Derek Keats","license":"CC BY 2.0","page":"https://www.flickr.com/photos/93242958@N00/5613334611"}}/*END*/;
 const CAT_LABEL = {w:"Water",n:"Nature",c:"Culture",f:"Food & drink",x:"After dark",s:"Snow & ice",u:"City",a:"Wildlife",d:"Thrills"};
 
 function artSVG(cat, seed){
@@ -611,11 +801,12 @@ function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/
 function renderActs(d){
   const list = (ACTS[d.name]||"").trim().split("\n").filter(Boolean).map(l=>l.split("|"));
   $("resActs").innerHTML = list.map(([emo,cat,title,desc],i)=>{
-    const q = encodeURIComponent(`${title} ${d.name} ${d.country}`);
+    const q = encodeURIComponent(`${title} ${d.name} ${d.country}`), ph = PHOTOS[`${d.name}|${i}`];
     return `<article class="act" style="--tilt:${[-1.2,1,0.8,-0.8][i%4]}deg; animation-delay:${.15+i*.1}s">
-      <div class="art">${artSVG(cat, (d.i+1)*97+i*31)}<span class="tag">${CAT_LABEL[cat]||"Fun"}</span><span class="sticker">${emo}</span></div>
+      <div class="art">${artSVG(cat, (d.i+1)*97+i*31)}${ph ? `<img src="${ph.src}" alt="${esc(title)}" loading="lazy" decoding="async" onload="this.parentElement.classList.add('has-photo')" onerror="this.remove()">` : ""}<span class="tag">${CAT_LABEL[cat]||"Fun"}</span><span class="sticker">${emo}</span></div>
       <div class="txt"><h4>${esc(title)}</h4><p>${esc(desc)}</p>
-      <a href="https://www.google.com/search?tbm=isch&q=${q}" target="_blank" rel="noopener">📷 See photos</a></div>
+      <a href="https://www.google.com/search?tbm=isch&q=${q}" target="_blank" rel="noopener">📷 More photos</a>
+      ${ph ? `<div class="credit">Photo: <a href="${esc(ph.page||"#")}" target="_blank" rel="noopener">${esc(ph.artist||"Unknown")}</a> · ${esc(ph.license||"")}</div>` : ""}</div>
     </article>`;
   }).join("");
   $("resActs").parentElement.scrollTop = 0;
@@ -636,8 +827,8 @@ function renderBudgets(){
   $("budgets").innerHTML = BUDGETS.map(b=>`
     <button class="budget" data-id="${b.id}" aria-pressed="${state.budget===b.id}">
       <span class="ico">${b.icon}</span>
-      <span><div class="t">${b.t}</div><div class="d">${b.d} · ${b.range}</div></span>
-      <span class="money">${b.money}</span>
+      <span><div class="t">${b.t}</div><div class="d">${b.d} · ${budgetRange(b)}</div></span>
+      <span class="money">${b.id<0 ? "?" : ORIGIN.pip.repeat(b.id+1)}</span>
     </button>`).join("");
   $("budgets").querySelectorAll(".budget").forEach(el=>el.onclick=()=>{
     if(state.spinning) return;
@@ -652,6 +843,23 @@ function renderVibes(){
     renderVibes(); buildWheel(); sfx("pop");
   });
 }
+function budgetRange(b){
+  if(b.id<0) return "anything";
+  const r = usd => { const x = usd*ORIGIN.rate, m = 10**Math.floor(Math.log10(x)), st = m/2; return Math.round(x/st)*st; };
+  if(!b.lo) return `under ${fmt(r(b.hi))}/day`;
+  if(!b.hi) return `${fmt(r(b.lo))}+/day`;
+  return `${fmt(r(b.lo))}–${r(b.hi).toLocaleString("en-GB")}/day`;
+}
+function renderOrigins(){
+  $("origin").innerHTML = ORIGINS.map(o=>`<option value="${o.id}" ${o===ORIGIN?"selected":""}>${o.flag} ${o.name} (${o.city})</option>`).join("");
+}
+$("origin").onchange = e=>{
+  ORIGIN = ORIGINS.find(o=>o.id===e.target.value) || ORIGINS[0];
+  try{ localStorage.setItem("hr_origin", ORIGIN.id); }catch(err){}
+  renderBudgets(); sfx("pop");
+};
+try{ const saved = localStorage.getItem("hr_origin"); if(saved) ORIGIN = ORIGINS.find(o=>o.id===saved) || ORIGIN; }catch(e){}
+renderOrigins();
 $("mystery").onchange = drawWheel;
 function renderNights(){
   $("nights").innerHTML = NIGHTS.map(n=>`<button class="chip" data-n="${n}" aria-pressed="${state.nights===n}">🌙 ${n} nights</button>`).join("");
@@ -670,6 +878,18 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.rando
 function buildWheel(){
   let p = pool(false), note = "";
   if(p.length===0 && pool(true).length){ state.picked.clear(); p = pool(false); note = "You've seen every match! Wheel refilled. "; }
+  if(p.length < 3 && state.budget !== -1){
+    const have = new Set(p.map(d=>d.i)), want = 6;
+    const near = DESTS.filter(d => !have.has(d.i) && d.tier!==state.budget &&
+        (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) &&
+        (!$("norepeat").checked || !state.picked.has(d.i)))
+      .sort((a,b)=> Math.abs(a.tier-state.budget)-Math.abs(b.tier-state.budget) || Math.random()-.5);
+    const added = near.slice(0, want - p.length);
+    if(added.length){
+      note += p.length ? `Only ${p.length} exact match${p.length>1?"es":""}, so I've added nearby budgets too. ` : `Nothing at exactly that budget, so here are the closest. `;
+      p = p.concat(added);
+    }
+  }
   if(p.length===0){
     state.wheel = [];
     setStatus("No destinations match that combo. Try another vibe or budget 🤷");
@@ -694,7 +914,11 @@ function drawWheel(){
   ctx.clearRect(0,0,W,W);
   ctx.save(); ctx.translate(R,R);
   if(!n){
-    ctx.fillStyle="#E6DFD2"; ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
+    const k = 8, sg = Math.PI*2/k;
+    for(let i=0;i<k;i++){ ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R,i*sg,(i+1)*sg); ctx.closePath();
+      ctx.fillStyle = i%2 ? "#E6DFD2" : "#F3ECDF"; ctx.fill(); ctx.lineWidth = Math.max(2,W/200); ctx.strokeStyle="#22224A"; ctx.stroke(); }
+    ctx.font = `${W*0.07}px serif`; ctx.textAlign="center"; ctx.textBaseline="middle";
+    for(let i=0;i<k;i++){ const a=(i+.5)*sg; ctx.fillText("🤷", Math.cos(a)*R*.68, Math.sin(a)*R*.68); }
     ctx.restore(); return;
   }
   const seg = Math.PI*2/n, mystery = $("mystery").checked;
@@ -786,21 +1010,27 @@ function land(k){
 
 // ---------- Result ----------
 const RESPIN_LINES = ["","Picky, picky 😏","The wheel is starting to take this personally.","Third time's the charm?","You know this is how people end up staying home, right?","The wheel has filed a formal complaint.","Okay, the next one is final. (It's not. But pretend.)"];
+function renderCosts(d){
+  const f = flightFor(d, ORIGIN), daily = local(d.dailyUSD), spend = daily*state.nights;
+  const via = !d.name.startsWith(f.airport) && !f.home ? ` (to ${f.airport})` : "";
+  $("resCost").innerHTML = f.home ? `
+    <div class="cost"><span>🏠 You're already here!</span><b>No flight needed</b></div>
+    <div class="cost"><span>💸 Spending (${fmt(daily)}/day × ${state.nights})</span><b>~${fmt(spend)}</b></div>
+    <div class="cost total"><span>🧾 ${state.nights}-night staycation, per person</span><b>~${fmt(spend)}</b></div>` : `
+    <div class="cost"><span>🕒 Flight time from ${ORIGIN.city}</span><b>${fmtHours(f.hours)} · ${stopsText(f.stops)}</b></div>
+    <div class="cost"><span>✈️ Return flight${via}</span><b>~${fmt(f.fare)}</b></div>
+    <div class="cost"><span>💸 Spending (${fmt(daily)}/day × ${state.nights})</span><b>~${fmt(spend)}</b></div>
+    <div class="cost total"><span>🧾 ${state.nights}-night trip, per person</span><b>~${fmt(f.fare+spend)}</b></div>`;
+}
 function showResult(d){
   const b = BUDGETS.find(x=>x.id===d.tier);
   $("resEmoji").textContent = d.emoji; $("resName").textContent = d.name; $("resCountry").textContent = d.country;
   $("resBlurb").textContent = d.blurb;
-  const via = FLY_VIA[d.name] ? ` (${FLY_VIA[d.name]})` : "";
-  const total = d.flight + d.daily*state.nights;
-  $("resCost").innerHTML = `
-    <div class="cost"><span>🕒 Flight time from London</span><b>${flyTime(d.name)}</b></div>
-    <div class="cost"><span>✈️ Return flight from UK${via}</span><b>~${fmt(d.flight)}</b></div>
-    <div class="cost"><span>💸 Spending (${fmt(d.daily)}/day × ${state.nights})</span><b>~${fmt(d.daily*state.nights)}</b></div>
-    <div class="cost total"><span>🧾 ${state.nights}-night trip, per person</span><b>~${fmt(total)}</b></div>`;
+  renderCosts(d);
   $("resFacts").innerHTML = [`🗓️ Best: ${d.best}`, `${b.icon} ${b.t}`, ...d.vibes.map(v=>VIBES[v])]
     .map(f=>`<span class="fact">${f}</span>`).join("");
   renderActs(d);
-  $("flightsLink").href = "https://www.google.com/travel/flights?q=" + encodeURIComponent("flights to " + d.name.split(" &")[0] + " " + d.country);
+  $("flightsLink").href = "https://www.google.com/travel/flights?q=" + encodeURIComponent(`flights from ${ORIGIN.city} to ${DEST_AIR[d.name][4]} ${d.country}`);
   $("respinNote").textContent = RESPIN_LINES[Math.min(state.respins, RESPIN_LINES.length-1)];
   $("overlay").classList.add("show"); $("lockBtn").focus({preventScroll:true});
   document.querySelector(".ticket .body").scrollTop = 0;
@@ -816,10 +1046,118 @@ $("lockBtn").onclick = ()=>{
   const d = state.current; if(!d) return;
   state.stamps.unshift(`${d.emoji} ${d.name}`); state.stamps = state.stamps.slice(0,12);
   try{ localStorage.setItem("hr_stamps", JSON.stringify(state.stamps)); }catch(e){}
-  state.respins = 0; renderStamps(); closeResult(); confetti(); sfx("pop");
+  state.respins = 0; closeResult();
   setStatus(`📌 ${d.name} it is. Start the group chat!`);
   buildWheelQuiet();
+  passportStamp(d).then(renderStamps);
 };
+
+// ---------- Passport stamp animation ----------
+const INKS = ["#E0412A","#1F8F8D","#2B2D6E","#3E9B4F","#C2367A"];
+const wait = ms => new Promise(r=>setTimeout(r,ms));
+function stampSVG(name, country, color, date, emoji, small){
+  const W=200, H=128, nm=name.toUpperCase(), long = nm.length>13;
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${small?'width="110"':''}>
+    <defs><filter id="rough${small?'s':''}"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="${name.length}"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+      <mask id="grain${small?'s':''}"><rect width="${W}" height="${H}" fill="#fff"/>
+      ${Array.from({length:40},(_,i)=>`<circle cx="${(i*53)%W}" cy="${(i*37)%H}" r="${1+(i%3)}" fill="#000" opacity=".55"/>`).join("")}</mask></defs>
+    <g fill="none" stroke="${color}" filter="url(#rough${small?'s':''})" mask="url(#grain${small?'s':''})">
+      <rect x="5" y="5" width="${W-10}" height="${H-10}" rx="14" stroke-width="5"/>
+      <rect x="13" y="13" width="${W-26}" height="${H-26}" rx="9" stroke-width="2"/>
+      <g fill="${color}" stroke="none" font-family="DM Sans, sans-serif" text-anchor="middle">
+        <text x="${W/2}" y="34" font-size="11" font-weight="800" letter-spacing="3">★ ADMITTED ★</text>
+        <text x="${W/2}" y="66" font-size="${long?20:26}" font-weight="800" ${nm.length>16?`textLength="${W-40}" lengthAdjust="spacingAndGlyphs"`:''}>${esc(nm)}</text>
+        <text x="${W/2}" y="86" font-size="11" font-weight="800" letter-spacing="2">${esc(country.toUpperCase())}</text>
+        <text x="${W/2}" y="108" font-size="12" font-weight="800" letter-spacing="1.5">${date}</text>
+      </g>
+    </g>
+    <text x="${W-26}" y="${H-18}" font-size="18" opacity=".9">${emoji}</text>
+  </svg>`;
+}
+function fxSound(type){
+  if(!$("sound").checked) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const t = actx.currentTime, out = actx.destination;
+    const noise = (dur)=>{ const b = actx.createBuffer(1, actx.sampleRate*dur, actx.sampleRate), c = b.getChannelData(0);
+      for(let i=0;i<c.length;i++) c[i] = Math.random()*2-1; const s = actx.createBufferSource(); s.buffer = b; return s; };
+    if(type==="whoosh"){
+      const n = noise(.6), f = actx.createBiquadFilter(), g = actx.createGain();
+      f.type="bandpass"; f.Q.value=1.2; f.frequency.setValueAtTime(300,t); f.frequency.exponentialRampToValueAtTime(2400,t+.45);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.35,t+.2); g.gain.exponentialRampToValueAtTime(.0001,t+.55);
+      n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+.6);
+    } else if(type==="flip"){
+      [0,.07,.13].forEach(o=>{ const n = noise(.08), f = actx.createBiquadFilter(), g = actx.createGain();
+        f.type="highpass"; f.frequency.value=2500; g.gain.setValueAtTime(.22,t+o); g.gain.exponentialRampToValueAtTime(.0001,t+o+.07);
+        n.connect(f); f.connect(g); g.connect(out); n.start(t+o); n.stop(t+o+.08); });
+    } else if(type==="thunk"){
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type="sine"; o.frequency.setValueAtTime(160,t); o.frequency.exponentialRampToValueAtTime(38,t+.25);
+      g.gain.setValueAtTime(.9,t); g.gain.exponentialRampToValueAtTime(.0001,t+.35); o.connect(g); g.connect(out); o.start(t); o.stop(t+.36);
+      const n = noise(.12), f = actx.createBiquadFilter(), g2 = actx.createGain();
+      f.type="lowpass"; f.frequency.value=1800; g2.gain.setValueAtTime(.6,t); g2.gain.exponentialRampToValueAtTime(.0001,t+.1);
+      n.connect(f); f.connect(g2); g2.connect(out); n.start(t); n.stop(t+.12);
+      const n2 = noise(.25), f2 = actx.createBiquadFilter(), g3 = actx.createGain();   // inky squelch
+      f2.type="bandpass"; f2.frequency.setValueAtTime(900,t+.05); f2.frequency.exponentialRampToValueAtTime(250,t+.25); f2.Q.value=3;
+      g3.gain.setValueAtTime(.0001,t+.04); g3.gain.exponentialRampToValueAtTime(.25,t+.08); g3.gain.exponentialRampToValueAtTime(.0001,t+.25);
+      n2.connect(f2); f2.connect(g3); g3.connect(out); n2.start(t+.04); n2.stop(t+.3);
+    } else if(type==="lift"){
+      const o = actx.createOscillator(), g = actx.createGain(); o.type="triangle";
+      o.frequency.setValueAtTime(220,t); o.frequency.exponentialRampToValueAtTime(880,t+.25);
+      g.gain.setValueAtTime(.12,t); g.gain.exponentialRampToValueAtTime(.0001,t+.28); o.connect(g); g.connect(out); o.start(t); o.stop(t+.3);
+    } else if(type==="fanfare"){
+      [[523,0],[659,.12],[784,.24],[1047,.36],[784,.52],[1047,.62]].forEach(([fq,o],i)=>{
+        const os = actx.createOscillator(), g = actx.createGain(); os.type = i%2 ? "square" : "triangle";
+        os.frequency.value = fq; g.gain.setValueAtTime(.0001,t+o); g.gain.exponentialRampToValueAtTime(i>3?.12:.09,t+o+.02);
+        g.gain.exponentialRampToValueAtTime(.0001,t+o+(i===5?.6:.2)); os.connect(g); g.connect(out); os.start(t+o); os.stop(t+o+.65); });
+    }
+  }catch(e){}
+}
+let pfxResolve = null;
+async function passportStamp(d){
+  const fx = $("pfx"), page = $("pfxPage");
+  const color = INKS[Math.floor(Math.random()*INKS.length)], rot = (Math.random()*16-8).toFixed(1)+"deg";
+  const date = new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase();
+  const prev = state.stamps.slice(1,6);
+  const spots = [[8,14,-12],[118,22,9],[10,226,7],[122,232,-6],[64,120,-18]];
+  page.innerHTML = prev.map((s,i)=>{ const [em,...rest] = s.split(" "); const [x,y,r] = spots[i];
+      return `<div class="oldstamp" style="left:${x}px; top:${y}px; transform:rotate(${r}deg)">${stampSVG(rest.join(" "), "", INKS[(i+2)%INKS.length], "", em, true)}</div>`; }).join("")
+    + `<div class="newstamp" style="--rot:${rot}">${stampSVG(d.name, d.country, color, date, d.emoji)}</div>`
+    + Array.from({length:9},(_,i)=>{ const a = i/9*Math.PI*2 + Math.random(), r = 70+Math.random()*30;
+      return `<i class="splat" style="--ink-c:${color}; left:${120+Math.cos(a)*30}px; top:${170+Math.sin(a)*24}px; width:${3+Math.random()*5}px; height:${3+Math.random()*5}px; --dx:${Math.cos(a)*r*.5}px; --dy:${Math.sin(a)*r*.4}px"></i>`; }).join("");
+  $("stamperInk").setAttribute("fill", color);
+  $("pfxFrom").textContent = `${ORIGIN.flag} ${ORIGIN.city}`;
+  $("pfxCount").textContent = state.stamps.length;
+  $("pfxMrz").textContent = ("P<HRR<" + d.name.toUpperCase().replace(/[^A-Z]/g,"<") + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<").slice(0,30) + "\n" + (date.replace(/ /g,"")+"<<"+d.country.toUpperCase().replace(/[^A-Z]/g,"")+"<<<<<<<<<<<<<<<<<<<<<<<<").slice(0,30);
+  $("pfxSub").textContent = `${d.emoji} ${d.name} is officially in the passport.`;
+  const fit = ()=> fx.style.setProperty("--s", Math.min(1, (innerWidth-24)/480, (innerHeight-200)/340).toFixed(3));
+  fit(); addEventListener("resize", fit);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  fx.className = "pfx show";
+  await wait(30);
+  if(reduce){
+    fx.classList.add("in","open","stamped","done"); fxSound("thunk");
+  } else {
+    fx.classList.add("in"); fxSound("whoosh"); await wait(750);
+    fx.classList.add("open"); fxSound("flip"); await wait(900);
+    fx.classList.add("hover"); await wait(600);
+    fx.classList.add("slam"); await wait(95);
+    fxSound("thunk"); fx.classList.add("stamped","shake"); if(navigator.vibrate) try{ navigator.vibrate(40); }catch(e){}
+    await wait(380);
+    fx.classList.remove("shake"); fx.classList.add("lift"); fxSound("lift"); await wait(450);
+    fx.classList.add("done"); fxSound("fanfare"); confetti();
+  }
+  $("pfxDone").focus({preventScroll:true});
+  await new Promise(r=> pfxResolve = r);
+  removeEventListener("resize", fit);
+  fx.classList.add("out"); sfx("pop"); await wait(reduce ? 0 : 520);
+  fx.className = "pfx";
+}
+function closePfx(){ if(pfxResolve){ const r = pfxResolve; pfxResolve = null; r(); } }
+$("pfxDone").onclick = closePfx;
+$("pfx").addEventListener("click", e=>{ if(e.target.id==="pfx" && $("pfx").classList.contains("done")) closePfx(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && $("pfx").classList.contains("done")) closePfx(); });
 $("againBtn").onclick = ()=>{ state.respins++; closeResult(); buildWheelQuiet(); setTimeout(spin, 250); };
 function buildWheelQuiet(){ const s = $("status").textContent; buildWheel(); setStatus(s); }
 
