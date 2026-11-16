@@ -20,3 +20,11 @@ It's a static site: `index.html`, photos in `img/` and `vendor/` (d3-array, d3-g
 
 - Prices and flight times are rough estimates, not live quotes. From the UK they're hand-checked; from other cities they're estimated from distance and airport size.
 - Activity photos are openly licensed (CC0, public domain, CC BY, CC BY-SA) via [Openverse](https://openverse.org) and [Wikimedia Commons](https://commons.wikimedia.org). Each photo is credited in the app, and full source details are in `photos.json`.
+
+## License
+
+The app code is released under the [MIT License](LICENSE). These parts keep their own licences:
+
+- **Photos (`img/`)**: each is openly licensed (CC0, public domain, CC BY or CC BY-SA). The author, licence and source of every photo are credited in the app and listed in `photos.json`.
+- **d3-array and d3-geo (`vendor/`)**: ISC licence, see [`vendor/LICENSE-d3.txt`](vendor/LICENSE-d3.txt).
+- **Land outlines (`vendor/land.js`)**: [Natural Earth](https://www.naturalearthdata.com) via world-atlas, public domain.
