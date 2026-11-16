@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Holiday Destination Roulette</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF4E2; --paper:#FFFBF4; --ink:#22224A; --tomato:#FF5A36; --mustard:#FFB627;
+    --teal:#1FA2A0; --pink:#FF8FB1; --green:#6CC17A; --navy:#2B2D6E; --muted:#6B6A86;
+    --shadow: 0 6px 0 var(--ink);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"DM Sans",system-ui,sans-serif; color:var(--ink); min-height:100vh;
+    background:
+      radial-gradient(circle at 12% 8%, #FFD9A8 0 120px, transparent 121px),
+      radial-gradient(circle at 92% 88%, #BDE8E4 0 160px, transparent 161px),
+      repeating-linear-gradient(45deg, rgba(34,34,74,.035) 0 12px, transparent 12px 24px),
+      var(--cream);
+    overflow-x:hidden;
+  }
+  header{text-align:center; padding:28px 16px 6px}
+  .kicker{display:inline-block; font-weight:800; letter-spacing:.18em; font-size:12px; text-transform:uppercase;
+    background:var(--ink); color:var(--cream); padding:6px 12px; border-radius:999px; transform:rotate(-2deg)}
+  h1{font-family:"Shrikhand",cursive; font-weight:400; font-size:clamp(38px,7vw,72px); line-height:.95; margin:14px 0 6px;
+    color:var(--tomato); text-shadow:3px 3px 0 var(--ink), 6px 6px 0 var(--mustard)}
+  .sub{color:var(--muted); margin:0 auto; max-width:520px; font-size:16px}
+
+  main{display:grid; grid-template-columns: minmax(0,380px) minmax(0,1fr); gap:32px; max-width:1100px; margin:20px auto 40px; padding:0 18px; align-items:start}
+  @media (max-width:860px){ main{grid-template-columns:1fr; gap:18px} }
+
+  .panel{background:var(--paper); border:3px solid var(--ink); border-radius:22px; padding:20px; box-shadow:var(--shadow)}
+  .panel h2{font-size:13px; letter-spacing:.14em; text-transform:uppercase; margin:0 0 10px; display:flex; align-items:center; gap:8px}
+  .panel h2 .num{background:var(--tomato); color:#fff; width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:12px; letter-spacing:0}
+  .section + .section{margin-top:20px}
+
+  .budgets{display:grid; gap:8px}
+  .budget{all:unset; cursor:pointer; display:flex; align-items:center; gap:12px; padding:10px 12px; border:2.5px solid var(--ink);
+    border-radius:14px; background:#fff; transition:transform .12s, background .12s, box-shadow .12s; box-shadow:0 3px 0 var(--ink)}
+  .budget:hover{transform:translateY(-2px); box-shadow:0 5px 0 var(--ink)}
+  .budget:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+  .budget .ico{font-size:24px; width:32px; text-align:center}
+  .budget .t{font-weight:800; font-size:15px}
+  .budget .d{font-size:12.5px; color:var(--muted)}
+  .budget .money{margin-left:auto; font-weight:800; color:var(--teal); letter-spacing:1px}
+  .budget[aria-pressed="true"]{background:var(--mustard); transform:translateY(1px); box-shadow:0 2px 0 var(--ink)}
+  .budget[aria-pressed="true"] .money{color:var(--ink)}
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px}
+  .chip{all:unset; cursor:pointer; padding:8px 12px; border:2.5px solid var(--ink); border-radius:999px; background:#fff; font-weight:600; font-size:14px;
+    box-shadow:0 2px 0 var(--ink); transition:transform .1s}
+  .chip:hover{transform:translateY(-1px)}
+  .chip:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+  .chip[aria-pressed="true"]{background:var(--teal); color:#fff}
+  .hint{font-size:12.5px; color:var(--muted); margin-top:8px}
+
+  .toggles{display:grid; gap:10px}
+  .toggle{display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:600; font-size:14.5px; cursor:pointer}
+  .toggle small{display:block; font-weight:400; color:var(--muted); font-size:12.5px}
+  .switch{position:relative; width:50px; height:28px; flex:none}
+  .switch input{opacity:0; width:0; height:0; position:absolute}
+  .switch span{position:absolute; inset:0; background:#E6DFD2; border:2.5px solid var(--ink); border-radius:999px; transition:.2s}
+  .switch span::after{content:""; position:absolute; width:18px; height:18px; left:3px; top:2.5px; background:#fff; border:2px solid var(--ink); border-radius:50%; transition:.2s}
+  .switch input:checked + span{background:var(--pink)}
+  .switch input:checked + span::after{transform:translateX(21px)}
+  .switch input:focus-visible + span{outline:3px solid var(--teal); outline-offset:2px}
+
+  .stage{display:flex; flex-direction:column; align-items:center}
+  .wheel-wrap{position:relative; width:min(92vw,500px); aspect-ratio:1; margin-top:8px}
+  .wheel-wrap::before{content:""; position:absolute; inset:-14px; border-radius:50%; background:var(--ink);
+    box-shadow:0 10px 0 rgba(34,34,74,.25)}
+  .bulbs{position:absolute; inset:-14px; pointer-events:none}
+  .bulbs i{position:absolute; width:10px; height:10px; margin:-5px; border-radius:50%; background:#FFE9A8; box-shadow:0 0 8px #FFD15C}
+  .bulbs.chase i:nth-child(odd){animation:blink .25s infinite alternate}
+  .bulbs.chase i:nth-child(even){animation:blink .25s .125s infinite alternate}
+  @keyframes blink{to{background:#5a4b2a; box-shadow:none}}
+  canvas#wheel{position:relative; width:100%; height:100%; display:block; border-radius:50%}
+  .pointer{position:absolute; left:50%; top:-30px; transform:translateX(-50%); width:44px; height:56px; z-index:3; transform-origin:50% 20%}
+  .pointer.tick{animation:tick .09s ease-out}
+  @keyframes tick{0%{transform:translateX(-50%) rotate(0)} 50%{transform:translateX(-50%) rotate(-18deg)} 100%{transform:translateX(-50%) rotate(0)}}
+  .hub{all:unset; cursor:pointer; position:absolute; left:50%; top:50%; width:27%; aspect-ratio:1; transform:translate(-50%,-50%);
+    border-radius:50%; background:var(--tomato); border:4px solid var(--ink); box-shadow:0 5px 0 var(--ink), inset 0 -6px 0 rgba(0,0,0,.15);
+    display:grid; place-items:center; text-align:center; font-family:"Shrikhand",cursive; color:#fff; font-size:clamp(18px,4.4vw,28px);
+    text-shadow:2px 2px 0 var(--ink); z-index:2; transition:transform .12s}
+  .hub:hover{transform:translate(-50%,-50%) scale(1.05)}
+  .hub:active{transform:translate(-50%,-50%) scale(.96)}
+  .hub:focus-visible{outline:4px solid var(--mustard); outline-offset:4px}
+  .hub[disabled]{cursor:wait; background:#c9472b}
+
+  .status{margin:30px 0 6px; font-weight:800; min-height:24px; text-align:center}
+  .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+  .btn{all:unset; cursor:pointer; padding:10px 16px; border:2.5px solid var(--ink); border-radius:12px; background:#fff; font-weight:800; font-size:14px;
+    box-shadow:0 3px 0 var(--ink); transition:transform .1s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+  .btn.primary{background:var(--tomato); color:#fff}
+  .btn.alt{background:var(--mustard)}
+
+  .stamps{width:100%; margin-top:22px}
+  .stamps h3{font-size:13px; letter-spacing:.14em; text-transform:uppercase; text-align:center; margin:0 0 10px}
+  .stamp-list{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; min-height:40px}
+  .stamp{border:2.5px dashed var(--tomato); color:var(--tomato); padding:6px 10px; border-radius:10px; font-weight:800; font-size:13px;
+    background:rgba(255,90,54,.06); transform:rotate(var(--r,-3deg))}
+  .stamp-empty{color:var(--muted); font-size:13.5px}
+
+  /* Result modal */
+  .overlay{position:fixed; inset:0; background:rgba(34,34,74,.55); display:none; align-items:center; justify-content:center; padding:18px; z-index:20}
+  .overlay.show{display:flex}
+  .ticket{position:relative; width:min(780px,100%); max-height:calc(100vh - 36px); display:flex; flex-direction:column; background:var(--paper); border:3px solid var(--ink); border-radius:24px; box-shadow:0 10px 0 var(--ink);
+    overflow:hidden; animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+  .ticket .body{overflow-y:auto; -webkit-overflow-scrolling:touch}
+  .costs{max-width:440px; margin:0 auto 14px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; overflow:hidden; text-align:left}
+  .cost{display:flex; justify-content:space-between; gap:10px; padding:9px 14px; font-size:14px; border-bottom:2px dashed #E6DFD2}
+  .cost b{white-space:nowrap}
+  .cost.total{background:var(--mustard); border-bottom:0; font-weight:800; font-size:15.5px}
+  .todo-h{font-family:"Shrikhand",cursive; font-weight:400; font-size:24px; margin:4px 0 12px; color:var(--ink)}
+  .acts{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; text-align:left; margin-bottom:18px}
+  @media (max-width:560px){ .acts{grid-template-columns:1fr} }
+  .act{background:#fff; border:2.5px solid var(--ink); border-radius:16px; overflow:hidden; box-shadow:0 4px 0 var(--ink);
+    transform:rotate(var(--tilt,0deg)); transition:transform .15s; animation:dealIn .5s both}
+  .act:hover{transform:rotate(0) translateY(-3px)}
+  @keyframes dealIn{from{opacity:0; transform:translateY(20px) rotate(4deg)}}
+  .act .art{position:relative; aspect-ratio:16/9; border-bottom:2.5px solid var(--ink); overflow:hidden}
+  .act .art svg{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .act .sticker{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(-6deg); width:68px; height:68px; border-radius:50%;
+    background:#fff; border:3px solid var(--ink); display:grid; place-items:center; font-size:36px; box-shadow:0 4px 0 rgba(34,34,74,.35)}
+  .act .tag{position:absolute; left:10px; top:10px; background:var(--ink); color:var(--cream); font-size:10.5px; font-weight:800; letter-spacing:.12em;
+    text-transform:uppercase; padding:4px 8px; border-radius:999px}
+  .act .txt{padding:12px 14px 14px}
+  .act h4{margin:0 0 4px; font-size:16px; font-weight:800}
+  .act p{margin:0 0 10px; font-size:14px; line-height:1.45; color:#45446a}
+  .act a{font-size:13px; font-weight:800; color:var(--tomato); text-decoration:none; border-bottom:2px solid currentColor}
+  @keyframes pop{from{transform:scale(.6) rotate(-6deg); opacity:0}}
+  .ticket .top{background:var(--teal); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; font-weight:800; letter-spacing:.14em; font-size:12px; text-transform:uppercase}
+  .ticket .body{padding:22px 22px 18px; text-align:center}
+  .ticket .big{font-size:64px; line-height:1}
+  .ticket h2{font-family:"Shrikhand",cursive; font-weight:400; font-size:clamp(30px,7vw,42px); margin:8px 0 0; color:var(--tomato); text-shadow:2px 2px 0 var(--ink)}
+  .ticket .country{font-weight:800; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; font-size:13px; margin-top:4px}
+  .ticket p.blurb{font-size:16px; line-height:1.5; margin:14px auto 14px; max-width:420px}
+  .facts{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:16px}
+  .fact{background:#fff; border:2px solid var(--ink); border-radius:999px; padding:6px 11px; font-size:13px; font-weight:600}
+  .perf{border-top:3px dashed var(--ink); position:relative; margin:0 -22px 14px}
+  .perf::before,.perf::after{content:""; position:absolute; top:-14px; width:26px; height:26px; background:rgba(34,34,74,.55); border-radius:50%}
+  .perf::before{left:-14px} .perf::after{right:-14px}
+  .ticket a.btn{text-decoration:none; color:var(--ink)}
+  .close{all:unset; cursor:pointer; font-size:20px; line-height:1; color:#fff}
+  .respin-note{font-size:13px; color:var(--muted); margin-top:12px; min-height:18px}
+
+  #confetti{position:fixed; inset:0; pointer-events:none; z-index:30}
+  footer{text-align:center; color:var(--muted); font-size:12.5px; padding:0 16px 30px}
+  @media (prefers-reduced-motion: reduce){ .bulbs i{animation:none!important} .ticket{animation:none} }
+</style>
+</head>
+<body>
+<header>
+  <span class="kicker">✈️ Where to next?</span>
+  <h1>Holiday Roulette</h1>
+  <p class="sub">Pick a budget, choose your vibe, then let fate (and a very enthusiastic wheel) decide where you're going.</p>
+</header>
+
+<main>
+  <aside class="panel" aria-label="Trip settings">
+    <div class="section">
+      <h2><span class="num">1</span> Budget per person / day</h2>
+      <div class="budgets" id="budgets"></div>
+    </div>
+    <div class="section">
+      <h2><span class="num">2</span> Vibe check</h2>
+      <div class="chips" id="vibes"></div>
+      <div class="hint">Pick none for anything goes, or stack a few.</div>
+    </div>
+    <div class="section">
+      <h2><span class="num">3</span> Trip length</h2>
+      <div class="chips" id="nights"></div>
+      <div class="hint">Used to total up flights + spending on your result.</div>
+    </div>
+    <div class="section">
+      <h2><span class="num">4</span> House rules</h2>
+      <div class="toggles">
+        <label class="toggle"><span>Mystery mode<small>Hide the names on the wheel</small></span>
+          <span class="switch"><input type="checkbox" id="mystery"><span></span></span></label>
+        <label class="toggle"><span>Sound effects<small>Clicky wheel noises</small></span>
+          <span class="switch"><input type="checkbox" id="sound" checked><span></span></span></label>
+        <label class="toggle"><span>No repeats<small>Skip places already picked this session</small></span>
+          <span class="switch"><input type="checkbox" id="norepeat" checked><span></span></span></label>
+      </div>
+    </div>
+  </aside>
+
+  <section class="stage" aria-label="Roulette wheel">
+    <div class="wheel-wrap" id="wheelWrap">
+      <div class="bulbs" id="bulbs"></div>
+      <svg class="pointer" id="pointer" viewBox="0 0 44 56" aria-hidden="true">
+        <path d="M22 54 L4 16 A18 18 0 1 1 40 16 Z" fill="#FFB627" stroke="#22224A" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="22" cy="17" r="6" fill="#22224A"/>
+      </svg>
+      <canvas id="wheel" aria-hidden="true"></canvas>
+      <button class="hub" id="spinBtn" aria-label="Spin the wheel">SPIN</button>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+    <div class="row">
+      <button class="btn alt" id="shuffleBtn">🔀 Reshuffle wheel</button>
+      <button class="btn" id="resetBtn">🧽 Clear stamps</button>
+    </div>
+    <div class="stamps">
+      <h3>🛂 Passport stamps</h3>
+      <div class="stamp-list" id="stamps"></div>
+    </div>
+  </section>
+</main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="resName">
+  <div class="ticket">
+    <div class="top"><span>Boarding pass · one way to fun</span><button class="close" id="closeBtn" aria-label="Close">✕</button></div>
+    <div class="body">
+      <div class="big" id="resEmoji"></div>
+      <h2 id="resName"></h2>
+      <div class="country" id="resCountry"></div>
+      <p class="blurb" id="resBlurb"></p>
+      <div class="costs" id="resCost"></div>
+      <div class="facts" id="resFacts"></div>
+      <div class="perf"></div>
+      <h3 class="todo-h">Things to do</h3>
+      <div class="acts" id="resActs"></div>
+      <div class="perf"></div>
+      <div class="row">
+        <button class="btn primary" id="lockBtn">📌 Lock it in</button>
+        <button class="btn alt" id="againBtn">🎲 Nah, spin again</button>
+        <a class="btn" id="flightsLink" href="#" target="_blank" rel="noopener">🛫 Look up flights</a>
+      </div>
+      <div class="respin-note" id="respinNote"></div>
+    </div>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+<footer>All costs are rough estimates per person. Daily spend covers your stay, food and getting around. Flights are a typical economy return from London booked a couple of months ahead, outside school holidays. Prices swing a lot with season, so treat them as a guide, not a quote.</footer>
+
+<script>
+const BUDGETS = [
+  {id:0, icon:"🎒", t:"Shoestring",        d:"Hostels, street food, buses",  money:"£",     range:"under £40/day"},
+  {id:1, icon:"🍜", t:"Cheap & cheerful",  d:"Guesthouses and good local eats", money:"££",  range:"£40–80/day"},
+  {id:2, icon:"🛏️", t:"Comfy middle",      d:"Nice hotels, the odd splurge", money:"£££",   range:"£80–160/day"},
+  {id:3, icon:"🥂", t:"Treat yourself",    d:"Boutique stays, fancy dinners", money:"££££", range:"£160–320/day"},
+  {id:4, icon:"💎", t:"Money no object",   d:"Overwater villas, private guides", money:"£££££", range:"£320+/day"},
+  {id:-1,icon:"🎰", t:"Surprise me",       d:"Every budget on the wheel",    money:"?",     range:"anything"}
+];
+const VIBES = {beach:"🏖️ Beach", city:"🏙️ City", adventure:"🥾 Adventure", culture:"🏛️ Culture", food:"🍜 Foodie", snow:"❄️ Snow"};
+
+// [name, country, emoji, tier, vibes, blurb, daily cost, best time]
+const RAW = [
+  // Shoestring
+  ["Hoi An","Vietnam","🏮",0,["culture","food","beach"],"Lantern-lit old town, tailors who'll make you a suit overnight, and banh mi worth crossing oceans for.","~$35","Feb–Apr"],
+  ["Luang Prabang","Laos","🛕",0,["culture","adventure"],"Saffron-robed monks at dawn, turquoise Kuang Si waterfalls by lunch, Mekong sunsets by dinner.","~$35","Nov–Mar"],
+  ["Pokhara","Nepal","🏔️",0,["adventure","snow"],"Lakeside chill with the Annapurnas staring at you. Paraglide, trek, repeat.","~$30","Oct–Nov"],
+  ["Goa","India","🌴",0,["beach","food"],"Palm-fringed beaches, Portuguese churches and fish curry that ruins all other fish curries.","~$35","Nov–Feb"],
+  ["Siem Reap","Cambodia","🗿",0,["culture","adventure"],"Sunrise at Angkor Wat, tuk-tuk temple hopping, and Pub Street when the sun goes down.","~$35","Nov–Mar"],
+  ["Antigua","Guatemala","🌋",0,["culture","adventure"],"Pastel colonial streets ringed by volcanoes; hike one that's actually erupting.","~$45","Nov–Apr"],
+  ["Ella","Sri Lanka","🚂",0,["adventure","culture"],"Ride the world's prettiest train into tea country, then hike Little Adam's Peak.","~$35","Jan–Mar"],
+  ["Yogyakarta","Indonesia","🏯",0,["culture","food"],"Borobudur at sunrise, batik workshops and the best gudeg in Java.","~$30","May–Sep"],
+  ["Rishikesh","India","🧘",0,["adventure","culture"],"Yoga capital of the world, with white-water rafting for when you're done being zen.","~$25","Sep–Nov"],
+  ["Sucre","Bolivia","🦖",0,["culture","adventure"],"Whitewashed colonial gem with real dinosaur footprints up a cliff. Spanish school, anyone?","~$30","May–Sep"],
+  // Cheap & cheerful
+  ["Chiang Mai","Thailand","🐘",1,["culture","food","adventure"],"Temples on every corner, khao soi in every bowl, and jungle just beyond the moat.","~$60","Nov–Feb"],
+  ["Tbilisi","Georgia","🍷",1,["city","food","culture"],"Sulphur baths, cheesy boat-shaped bread and 8,000 years of winemaking.","~$60","May–Jun, Sep–Oct"],
+  ["Oaxaca","Mexico","🌶️",1,["food","culture"],"Seven kinds of mole, mezcal tastings and a market that'll grill your meat while you wait.","~$70","Oct–Apr"],
+  ["Budapest","Hungary","♨️",1,["city","culture"],"Thermal bath parties, ruin bars in crumbling courtyards and the Danube glowing at night.","~$90","Apr–Jun, Sep"],
+  ["Kraków","Poland","🥟",1,["city","culture","food"],"A fairytale old town, pierogi on tap and some of Europe's best-value nights out.","~$70","May–Sep"],
+  ["Istanbul","Türkiye","🕌",1,["city","culture","food"],"Two continents, one city. Bazaars, hammams and a Bosphorus ferry for pocket change.","~$90","Apr–May, Sep–Oct"],
+  ["Marrakech","Morocco","🐪",1,["culture","food","adventure"],"Spice-scented souks, rooftop mint tea and a Sahara camel trek on the side.","~$70","Mar–May, Sep–Nov"],
+  ["Medellín","Colombia","🌺",1,["city","adventure"],"City of eternal spring: cable cars, salsa clubs and coffee farms an hour away.","~$65","Dec–Mar"],
+  ["Penang","Malaysia","🍢",1,["food","culture","beach"],"Street art in George Town and hawker stalls that could make a grown foodie cry.","~$55","Dec–Feb"],
+  ["Ksamil","Albania","🏝️",1,["beach"],"Caribbean-coloured water at Balkan prices. Europe's best-kept beach secret (shh).","~$65","Jun–Sep"],
+  ["Ubud, Bali","Indonesia","🌾",1,["culture","adventure","food"],"Rice terraces, monkey forests, sunrise volcano treks and a smoothie bowl in every café.","~$70","Apr–Oct"],
+  // Comfy middle
+  ["Lisbon","Portugal","🚋",2,["city","food","culture"],"Rattling yellow trams, pastel de nata still warm, fado drifting out of Alfama bars.","~$150","Apr–Jun, Sep–Oct"],
+  ["Seoul","South Korea","🏮",2,["city","food","culture"],"Palaces by day, Korean BBQ and noraebang by night. Bring stretchy trousers.","~$140","Apr–May, Sep–Nov"],
+  ["Tokyo","Japan","🗼",2,["city","food","culture"],"Neon, ramen, tiny bars for six people and the cleanest trains on Earth.","~$170","Mar–May, Oct–Nov"],
+  ["Taipei","Taiwan","🧋",2,["city","food"],"Night markets, bubble tea's birthplace and hot springs a metro ride away.","~$110","Oct–Dec"],
+  ["Cape Town","South Africa","🐧",2,["beach","adventure","food","city"],"Table Mountain hikes, penguins on the beach and winelands next door.","~$130","Nov–Mar"],
+  ["Naxos","Greece","🏛️",2,["beach","food"],"The Greek island the Instagram crowd forgot: long beaches, mountain villages, great cheese.","~$120","Jun–Sep"],
+  ["Split & Hvar","Croatia","⛵",2,["beach","culture"],"Live inside a Roman palace, then island-hop the Adriatic by boat.","~$150","Jun–Sep"],
+  ["Petra & Wadi Rum","Jordan","🏜️",2,["adventure","culture"],"Walk the Siq to the Treasury, then sleep under a billion stars in a desert camp.","~$140","Mar–May, Sep–Nov"],
+  ["Buenos Aires","Argentina","💃",2,["city","food","culture"],"Tango in San Telmo, steak at midnight and Malbec that costs less than water.","~$110","Oct–Apr"],
+  ["Barcelona","Spain","🥘",2,["city","beach","food"],"Gaudí, tapas crawls, beach afternoons and dinners that start at 10pm.","~$180","May–Jun, Sep"],
+  ["Hokkaido","Japan","🎿",2,["snow","food"],"The world's fluffiest powder snow, onsen soaks and miso ramen in Sapporo.","~$180","Jan–Feb"],
+  // Treat yourself
+  ["Reykjavík & Ring Road","Iceland","🌌",3,["adventure","snow"],"Glaciers, black-sand beaches, geysers and, if you're lucky, the northern lights.","~$300","Sep–Mar (lights)"],
+  ["Amalfi Coast","Italy","🍋",3,["beach","food"],"Cliffside villages, limoncello and boat days to Capri. Dolce vita, unlocked.","~$320","May–Jun, Sep"],
+  ["Kyoto","Japan","⛩️",3,["culture","food"],"Ryokan stays, kaiseki dinners and ten thousand torii gates at Fushimi Inari.","~$280","Mar–Apr, Nov"],
+  ["Santorini","Greece","🌅",3,["beach","food"],"Whitewashed cliffs, caldera sunsets and an infinity pool with your name on it.","~$330","May–Jun, Sep"],
+  ["Zermatt","Switzerland","🏔️",3,["snow","adventure"],"Car-free alpine village under the Matterhorn. Ski all day, fondue all night.","~$380","Dec–Apr"],
+  ["New York City","USA","🗽",3,["city","food","culture"],"Broadway, bagels, Central Park and a skyline that never gets old.","~$350","Apr–Jun, Sep–Nov"],
+  ["Banff","Canada","🛶",3,["adventure","snow"],"Unreal turquoise lakes, grizzly spotting and the Icefields Parkway road trip.","~$280","Jun–Sep, Jan–Mar"],
+  ["Patagonia","Chile","🦙",3,["adventure"],"Torres del Paine: granite towers, glaciers and wind with a personality.","~$300","Nov–Mar"],
+  ["Copenhagen","Denmark","🚲",3,["city","food"],"Bikes everywhere, hygge everywhere, and some of the world's best restaurants.","~$300","May–Sep"],
+  ["Queenstown","New Zealand","🪂",3,["adventure","snow"],"Bungee, jet boats, Milford Sound and the most dramatic scenery south of anywhere.","~$260","Dec–Feb, Jul–Aug"],
+  // Money no object
+  ["The Maldives","Maldives","🐠",4,["beach"],"Overwater villa, glass floor, manta rays below. You will not want to leave.","~$900","Nov–Apr"],
+  ["Bora Bora","French Polynesia","🌺",4,["beach"],"The lagoon is a colour that shouldn't exist. Breakfast delivered by canoe.","~$1,000","May–Oct"],
+  ["Serengeti Safari","Tanzania","🦁",4,["adventure"],"Luxury tented camps and front-row seats to the Great Migration.","~$1,000","Jun–Oct"],
+  ["Antarctica Expedition","Antarctica","🐧",4,["adventure","snow"],"Penguins, icebergs and the bragging rights of the seventh continent.","~$1,200","Nov–Mar"],
+  ["Seychelles","Seychelles","🐢",4,["beach","adventure"],"Granite boulders, giant tortoises and beaches that keep topping best-of lists.","~$700","Apr–May, Oct–Nov"],
+  ["Okavango Delta","Botswana","🐘",4,["adventure"],"Glide past elephants in a mokoro, then sundowners at a private lodge.","~$1,200","Jun–Oct"],
+  ["St. Moritz","Switzerland","🥂",4,["snow","city"],"Champagne skiing, horse races on a frozen lake and glamour since 1864.","~$800","Dec–Mar"],
+  ["Fiji Private Island","Fiji","🏝️",4,["beach"],"Your own island, your own staff, and a 'do not disturb' sign the size of the Pacific.","~$1,500","May–Oct"],
+  ["Monaco & Riviera","Monaco","🏎️",4,["city","beach","food"],"Superyachts, Michelin stars and a casino that dress-codes your bank balance.","~$900","May–Sep"],
+];
+// Typical economy return fare per person from London (GBP), booked a couple of months ahead, outside school holidays
+const FLIGHTS = {
+  "Hoi An":750,"Luang Prabang":800,"Pokhara":700,"Goa":550,"Siem Reap":750,"Antigua":850,"Ella":650,"Yogyakarta":800,"Rishikesh":550,"Sucre":1000,
+  "Chiang Mai":700,"Tbilisi":300,"Oaxaca":750,"Budapest":90,"Kraków":70,"Istanbul":180,"Marrakech":120,"Medellín":700,"Penang":700,"Ksamil":150,"Ubud, Bali":750,
+  "Lisbon":100,"Seoul":750,"Tokyo":850,"Taipei":750,"Cape Town":700,"Naxos":220,"Split & Hvar":130,"Petra & Wadi Rum":350,"Buenos Aires":900,"Barcelona":90,"Hokkaido":950,
+  "Reykjavík & Ring Road":150,"Amalfi Coast":120,"Kyoto":850,"Santorini":200,"Zermatt":120,"New York City":450,"Banff":650,"Patagonia":1200,"Copenhagen":100,"Queenstown":1400,
+  "The Maldives":750,"Bora Bora":1800,"Serengeti Safari":800,"Antarctica Expedition":1100,"Seychelles":800,"Okavango Delta":1100,"St. Moritz":120,"Fiji Private Island":1300,"Monaco & Riviera":110
+};
+const FLY_VIA = {"Ksamil":"via Corfu","Pokhara":"via Kathmandu","Rishikesh":"via Delhi","Amalfi Coast":"to Naples","Zermatt":"to Geneva","St. Moritz":"to Zurich","Monaco & Riviera":"to Nice",
+  "Antarctica Expedition":"to Ushuaia","Serengeti Safari":"to Kilimanjaro","Okavango Delta":"to Maun","Banff":"to Calgary","Kyoto":"to Osaka","Hokkaido":"to Sapporo","Hoi An":"to Da Nang","Ella":"to Colombo","Yogyakarta":"","Petra & Wadi Rum":"to Amman","Patagonia":"to Punta Arenas"};
+// Typical one-way journey time from London: [hours, stops]
+const FLY_TIME = {
+  "Hoi An":[17,1],"Luang Prabang":[18,1],"Pokhara":[16,1],"Goa":[11,1],"Siem Reap":[16,1],"Antigua":[16,1],"Ella":[13,1],"Yogyakarta":[18,1],"Rishikesh":[9,0],"Sucre":[20,2],
+  "Chiang Mai":[16,1],"Tbilisi":[7,1],"Oaxaca":[15,1],"Budapest":[2.5,0],"Kraków":[2.5,0],"Istanbul":[4,0],"Marrakech":[3.75,0],"Medellín":[14,1],"Penang":[16,1],"Ksamil":[3,0],"Ubud, Bali":[17,1],
+  "Lisbon":[2.75,0],"Seoul":[14.5,0],"Tokyo":[14,0],"Taipei":[14.5,0],"Cape Town":[11.5,0],"Naxos":[5,1],"Split & Hvar":[2.5,0],"Petra & Wadi Rum":[5,0],"Buenos Aires":[13.5,0],"Barcelona":[2,0],"Hokkaido":[17,1],
+  "Reykjavík & Ring Road":[3,0],"Amalfi Coast":[2.75,0],"Kyoto":[16,1],"Santorini":[4,0],"Zermatt":[1.75,0],"New York City":[8,0],"Banff":[9,0],"Patagonia":[20,2],"Copenhagen":[2,0],"Queenstown":[27,2],
+  "The Maldives":[10.5,0],"Bora Bora":[24,2],"Serengeti Safari":[12,1],"Antarctica Expedition":[19,2],"Seychelles":[12,1],"Okavango Delta":[16,2],"St. Moritz":[1.75,0],"Fiji Private Island":[24,2],"Monaco & Riviera":[2,0]
+};
+function flyTime(name){
+  const t = FLY_TIME[name]; if(!t) return "";
+  const h = Math.floor(t[0]), m = Math.round((t[0]-h)*60);
+  return `~${h}h${m?` ${m}m`:""} · ${t[1]===0?"direct":t[1]===1?"1 stop":t[1]+" stops"}`;
+}
+const USD_GBP = 0.78;
+const gbpRound = n => Math.round(n/5)*5;
+const fmt = n => "£" + n.toLocaleString("en-GB");
+const DESTS = RAW.map(([name,country,emoji,tier,vibes,blurb,cost,best],i)=>{
+  const usd = +cost.replace(/[^0-9]/g,"");
+  return {i,name,country,emoji,tier,vibes,blurb,best, daily:gbpRound(usd*USD_GBP), flight:FLIGHTS[name]||0};
+});
+const NIGHTS = [4,7,10,14];
+
+// ---------- Things to do: emoji|category|title|description ----------
+// categories: w water/beach, n nature, c culture, f food, x night, s snow, u city, a wildlife, d thrills
+const ACTS = {
+"Hoi An":`🏮|c|Lantern night on the river|Float a paper lantern from a little boat as the old town glows.
+👔|u|Get tailored overnight|Pick a fabric in the morning, collect a perfectly fitted suit tomorrow.
+🚲|n|Cycle to Tra Que village|Pedal through rice paddies to an organic herb-farming village.
+🏖️|w|An Bang Beach|Sunbeds, seafood shacks and a lazy afternoon swim.`,
+"Luang Prabang":`🙏|c|Dawn alms giving|Watch saffron-robed monks collect sticky rice at sunrise (quietly!).
+💦|n|Kuang Si Falls|Swim in tiered turquoise pools, then visit the bear rescue centre.
+🌅|n|Mount Phousi sunset|Climb 300-odd steps for a golden view over the Mekong.
+🛍️|x|Night market|Handmade textiles, lanterns and an all-you-can-eat buffet alley.`,
+"Pokhara":`🪂|d|Paraglide over Phewa Lake|Soar with eagles, Himalayan peaks on the horizon.
+🌄|n|Sarangkot sunrise|Watch the Annapurna range turn pink at first light.
+🛶|w|Paddle Phewa Lake|Row a painted boat out to the island temple of Tal Barahi.
+🥾|n|Poon Hill trek|A short classic Himalayan trek with a massive payoff view.`,
+"Goa":`🏖️|w|Palolem Beach|A perfect crescent bay with silent-disco nights and dolphins at dawn.
+⛪|c|Old Goa churches|UNESCO-listed baroque basilicas from the Portuguese era.
+🍛|f|Fish curry & feni|Coconut-rich xacuti and a shot of the local cashew spirit.
+🛍️|x|Anjuna flea market|Wednesday market chaos, then a sunset beach party.`,
+"Siem Reap":`🌅|c|Angkor Wat at sunrise|The world's largest temple silhouetted against a pink sky.
+🌳|c|Ta Prohm|Giant jungle roots swallowing temple walls, Tomb Raider style.
+🎪|x|Phare circus|Cambodian acrobatics and storytelling under a big top.
+🛶|w|Tonle Sap floating village|Stilt houses and floating schools on Southeast Asia's great lake.`,
+"Antigua":`🌋|d|Overnight on Acatenango|Camp on a volcano and watch Fuego erupt right next door.
+☕|f|Coffee farm tour|Follow it from cherry to cup on the volcanic slopes.
+🏛️|c|Santa Catalina Arch|The postcard shot, with Volcán de Agua looming behind.
+💃|x|Salsa classes|Cheap lessons by day, test your moves after dark.`,
+"Ella":`🚂|n|The Kandy–Ella train|Hang out of the open door through misty tea hills.
+🌉|c|Nine Arch Bridge|Time it right and a blue train rolls across the jungle viaduct.
+⛰️|n|Little Adam's Peak|An easy sunrise hike with big valley views.
+🍵|f|Tea factory visit|See how a leaf becomes your morning cuppa, then taste it.`,
+"Yogyakarta":`🛕|c|Borobudur sunrise|The world's largest Buddhist temple emerging from the mist.
+🕉️|c|Prambanan|Soaring Hindu spires, plus the Ramayana ballet at night.
+🎨|c|Batik workshop|Wax, dye and take home a design of your own.
+🌋|d|Merapi lava jeep tour|Go off-road across the lava fields of an active volcano.`,
+"Rishikesh":`🧘|c|Yoga by the Ganges|Drop-in classes in the town that made yoga famous worldwide.
+🚣|d|White-water rafting|Splash through Grade III rapids on the holy river.
+🔥|x|Ganga Aarti|An evening fire ceremony of chanting, bells and floating lamps.
+🌉|u|Cross Laxman Jhula|Wobbly suspension bridges, riverside cafés and cheeky monkeys.`,
+"Sucre":`🦖|a|Dinosaur footprint wall|Thousands of real dinosaur tracks on a vertical cliff face.
+🏛️|c|Casa de la Libertad|The very room where Bolivia declared independence.
+📚|c|Spanish school|Cheap one-on-one lessons in a gorgeous white city.
+🥾|n|Seven Waterfalls hike|Scramble to swimming holes just outside town.`,
+"Chiang Mai":`🛕|c|Doi Suthep temple|A golden mountaintop temple with the whole city below.
+🍜|f|Khao soi crawl|Curry noodle soup at five spots, ranked by you.
+🐘|a|Ethical elephant sanctuary|Feed and bathe rescued elephants (no riding).
+🛍️|x|Sunday Walking Street|The old town becomes one giant food and craft market.`,
+"Tbilisi":`♨️|c|Sulphur baths|Steam it out in the domed bathhouses of Abanotubani.
+🚡|u|Cable car to Narikala|Fortress views over terracotta roofs and the river.
+🧀|f|Khachapuri feast|Cheese-filled bread boats, khinkali dumplings and many toasts.
+🍷|f|Kakheti wine trip|Taste amber wine fermented in clay pots buried underground.`,
+"Oaxaca":`🌶️|f|Mole cooking class|Grind, toast and stir your way through a proper mole negro.
+🥃|f|Mezcal tasting|Visit a family distillery where the agave roasts in the ground.
+🏛️|c|Monte Albán|An ancient Zapotec city on a flattened mountaintop.
+💧|n|Hierve el Agua|Petrified 'waterfalls' with natural infinity pools on the edge.`,
+"Budapest":`♨️|w|Széchenyi Baths|Steaming outdoor thermal pools, even in the snow.
+🍻|x|Ruin bars|Drinks in wonderfully weird bars in derelict courtyards.
+🏛️|c|Fisherman's Bastion|Fairytale turrets looking across to Parliament.
+🚢|u|Danube night cruise|Glide past the city lit up in gold.`,
+"Kraków":`🏰|c|Wawel Castle|Royal castle, cathedral and a dragon's den on the river.
+🧂|c|Wieliczka Salt Mine|Whole chapels carved from salt, 100 metres underground.
+🥟|f|Pierogi crawl|Dumplings, zapiekanka and old-school milk bars.
+🎶|x|Kazimierz nights|Jazz cellars and candlelit bars in the old Jewish quarter.`,
+"Istanbul":`🕌|c|Hagia Sophia & Blue Mosque|1,500 years of history facing each other across a square.
+🛍️|u|Grand Bazaar|4,000 shops, endless tea, haggling expected.
+⛴️|w|Bosphorus ferry|Europe to Asia for the price of a coffee.
+♨️|c|Hammam scrub|A marble-slab steam and a scrub you'll never forget.`,
+"Marrakech":`🛍️|u|Get lost in the souks|Spices, lanterns, leather, and a friendly guide you didn't ask for.
+🎭|x|Jemaa el-Fnaa at night|Storytellers, musicians and smoking food stalls.
+🌿|n|Jardin Majorelle|An electric-blue villa surrounded by cactus gardens.
+🐪|d|Agafay desert camel ride|Sunset camel trek and dinner in a desert camp.`,
+"Medellín":`🚡|u|Metrocable to Parque Arví|Cable cars over the hillside barrios into a cloud forest.
+🎨|c|Comuna 13 graffiti tour|A transformed neighbourhood told through street art and hip-hop.
+☕|f|Coffee farm day|Pick, roast and sip on a family finca.
+🪨|n|El Peñol, Guatapé|Climb 700 steps up a giant rock for an absurd lake view.`,
+"Penang":`🎨|c|George Town street art|Hunt for murals and iron caricatures around heritage lanes.
+🍢|f|Hawker hopping|Char kway teow, assam laksa and an icy cendol to finish.
+🚞|n|Penang Hill funicular|Ride up for jungle walks and city views.
+🏮|c|Clan jetties|Wooden stilt villages that have stood over the water for a century.`,
+"Ksamil":`🏝️|w|Swim to the islets|Paddle out to tiny islands across turquoise water.
+🏛️|c|Butrint ruins|Greek, Roman and Venetian ruins in a lagoon forest.
+💙|n|The Blue Eye|A spring so blue it doesn't look real.
+🐟|f|Seafood by the shore|Grilled fish and mussels with your toes in the sand.`,
+"Ubud, Bali":`🌾|n|Tegallalang rice terraces|Emerald steps of rice paddies (and the famous swing).
+🐒|a|Sacred Monkey Forest|Mossy temples and very confident macaques. Hide your sunnies.
+🌋|d|Mount Batur sunrise trek|Climb in the dark and have breakfast cooked by volcanic steam.
+💃|c|Kecak fire dance|A hypnotic chanting performance by firelight.`,
+"Lisbon":`🚋|u|Tram 28|Rattle through Alfama's steep, narrow lanes.
+🥧|f|Pastéis de Belém|The original custard tart, warm with cinnamon.
+🎶|x|Fado in Alfama|Soulful Portuguese song in tiny candlelit taverns.
+🏰|c|Sintra day trip|Technicolour palaces in misty fairytale hills.`,
+"Seoul":`🏯|c|Gyeongbokgung in hanbok|Wear traditional dress and get into the palace free.
+🥩|f|Korean BBQ & soju|Grill at your table and learn the drinking etiquette.
+🎤|x|Noraebang night|Private karaoke rooms till the small hours.
+⛰️|n|Bukhansan hike|A granite-peak hike right inside the city limits.`,
+"Tokyo":`🍣|f|Sushi breakfast|Market-fresh sushi near Toyosu at 7am. Worth it.
+🌆|u|Shibuya Crossing|Join the world's busiest scramble, then watch it from above.
+🏮|x|Golden Gai bars|Six-seat bars stacked into tiny lantern-lit alleys.
+⛩️|c|Meiji Shrine & Harajuku|Forest calm, then wild street fashion next door.`,
+"Taipei":`🏮|f|Shilin Night Market|Pepper buns, oyster omelettes and stinky tofu (brave!).
+🏙️|u|Taipei 101|Zoom up one of the world's fastest lifts for the view.
+♨️|n|Beitou hot springs|Steamy valley hot springs a metro ride from downtown.
+🏮|c|Jiufen old street|A lantern-lined hillside town full of teahouses.`,
+"Cape Town":`⛰️|n|Table Mountain|Hike or cable car up for a view over two oceans.
+🐧|a|Boulders Beach penguins|Share a beach with a colony of African penguins.
+🍷|f|Stellenbosch wine tasting|World-class wine estates under dramatic mountains.
+🌊|w|Chapman's Peak & Cape Point|One of the world's great coastal drives.`,
+"Naxos":`🏖️|w|Plaka beach|Kilometres of golden sand and barely a crowd.
+🏛️|c|Portara sunset|A giant marble doorway to an unfinished temple.
+🧀|f|Village taverna crawl|Local cheese, slow-cooked goat and plenty of raki.
+🥾|n|Hike Mount Zas|Climb the Cyclades' highest peak.`,
+"Split & Hvar":`🏛️|c|Diocletian's Palace|A Roman emperor's palace with people still living inside.
+⛵|w|Island-hopping boat|Blue caves, hidden coves and swim stops all day.
+🎉|x|Hvar beach clubs|Sunset cocktails turn into dancing on the harbour.
+💧|n|Krka waterfalls|Boardwalks through cascading lakes and falls.`,
+"Petra & Wadi Rum":`🏛️|c|The Siq to the Treasury|Walk a narrow canyon until the Treasury appears.
+🕯️|x|Petra by Night|The Treasury lit by 1,500 candles.
+🏜️|d|Wadi Rum jeep safari|Red dunes and the landscapes of a dozen Mars movies.
+🌌|n|Bubble tent stargazing|Sleep under a billion stars in the desert.`,
+"Buenos Aires":`💃|x|Tango in San Telmo|A show, a lesson, or a late-night milonga.
+🥩|f|Parrilla steak dinner|The best steak of your life, at 10pm, with Malbec.
+🎨|u|La Boca colours|Bright painted houses and street tango.
+🛍️|u|San Telmo Sunday fair|Antiques, street musicians and empanadas.`,
+"Barcelona":`⛪|c|Sagrada Família|Gaudí's still-unfinished masterpiece. Book ahead.
+🥘|f|La Boqueria & tapas|Market grazing followed by a tapas crawl.
+🏖️|w|Barceloneta beach|Beach afternoons right on the city's doorstep.
+🌳|u|Park Güell|Mosaic lizards and city views.`,
+"Hokkaido":`🎿|s|Niseko powder|The world's fluffiest snow, guaranteed almost daily.
+♨️|n|Noboribetsu onsen|Hell Valley steam vents and outdoor hot springs.
+🍜|f|Sapporo ramen alley|Miso ramen and butter corn to fight the cold.
+❄️|s|Sapporo Snow Festival|Giant ice sculptures every February.`,
+"Reykjavík & Ring Road":`🌋|n|The Golden Circle|Geysers, a huge waterfall and a continental rift.
+♨️|w|Sky Lagoon|Geothermal infinity pool looking out to the sea.
+🧊|s|Glacier hike|Crampons on and up into blue ice.
+🌌|x|Northern lights hunt|Chase the aurora on clear winter nights.`,
+"Amalfi Coast":`🛥️|w|Boat day to Capri|Grottoes, swimming coves and a spritz in the piazzetta.
+🍋|f|Lemon grove lunch|Limoncello made from the lemons above your table.
+🥾|n|Path of the Gods|A cliff-top trail high above the sea.
+🏘️|c|Positano & Ravello|Pastel villages and gardens hanging over the sea.`,
+"Kyoto":`⛩️|c|Fushimi Inari|Walk through thousands of vermilion torii gates.
+🎋|n|Arashiyama bamboo grove|Towering bamboo that creaks in the breeze.
+🍱|f|Kaiseki dinner|A many-course work of art at a ryokan.
+👘|x|Gion at dusk|Lantern-lit lanes where you may glimpse a geiko.`,
+"Santorini":`🌅|n|Oia sunset|Join the crowd that applauds the sunset.
+🛥️|w|Caldera catamaran|Hot springs, red beach and a BBQ on board.
+🍷|f|Volcanic wine tasting|Crisp Assyrtiko from basket-shaped vines.
+🏛️|c|Akrotiri|A Bronze Age town preserved under volcanic ash.`,
+"Zermatt":`🎿|s|Ski to Italy|Glide across the border for lunch in Cervinia.
+🏔️|s|Gornergrat railway|A cog railway to a front-row seat of the Matterhorn.
+🫕|f|Fondue night|Bubbling cheese in a cosy wooden chalet.
+🥾|n|5-Lakes Walk|Matterhorn reflections in five alpine lakes.`,
+"New York City":`🎭|x|Broadway show|Grab rush tickets for a big musical.
+🌳|n|Central Park|Bikes, rowboats and people-watching.
+🍕|f|Pizza & bagel crawl|The great slice debate, settled by you.
+🏙️|u|Top of the Rock|The best skyline view, Empire State included.`,
+"Banff":`🛶|w|Moraine Lake canoe|Paddle a lake the colour of liquid turquoise.
+🚗|n|Icefields Parkway|One of the world's most beautiful drives.
+🐻|a|Wildlife spotting|Elk, bighorn sheep and (from a safe distance) bears.
+♨️|w|Banff Upper Hot Springs|Hot pool soak with snowy peaks all around.`,
+"Patagonia":`🏔️|n|Base of the Towers|Hike to the iconic granite spires of Torres del Paine.
+🧊|s|Grey Glacier boat|Cruise right up to a wall of blue ice.
+🦙|a|Guanacos & condors|Wild llama cousins and giant birds overhead.
+🐎|d|Ride with gauchos|Saddle up across the windswept steppe.`,
+"Copenhagen":`🚲|u|Bike the city|Do as the Danes do on dedicated bike lanes.
+🌈|u|Nyhavn|Colourful harbour houses and canal boat tours.
+🍽️|f|New Nordic dinner|Some of the world's most creative restaurants.
+🎢|x|Tivoli Gardens|A 180-year-old fairground glowing with lights.`,
+"Queenstown":`🪂|d|Kawarau bungee|Jump at the birthplace of commercial bungee.
+🚤|w|Shotover Jet|360° spins through a narrow canyon.
+🏞️|n|Milford Sound|Waterfalls plunging into a dramatic fjord.
+🍔|f|Fergburger|The legendary burger with a queue to match.`,
+"The Maldives":`🐠|w|House reef snorkel|Tropical fish just off your villa's ladder.
+🦈|a|Manta ray swim|Glide alongside gentle giants.
+🍽️|f|Underwater restaurant|Dinner surrounded by the reef.
+🌌|x|Bioluminescent beach|Waves that sparkle blue at night.`,
+"Bora Bora":`🛶|f|Canoe breakfast|Breakfast delivered to your bungalow by outrigger canoe.
+🦈|a|Lagoon snorkel|Blacktip reef sharks and stingrays (the friendly kind).
+⛰️|n|Mount Otemanu|The jagged volcanic peak above the lagoon.
+🌅|w|Sunset catamaran|Champagne as the sky does its thing.`,
+"Serengeti Safari":`🦓|a|Great Migration drive|Watch over a million wildebeest on the move.
+🎈|d|Hot-air balloon safari|Float over the plains at dawn, then champagne breakfast.
+🏕️|n|Luxury tented camp|Fall asleep to lions calling in the distance.
+🌋|n|Ngorongoro Crater|A collapsed volcano packed with wildlife.`,
+"Antarctica Expedition":`🐧|a|Penguin colony landing|Thousands of penguins going about their business.
+🚣|w|Zodiac among icebergs|Weave through sculpted blue ice.
+🥶|s|Polar plunge|Jump into sub-zero water for bragging rights.
+🐋|a|Whale watching|Humpbacks feeding right beside the ship.`,
+"Seychelles":`🏖️|w|Anse Source d'Argent|Pink-tinged granite boulders and shallow, glassy water.
+🐢|a|Giant tortoises|Meet century-old tortoises on Curieuse Island.
+🌴|n|Vallée de Mai|A prehistoric palm forest of giant coco de mer.
+🤿|w|Diving & snorkelling|Healthy reefs, turtles and whale sharks in season.`,
+"Okavango Delta":`🛶|w|Mokoro ride|Glide through papyrus channels in a dugout canoe.
+🐘|a|Game drive|Elephants, leopards and wild dogs up close.
+🚁|d|Doors-off helicopter flight|See the whole delta's maze of water from above.
+🍸|f|Sundowners|G&Ts at sunset as hippos grunt nearby.`,
+"St. Moritz":`🎿|s|Corviglia slopes|Sunny, wide runs and a very chic mountain lunch.
+🐎|c|White Turf|Horse racing on a frozen lake.
+🚂|n|Bernina Express|A spectacular rail journey over the Alps.
+🥂|f|Grand hotel afternoon tea|Old-school glamour with a view.`,
+"Fiji Private Island":`🤿|w|Rainbow Reef dive|Soft corals in every colour imaginable.
+🧺|f|Sandbank picnic|Dropped on a private sandbar with a hamper.
+🌺|c|Kava ceremony|Share a bowl with villagers and be welcomed in.
+🌊|d|Surf Cloudbreak|One of the world's most famous waves.`,
+"Monaco & Riviera":`🎰|x|Casino de Monte-Carlo|Dress up and play a hand in Bond territory.
+🛥️|w|Yacht day|Cruise the Riviera from cove to cove.
+🏎️|u|Walk the Grand Prix circuit|Hairpins and harbour views on foot.
+🍽️|f|Michelin lunch in Èze|A cliff-top village with a world-class table.`
+};
+const CAT_LABEL = {w:"Water",n:"Nature",c:"Culture",f:"Food & drink",x:"After dark",s:"Snow & ice",u:"City",a:"Wildlife",d:"Thrills"};
+
+function artSVG(cat, seed){
+  const r = (n)=>{ seed = (seed*9301+49297)%233280; return seed/233280*n; };
+  const svg = (bg, inner)=>`<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">${bg}${inner}</svg>`;
+  const grad = (id,a,b)=>`<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="180" fill="url(#${id})"/>`;
+  const id = "g"+Math.floor(r(1e6));
+  const stroke = `stroke="#22224A" stroke-width="3"`;
+  switch(cat){
+    case "w": return svg(grad(id,"#8FD8F0","#FFF4E2"),
+      `<circle cx="${250-r(40)}" cy="45" r="24" fill="#FFB627" ${stroke}/>
+       <path d="M0 115 Q40 100 80 115 T160 115 T240 115 T320 115 V180 H0Z" fill="#1FA2A0" ${stroke}/>
+       <path d="M0 140 Q40 125 80 140 T160 140 T240 140 T320 140 V180 H0Z" fill="#2B8F9E" ${stroke}/>
+       <path d="M20 160 q10 -8 20 0 M200 158 q10 -8 20 0 M120 128 q10 -8 20 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`);
+    case "n": return svg(grad(id,"#FFD9A8","#FFF4E2"),
+      `<circle cx="${60+r(40)}" cy="50" r="22" fill="#FF8FB1" ${stroke}/>
+       <path d="M-10 180 L80 70 L150 140 L210 60 L330 180Z" fill="#2B2D6E" ${stroke}/>
+       <path d="M80 70 L98 92 L84 88 L70 96Z M210 60 L230 85 L214 80 L198 88Z" fill="#fff"/>
+       <path d="M-10 180 Q80 120 170 160 T330 150 V180Z" fill="#6CC17A" ${stroke}/>`);
+    case "c": return svg(grad(id,"#FFB627","#FFD68A"),
+      `<circle cx="160" cy="40" r="60" fill="#FFE9A8" opacity=".6"/>
+       <rect x="40" y="150" width="240" height="30" fill="#FF5A36" ${stroke}/>
+       <path d="M60 150 V95 Q60 70 85 70 Q110 70 110 95 V150 M135 150 V85 Q135 55 160 55 Q185 55 185 85 V150 M210 150 V95 Q210 70 235 70 Q260 70 260 95 V150" fill="#FFF4E2" ${stroke}/>
+       <rect x="40" y="140" width="240" height="12" fill="#FF8FB1" ${stroke}/>`);
+    case "f": return svg(`<rect width="320" height="180" fill="#FF8FB1"/>`,
+      Array.from({length:8},(_,i)=>`<rect x="${i*40}" y="0" width="20" height="180" fill="#fff" opacity=".35"/>`).join("")+
+      Array.from({length:5},(_,i)=>`<rect x="0" y="${i*40}" width="320" height="20" fill="#fff" opacity=".25"/>`).join("")+
+      `<ellipse cx="160" cy="95" rx="78" ry="66" fill="#fff" ${stroke}/><ellipse cx="160" cy="95" rx="58" ry="48" fill="none" stroke="#FFB627" stroke-width="3"/>
+       <path d="M50 40 v40 M44 40 v20 M56 40 v20 M44 60 q6 10 12 0" fill="none" ${stroke} stroke-linecap="round"/>
+       <path d="M272 40 v80 M272 40 q14 18 0 40" fill="#fff" ${stroke}/>`);
+    case "x": return svg(grad(id,"#1A1B4B","#3A3C8A"),
+      Array.from({length:22},()=>`<circle cx="${r(320)}" cy="${r(120)}" r="${1+r(2.2)}" fill="#FFE9A8"/>`).join("")+
+      `<circle cx="${240+r(40)}" cy="45" r="22" fill="#FFE9A8"/><circle cx="${250+r(40)}" cy="38" r="20" fill="#1F2154"/>
+       <path d="M0 150 Q80 125 160 150 T320 145 V180 H0Z" fill="#22224A" stroke="#FF8FB1" stroke-width="3"/>`);
+    case "s": return svg(grad(id,"#CFE8FF","#FFFFFF"),
+      Array.from({length:14},()=>`<circle cx="${r(320)}" cy="${r(110)}" r="${2+r(3)}" fill="#fff" stroke="#9BC4E8" stroke-width="1.5"/>`).join("")+
+      `<path d="M-10 180 L90 60 L170 150 L230 80 L330 180Z" fill="#9BC4E8" ${stroke}/>
+       <path d="M90 60 L118 94 L100 88 L84 98 L70 84Z M230 80 L254 108 L238 104 L222 110 L212 100Z" fill="#fff" ${stroke}/>
+       <rect x="-5" y="160" width="330" height="25" fill="#fff" ${stroke}/>`);
+    case "u": return svg(grad(id,"#FFC2A8","#FFE8D6"),
+      `<circle cx="${80+r(160)}" cy="55" r="26" fill="#FF5A36" opacity=".8"/>`+
+      [ [10,90,40],[52,60,36],[90,100,30],[122,40,44],[168,80,34],[204,55,40],[246,95,30],[278,70,40] ]
+        .map(([x,y,w])=>`<rect x="${x}" y="${y}" width="${w}" height="${190-y}" fill="#2B2D6E" ${stroke}/>`+
+          Array.from({length:Math.floor((170-y)/18)},(_,j)=>`<rect x="${x+8}" y="${y+10+j*18}" width="${w-16}" height="6" fill="#FFB627" opacity="${.5+r(.5)}"/>`).join("")).join(""));
+    case "a": return svg(grad(id,"#FF8A5B","#FFD68A"),
+      `<circle cx="${110+r(100)}" cy="110" r="52" fill="#FFE9A8" opacity=".9"/>
+       <path d="M0 145 Q160 120 320 145 V180 H0Z" fill="#C97B2B" ${stroke}/>
+       <path d="M245 145 V95" ${stroke}/><path d="M205 95 Q245 70 290 95 Q245 105 205 95Z" fill="#22224A"/>
+       <path d="M40 150 q5 -20 15 -8 q8 -14 14 4" fill="none" ${stroke}/>`);
+    default: return svg(grad(id,"#BDE8E4","#FFF4E2"),
+      `<circle cx="${230+r(50)}" cy="45" r="22" fill="#FFB627" ${stroke}/>
+       <path d="M-10 180 Q70 80 160 130 T330 90 V180Z" fill="#6CC17A" ${stroke}/>
+       <path d="M30 170 Q110 120 170 135 T300 105" fill="none" stroke="#FF5A36" stroke-width="4" stroke-dasharray="10 8" stroke-linecap="round"/>
+       <path d="M300 105 l0 -30 l18 8 l-18 8" fill="#FF5A36" ${stroke}/>`);
+  }
+}
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+function renderActs(d){
+  const list = (ACTS[d.name]||"").trim().split("\n").filter(Boolean).map(l=>l.split("|"));
+  $("resActs").innerHTML = list.map(([emo,cat,title,desc],i)=>{
+    const q = encodeURIComponent(`${title} ${d.name} ${d.country}`);
+    return `<article class="act" style="--tilt:${[-1.2,1,0.8,-0.8][i%4]}deg; animation-delay:${.15+i*.1}s">
+      <div class="art">${artSVG(cat, (d.i+1)*97+i*31)}<span class="tag">${CAT_LABEL[cat]||"Fun"}</span><span class="sticker">${emo}</span></div>
+      <div class="txt"><h4>${esc(title)}</h4><p>${esc(desc)}</p>
+      <a href="https://www.google.com/search?tbm=isch&q=${q}" target="_blank" rel="noopener">📷 See photos</a></div>
+    </article>`;
+  }).join("");
+  $("resActs").parentElement.scrollTop = 0;
+}
+
+const COLORS = ["#FF5A36","#FFB627","#1FA2A0","#2B2D6E","#FF8FB1","#6CC17A"];
+const TEXTC  = {"#FF5A36":"#fff","#FFB627":"#22224A","#1FA2A0":"#fff","#2B2D6E":"#FFF4E2","#FF8FB1":"#22224A","#6CC17A":"#22224A"};
+const MAX_SEG = 12;
+
+const state = { nights: 7, budget: 1, vibes: new Set(), wheel: [], angle: 0, spinning:false, picked:new Set(), stamps:[], respins:0, lastIdx:-1, current:null };
+try{ const s = JSON.parse(localStorage.getItem("hr_stamps")||"[]"); if(Array.isArray(s)) state.stamps = s.slice(0,12); }catch(e){}
+
+const $ = id => document.getElementById(id);
+const canvas = $("wheel"), ctx = canvas.getContext("2d");
+
+// ---------- Controls ----------
+function renderBudgets(){
+  $("budgets").innerHTML = BUDGETS.map(b=>`
+    <button class="budget" data-id="${b.id}" aria-pressed="${state.budget===b.id}">
+      <span class="ico">${b.icon}</span>
+      <span><div class="t">${b.t}</div><div class="d">${b.d} · ${b.range}</div></span>
+      <span class="money">${b.money}</span>
+    </button>`).join("");
+  $("budgets").querySelectorAll(".budget").forEach(el=>el.onclick=()=>{
+    if(state.spinning) return;
+    state.budget = +el.dataset.id; renderBudgets(); buildWheel(); sfx("pop");
+  });
+}
+function renderVibes(){
+  $("vibes").innerHTML = Object.entries(VIBES).map(([k,v])=>`<button class="chip" data-k="${k}" aria-pressed="${state.vibes.has(k)}">${v}</button>`).join("");
+  $("vibes").querySelectorAll(".chip").forEach(el=>el.onclick=()=>{
+    if(state.spinning) return;
+    const k = el.dataset.k; state.vibes.has(k) ? state.vibes.delete(k) : state.vibes.add(k);
+    renderVibes(); buildWheel(); sfx("pop");
+  });
+}
+$("mystery").onchange = drawWheel;
+function renderNights(){
+  $("nights").innerHTML = NIGHTS.map(n=>`<button class="chip" data-n="${n}" aria-pressed="${state.nights===n}">🌙 ${n} nights</button>`).join("");
+  $("nights").querySelectorAll(".chip").forEach(el=>el.onclick=()=>{ state.nights = +el.dataset.n; renderNights(); sfx("pop"); });
+}
+renderNights();
+
+function pool(ignoreRepeats){
+  return DESTS.filter(d =>
+    (state.budget===-1 || d.tier===state.budget) &&
+    (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) &&
+    (ignoreRepeats || !$("norepeat").checked || !state.picked.has(d.i)));
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildWheel(){
+  let p = pool(false), note = "";
+  if(p.length===0 && pool(true).length){ state.picked.clear(); p = pool(false); note = "You've seen every match! Wheel refilled. "; }
+  if(p.length===0){
+    state.wheel = [];
+    setStatus("No destinations match that combo. Try another vibe or budget 🤷");
+  } else {
+    state.wheel = shuffle(p.slice()).slice(0, MAX_SEG);
+    const extra = p.length > MAX_SEG ? ` (${p.length} matches, ${MAX_SEG} on the wheel, so reshuffle for others)` : "";
+    setStatus(note + `${state.wheel.length} destination${state.wheel.length>1?"s":""} loaded${extra}. Hit SPIN!`);
+  }
+  $("spinBtn").disabled = state.wheel.length===0;
+  drawWheel();
+}
+function setStatus(t){ $("status").textContent = t; }
+
+// ---------- Wheel drawing ----------
+function sizeCanvas(){
+  const r = canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio||1, 3);
+  canvas.width = Math.round(r.width*dpr); canvas.height = Math.round(r.height*dpr);
+  drawWheel(); placeBulbs();
+}
+function drawWheel(){
+  const W = canvas.width, R = W/2, n = state.wheel.length;
+  ctx.clearRect(0,0,W,W);
+  ctx.save(); ctx.translate(R,R);
+  if(!n){
+    ctx.fillStyle="#E6DFD2"; ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
+    ctx.restore(); return;
+  }
+  const seg = Math.PI*2/n, mystery = $("mystery").checked;
+  ctx.rotate(state.angle);
+  for(let k=0;k<n;k++){
+    const a0 = -Math.PI/2 + k*seg, col = COLORS[(n%COLORS.length===1 && k===n-1) ? 2 : k%COLORS.length];
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R,a0,a0+seg); ctx.closePath();
+    ctx.fillStyle = col; ctx.fill();
+    ctx.lineWidth = Math.max(2, W/200); ctx.strokeStyle = "#22224A"; ctx.stroke();
+    // label
+    ctx.save(); ctx.rotate(a0+seg/2);
+    ctx.textAlign="right"; ctx.textBaseline="middle"; ctx.fillStyle = TEXTC[col];
+    const d = state.wheel[k];
+    const fs = Math.max(11, Math.min(W*0.038, seg*R*0.42));
+    const label = mystery ? "? ? ?" : shorten(d.name, 16);
+    ctx.font = `800 ${fs}px "DM Sans", sans-serif`;
+    ctx.fillText(label, R*0.86, 0);
+    ctx.font = `${fs*1.15}px serif`;
+    ctx.textAlign="center";
+    ctx.fillText(mystery ? "🎁" : d.emoji, R*0.93, 0);
+    ctx.restore();
+  }
+  // inner ring
+  ctx.beginPath(); ctx.arc(0,0,R*0.17,0,Math.PI*2); ctx.fillStyle="#22224A"; ctx.fill();
+  ctx.restore();
+}
+function shorten(s,m){ return s.length>m ? s.slice(0,m-1)+"…" : s; }
+
+function placeBulbs(){
+  const b = $("bulbs"); if(b.children.length) return;
+  for(let i=0;i<24;i++){
+    const a = i/24*Math.PI*2, el = document.createElement("i");
+    el.style.left = (50+Math.cos(a)*48.6)+"%"; el.style.top = (50+Math.sin(a)*48.6)+"%";
+    b.appendChild(el);
+  }
+}
+
+// ---------- Sound ----------
+let actx = null;
+function sfx(type){
+  if(!$("sound").checked) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+    o.connect(g); g.connect(actx.destination);
+    if(type==="tick"){ o.type="square"; o.frequency.setValueAtTime(1400,t); g.gain.setValueAtTime(.05,t); g.gain.exponentialRampToValueAtTime(.0001,t+.04); o.start(t); o.stop(t+.05); }
+    else if(type==="pop"){ o.type="sine"; o.frequency.setValueAtTime(500,t); o.frequency.exponentialRampToValueAtTime(900,t+.08); g.gain.setValueAtTime(.08,t); g.gain.exponentialRampToValueAtTime(.0001,t+.12); o.start(t); o.stop(t+.13); }
+    else if(type==="win"){
+      [523,659,784,1047].forEach((f,i)=>{ const o2=actx.createOscillator(), g2=actx.createGain(); o2.type="triangle";
+        o2.connect(g2); g2.connect(actx.destination); const s=t+i*.11; o2.frequency.setValueAtTime(f,s);
+        g2.gain.setValueAtTime(.12,s); g2.gain.exponentialRampToValueAtTime(.0001,s+.35); o2.start(s); o2.stop(s+.36); });
+    }
+  }catch(e){}
+}
+
+// ---------- Spin ----------
+function spin(){
+  if(state.spinning || !state.wheel.length) return;
+  state.spinning = true; $("spinBtn").disabled = true; $("bulbs").classList.add("chase");
+  const n = state.wheel.length, seg = Math.PI*2/n;
+  const k = Math.floor(Math.random()*n);
+  const jitter = (Math.random()-.5)*seg*0.7;
+  const want = ((-(k+0.5)*seg + jitter) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+  const cur = ((state.angle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+  const delta = ((want - cur) + Math.PI*2) % (Math.PI*2);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const turns = reduce ? 1 : 5 + Math.floor(Math.random()*3);
+  const start = state.angle, end = start + turns*Math.PI*2 + delta;
+  const dur = reduce ? 1200 : 4800 + Math.random()*1200, t0 = performance.now();
+  const msgs = ["Packing bags…","Checking passports…","Consulting the travel gods…","Ooh, it's slowing down…","Almost there…"];
+  let lastSeg = Math.floor(start/seg), mi = 0;
+  setStatus(msgs[0]);
+  function frame(now){
+    const p = Math.min(1,(now-t0)/dur), e = 1 - Math.pow(1-p, 4);
+    state.angle = start + (end-start)*e; drawWheel();
+    const s = Math.floor(state.angle/seg);
+    if(s!==lastSeg){ lastSeg = s; sfx("tick"); const ptr=$("pointer"); ptr.classList.remove("tick"); void ptr.offsetWidth; ptr.classList.add("tick"); }
+    const m = Math.min(msgs.length-1, Math.floor(p*msgs.length)); if(m!==mi){ mi=m; setStatus(msgs[m]); }
+    if(p<1) requestAnimationFrame(frame); else land(k);
+  }
+  requestAnimationFrame(frame);
+}
+function land(k){
+  state.spinning = false; $("bulbs").classList.remove("chase"); $("spinBtn").disabled = false;
+  const d = state.wheel[k]; state.current = d; state.picked.add(d.i);
+  setStatus(`${d.emoji} ${d.name}! ${d.emoji}`);
+  sfx("win"); confetti(); showResult(d);
+}
+
+// ---------- Result ----------
+const RESPIN_LINES = ["","Picky, picky 😏","The wheel is starting to take this personally.","Third time's the charm?","You know this is how people end up staying home, right?","The wheel has filed a formal complaint.","Okay, the next one is final. (It's not. But pretend.)"];
+function showResult(d){
+  const b = BUDGETS.find(x=>x.id===d.tier);
+  $("resEmoji").textContent = d.emoji; $("resName").textContent = d.name; $("resCountry").textContent = d.country;
+  $("resBlurb").textContent = d.blurb;
+  const via = FLY_VIA[d.name] ? ` (${FLY_VIA[d.name]})` : "";
+  const total = d.flight + d.daily*state.nights;
+  $("resCost").innerHTML = `
+    <div class="cost"><span>🕒 Flight time from London</span><b>${flyTime(d.name)}</b></div>
+    <div class="cost"><span>✈️ Return flight from UK${via}</span><b>~${fmt(d.flight)}</b></div>
+    <div class="cost"><span>💸 Spending (${fmt(d.daily)}/day × ${state.nights})</span><b>~${fmt(d.daily*state.nights)}</b></div>
+    <div class="cost total"><span>🧾 ${state.nights}-night trip, per person</span><b>~${fmt(total)}</b></div>`;
+  $("resFacts").innerHTML = [`🗓️ Best: ${d.best}`, `${b.icon} ${b.t}`, ...d.vibes.map(v=>VIBES[v])]
+    .map(f=>`<span class="fact">${f}</span>`).join("");
+  renderActs(d);
+  $("flightsLink").href = "https://www.google.com/travel/flights?q=" + encodeURIComponent("flights to " + d.name.split(" &")[0] + " " + d.country);
+  $("respinNote").textContent = RESPIN_LINES[Math.min(state.respins, RESPIN_LINES.length-1)];
+  $("overlay").classList.add("show"); $("lockBtn").focus({preventScroll:true});
+  document.querySelector(".ticket .body").scrollTop = 0;
+}
+function closeResult(){ $("overlay").classList.remove("show"); $("spinBtn").focus(); }
+$("closeBtn").onclick = closeResult;
+$("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") closeResult(); });
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape" && $("overlay").classList.contains("show")) closeResult();
+  if(e.code==="Space" && !$("overlay").classList.contains("show") && document.activeElement===document.body){ e.preventDefault(); spin(); }
+});
+$("lockBtn").onclick = ()=>{
+  const d = state.current; if(!d) return;
+  state.stamps.unshift(`${d.emoji} ${d.name}`); state.stamps = state.stamps.slice(0,12);
+  try{ localStorage.setItem("hr_stamps", JSON.stringify(state.stamps)); }catch(e){}
+  state.respins = 0; renderStamps(); closeResult(); confetti(); sfx("pop");
+  setStatus(`📌 ${d.name} it is. Start the group chat!`);
+  buildWheelQuiet();
+};
+$("againBtn").onclick = ()=>{ state.respins++; closeResult(); buildWheelQuiet(); setTimeout(spin, 250); };
+function buildWheelQuiet(){ const s = $("status").textContent; buildWheel(); setStatus(s); }
+
+function renderStamps(){
+  $("stamps").innerHTML = state.stamps.length
+    ? state.stamps.map((s,i)=>`<span class="stamp" style="--r:${(i%2?3:-3)+(i%3-1)}deg">${s.replace(/</g,"&lt;")}</span>`).join("")
+    : `<span class="stamp-empty">No stamps yet. Lock in a destination to earn one.</span>`;
+}
+$("resetBtn").onclick = ()=>{ state.stamps=[]; state.picked.clear(); try{localStorage.removeItem("hr_stamps")}catch(e){}; renderStamps(); buildWheel(); };
+$("shuffleBtn").onclick = ()=>{ if(!state.spinning){ buildWheel(); sfx("pop"); } };
+$("spinBtn").onclick = spin;
+
+// ---------- Confetti ----------
+const cc = $("confetti"), cx = cc.getContext("2d"); let parts = [], running = false;
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  cc.width = innerWidth; cc.height = innerHeight;
+  for(let i=0;i<160;i++) parts.push({x:innerWidth/2, y:innerHeight*0.4, vx:(Math.random()-.5)*16, vy:Math.random()*-14-4,
+    s:Math.random()*8+5, r:Math.random()*6, vr:(Math.random()-.5)*.3, c:COLORS[i%COLORS.length], life:0});
+  if(!running){ running = true; requestAnimationFrame(tickConfetti); }
+}
+function tickConfetti(){
+  cx.clearRect(0,0,cc.width,cc.height);
+  parts.forEach(p=>{ p.vy+=.35; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; p.life++;
+    cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle=p.c; cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); cx.restore(); });
+  parts = parts.filter(p=>p.y < cc.height+40 && p.life < 300);
+  if(parts.length) requestAnimationFrame(tickConfetti); else { running=false; cx.clearRect(0,0,cc.width,cc.height); }
+}
+
+// ---------- Init ----------
+renderBudgets(); renderVibes(); renderStamps(); buildWheel();
+window.addEventListener("resize", sizeCanvas);
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(sizeCanvas);
+sizeCanvas();
+</script>
+</body>
+</html>
