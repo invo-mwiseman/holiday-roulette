@@ -126,11 +126,26 @@
   .cost.total{background:var(--mustard); border-bottom:0; font-weight:800; font-size:15.5px}
   .socials{max-width:440px; margin:0 auto 16px; display:grid; gap:8px}
   .soc-h{font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
-  .soc-row{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:4px}
-  .soc-tag{grid-column:1/-1; font-weight:800; font-size:15px; text-align:center; overflow-wrap:anywhere}
-  .soc{text-decoration:none; font-weight:800; font-size:12.5px; padding:7px 11px; border:2.5px solid var(--ink); border-radius:999px; box-shadow:0 2px 0 var(--ink); color:#fff; white-space:nowrap; text-align:center}
+  .soc-chips{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
+  .soc-chip{all:unset; cursor:pointer; font-weight:800; font-size:15px; padding:9px 16px; border:2.5px solid var(--ink); border-radius:999px;
+    background:var(--teal); color:#fff; box-shadow:0 3px 0 var(--ink); transition:transform .1s}
+  .soc-chip:nth-child(2){background:var(--navy)}
+  .soc-chip:active{transform:translateY(2px); box-shadow:0 1px 0 var(--ink)}
+  .soc-chip:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+  .sheet{position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; background:rgba(20,20,50,.5);
+    opacity:0; pointer-events:none; transition:opacity .2s}
+  .sheet.show{opacity:1; pointer-events:auto}
+  .sheet-card{width:min(440px,100%); background:var(--paper); border:3px solid var(--ink); border-bottom:0; border-radius:24px 24px 0 0;
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,1.2,.4,1); text-align:center}
+  .sheet.show .sheet-card{transform:none}
+  .sheet-grab{width:44px; height:5px; border-radius:9px; background:#D8CFC0; margin:0 auto 14px}
+  .sheet-q{font-size:13px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .sheet-tag{font-family:"Shrikhand",cursive; font-size:28px; color:var(--tomato); margin:4px 0 16px; overflow-wrap:anywhere}
+  .sheet-btns{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .soc{text-decoration:none; font-weight:800; font-size:16px; padding:14px 10px; border:2.5px solid var(--ink); border-radius:16px; box-shadow:0 3px 0 var(--ink); color:#fff; text-align:center}
   .soc.ig{background:linear-gradient(45deg,#F58529,#DD2A7B 55%,#8134AF)}
-  .soc.tt{background:#111; }
+  .soc.tt{background:#111}
+  .sheet-cancel{all:unset; cursor:pointer; margin-top:14px; font-weight:800; color:var(--muted); padding:8px 16px}
   .soc:active{transform:translateY(2px); box-shadow:none}
   .todo-h{font-family:"Shrikhand",cursive; font-weight:400; font-size:24px; margin:4px 0 12px; color:var(--ink)}
   .acts{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; text-align:left; margin-bottom:18px}
@@ -346,6 +361,19 @@
   </div>
   <div class="pfx-caption" id="pfxCaption"><b>Bon voyage!</b><span id="pfxSub"></span></div>
   <div class="pfx-btns row"><button class="btn primary" id="pfxDone">✈️ Let's go!</button></div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTag">
+  <div class="sheet-card">
+    <div class="sheet-grab"></div>
+    <div class="sheet-q">Open in…</div>
+    <div class="sheet-tag" id="sheetTag"></div>
+    <div class="sheet-btns">
+      <a class="soc ig" id="sheetIg" href="#" target="_blank" rel="noopener">📸 Instagram</a>
+      <a class="soc tt" id="sheetTt" href="#" target="_blank" rel="noopener">🎵 TikTok</a>
+    </div>
+    <button class="sheet-cancel" id="sheetCancel">Cancel</button>
+  </div>
 </div>
 
 <canvas id="confetti"></canvas>
@@ -1040,11 +1068,18 @@ function tagFor(d){
 }
 function renderSocials(d){
   const t = tagFor(d), tags = [t, t + "travel"];
-  $("resSocials").innerHTML = `<div class="soc-h">Watch it on socials</div>` + tags.map(tag=>`
-    <div class="soc-row"><span class="soc-tag">#${tag}</span>
-      <a class="soc ig" href="https://www.instagram.com/explore/tags/${tag}/" target="_blank" rel="noopener">📸 Instagram</a>
-      <a class="soc tt" href="https://www.tiktok.com/tag/${tag}" target="_blank" rel="noopener">🎵 TikTok</a></div>`).join("");
+  $("resSocials").innerHTML = `<div class="soc-h">Watch it on socials</div><div class="soc-chips">` +
+    tags.map(tag=>`<button class="soc-chip" data-tag="${tag}">#${tag}</button>`).join("") + `</div>`;
+  $("resSocials").querySelectorAll(".soc-chip").forEach(b=> b.onclick = ()=> openSocialSheet(b.dataset.tag));
 }
+function openSocialSheet(tag){
+  $("sheetTag").textContent = "#" + tag;
+  $("sheetIg").href = `https://www.instagram.com/explore/tags/${tag}/`;
+  $("sheetTt").href = `https://www.tiktok.com/tag/${tag}`;
+  $("sheet").classList.add("show"); sfx("pop");
+  $("sheetIg").focus({preventScroll:true});
+}
+function closeSocialSheet(){ $("sheet").classList.remove("show"); }
 function showResult(d){
   const b = BUDGETS.find(x=>x.id===d.tier);
   $("resEmoji").textContent = d.emoji; $("resName").textContent = d.name; $("resCountry").textContent = d.country;
@@ -1061,8 +1096,13 @@ function showResult(d){
 }
 function closeResult(){ $("overlay").classList.remove("show"); $("spinBtn").focus(); }
 $("closeBtn").onclick = closeResult;
+$("sheetCancel").onclick = closeSocialSheet;
+$("sheet").addEventListener("click", e=>{ if(e.target.id==="sheet") closeSocialSheet(); });
+$("sheetIg").addEventListener("click", ()=> setTimeout(closeSocialSheet, 300));
+$("sheetTt").addEventListener("click", ()=> setTimeout(closeSocialSheet, 300));
 $("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") closeResult(); });
 document.addEventListener("keydown", e=>{
+  if(e.key==="Escape" && $("sheet").classList.contains("show")){ closeSocialSheet(); return; }
   if(e.key==="Escape" && $("overlay").classList.contains("show")) closeResult();
   if(e.code==="Space" && !$("overlay").classList.contains("show") && document.activeElement===document.body){ e.preventDefault(); spin(); }
 });
