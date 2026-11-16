@@ -14,6 +14,7 @@
     --shadow: 0 6px 0 var(--ink);
   }
   *{box-sizing:border-box}
+  [hidden]{display:none!important}
   html,body{margin:0}
   body{
     font-family:"DM Sans",system-ui,sans-serif; color:var(--ink); min-height:100vh;
@@ -147,6 +148,23 @@
   .soc.tt{background:#111}
   .sheet-cancel{all:unset; cursor:pointer; margin-top:14px; font-weight:800; color:var(--muted); padding:8px 16px}
   .soc:active{transform:translateY(2px); box-shadow:none}
+  .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:left; margin-bottom:18px}
+  @media (max-width:560px){ .info-grid{grid-template-columns:1fr} }
+  .info{background:#fff; border:2.5px solid var(--ink); border-radius:14px; padding:11px 13px; box-shadow:0 3px 0 var(--ink)}
+  .info.wide{grid-column:1/-1}
+  .info.good{background:#EAF7EC} .info.warn{background:#FFF1DC}
+  .info-h{font-size:11.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; display:flex; gap:6px; align-items:center}
+  .info-tag{background:var(--mustard); color:var(--ink); border-radius:999px; padding:1px 7px; font-size:9.5px; letter-spacing:.08em}
+  .info-b{font-weight:700; font-size:14.5px; line-height:1.35}
+  .info-sub{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.4}
+  .info-link{font-weight:800; font-size:14px; color:var(--tomato); text-decoration:none; border-bottom:2px solid currentColor}
+  .wx-days{display:grid; grid-template-columns:repeat(5,1fr); gap:4px; text-align:center}
+  .wx-day{display:flex; flex-direction:column; gap:2px; font-size:12px; font-weight:700}
+  .wx-day b{font-size:24px; line-height:1.2} .wx-day small{color:var(--teal); font-weight:800}
+  .bars{display:grid; grid-template-columns:repeat(12,1fr); gap:4px; height:86px; align-items:end}
+  .bar{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:3px}
+  .bar i{display:block; width:100%; background:#D8CFC0; border:2px solid var(--ink); border-radius:5px 5px 2px 2px}
+  .bar.lo i{background:var(--green)} .bar span{font-size:10.5px; font-weight:800; color:var(--muted)}
   .todo-h{font-family:"Shrikhand",cursive; font-weight:400; font-size:24px; margin:4px 0 12px; color:var(--ink)}
   .acts{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; text-align:left; margin-bottom:18px}
   @media (max-width:560px){ .acts{grid-template-columns:1fr} }
@@ -187,6 +205,109 @@
   .close{all:unset; cursor:pointer; font-size:20px; line-height:1; color:#fff}
   .respin-note{font-size:13px; color:var(--muted); margin-top:12px; min-height:18px}
 
+  .cd{position:relative; width:100%; max-width:520px; margin:22px auto 0; border:3px solid var(--ink); border-radius:22px; overflow:hidden; box-shadow:var(--shadow); color:#fff; text-align:center}
+  .cd-bg{position:absolute; inset:0; background:var(--navy) center/cover; filter:saturate(1.1)}
+  .cd-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(34,34,74,.55), rgba(34,34,74,.88))}
+  .cd-in{position:relative; padding:16px 16px 14px}
+  .cd-top{display:flex; justify-content:space-between; align-items:center; gap:8px; font-weight:800; font-size:17px; flex-wrap:wrap}
+  .cd-date{font-size:12.5px; font-weight:700; background:rgba(255,255,255,.18); padding:4px 10px; border-radius:999px}
+  .cd-nums{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:14px 0 12px}
+  .cd-u{background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.35); border-radius:14px; padding:8px 0 6px; perspective:300px}
+  .cd-u b{display:block; font-family:"Shrikhand",cursive; font-weight:400; font-size:clamp(26px,7vw,38px); line-height:1.1; color:var(--mustard); text-shadow:2px 2px 0 var(--ink)}
+  .cd-u b.flip{animation:flipNum .35s ease-out}
+  @keyframes flipNum{0%{transform:rotateX(-90deg); opacity:.2} 100%{transform:none; opacity:1}}
+  .cd-u span{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; opacity:.85}
+  .cd-actions{display:flex; justify-content:center; gap:16px; flex-wrap:wrap; font-size:13px; margin-bottom:10px}
+  .cd-edit{position:relative; font-weight:800; cursor:pointer; border-bottom:2px solid rgba(255,255,255,.6)}
+  .cd-edit input{position:absolute; inset:0; opacity:0; cursor:pointer; width:100%}
+  .cd-link{all:unset; cursor:pointer; font-weight:800; opacity:.8; border-bottom:2px solid rgba(255,255,255,.4)}
+  .cd-pack-h{all:unset; cursor:pointer; display:flex; justify-content:center; gap:8px; width:100%; padding:10px 0 4px; font-weight:800; font-size:15px; border-top:2px dashed rgba(255,255,255,.35)}
+  .cd-pack-h b{background:var(--mustard); color:var(--ink); border-radius:999px; padding:0 8px; font-size:13px}
+  .cd-pack{display:none; text-align:left; margin-top:8px; columns:2; column-gap:14px}
+  .cd-pack.open{display:block}
+  @media (max-width:420px){ .cd-pack{columns:1} }
+  .pk{display:flex; gap:8px; align-items:flex-start; padding:5px 0; font-size:14px; font-weight:600; break-inside:avoid; cursor:pointer}
+  .pk input{width:18px; height:18px; accent-color:var(--mustard); flex:none; margin-top:1px}
+  .pk input:checked + span{text-decoration:line-through; opacity:.6}
+  .cd-go{font-family:"Shrikhand",cursive; font-size:26px; color:var(--mustard); padding:18px 0}
+  .cd-empty{background:var(--paper); color:var(--ink); padding:16px; box-shadow:var(--shadow)}
+  .cd-q{font-size:16px; margin-bottom:10px}
+  .cd-set{display:flex; flex-direction:column; gap:8px; align-items:center; font-weight:700; font-size:13.5px; color:var(--muted)}
+  .cd-set input, .pfx-date input{font:inherit; font-weight:800; color:var(--ink); padding:8px 12px; border:2.5px solid var(--ink); border-radius:12px; background:#fff}
+  .pfx-date{display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; font-weight:800; margin-bottom:12px}
+  /* ---------- Scratch card + globe ---------- */
+  .fx-layer{position:fixed; inset:0; z-index:42; display:none; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:20px;
+    background:radial-gradient(circle at 50% 40%, #3A3C8A, #14153A 75%)}
+  .fx-layer.show{display:flex; animation:fadeIn .25s ease-out}
+  .scratch-title{font-family:"Shrikhand",cursive; font-size:clamp(28px,7vw,40px); color:var(--mustard); text-shadow:3px 3px 0 var(--ink); text-align:center}
+  .scratch-card{position:relative; width:min(320px,86vw); aspect-ratio:3/4; border:4px solid var(--ink); border-radius:24px; overflow:hidden; box-shadow:0 10px 0 var(--ink);
+    background:var(--paper); transform:rotate(-2deg); touch-action:none}
+  .scratch-under{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center;
+    background:repeating-radial-gradient(circle at 50% 50%, rgba(255,90,54,.06) 0 6px, transparent 6px 14px), var(--paper)}
+  .su-emoji{font-size:84px; line-height:1}
+  .su-name{font-family:"Shrikhand",cursive; font-size:clamp(28px,8vw,40px); color:var(--tomato); text-shadow:2px 2px 0 var(--ink); margin-top:10px; line-height:1.05}
+  .su-country{font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-top:8px}
+  #scratchCanvas{position:absolute; inset:0; width:100%; height:100%; cursor:grab; transition:opacity .6s}
+  #scratchCanvas.gone{opacity:0; pointer-events:none}
+  .fx-row{min-height:48px; align-items:center}
+  .fx-skip{all:unset; cursor:pointer; color:#fff; opacity:.8; font-weight:800; padding:8px 14px; border-bottom:2px solid rgba(255,255,255,.4)}
+  .globe-layer{padding:0; background:radial-gradient(circle at 50% 45%, #23255E, #0B0C26 70%)}
+  #globeCanvas{position:absolute; inset:0; width:100%; height:100%}
+  .globe-cap{position:absolute; left:0; right:0; bottom:max(28px, env(safe-area-inset-bottom)); text-align:center; color:#fff; font-weight:800; font-size:17px; padding:0 16px; text-shadow:0 2px 8px rgba(0,0,0,.6)}
+  .globe-cap b{display:block; font-family:"Shrikhand",cursive; font-weight:400; font-size:clamp(26px,7vw,40px); color:var(--mustard); text-shadow:3px 3px 0 var(--ink)}
+  .globe-skip{position:absolute; top:max(18px, env(safe-area-inset-top)); right:16px}
+  .party{display:grid; gap:8px; margin-bottom:12px}
+  .stepper{display:grid; grid-template-columns:1fr 40px 34px 40px; align-items:center; gap:6px; background:#fff; border:2.5px solid var(--ink); border-radius:14px; padding:6px 8px 6px 12px; box-shadow:0 3px 0 var(--ink)}
+  .stepper span{font-weight:800; font-size:14.5px} .stepper small{font-weight:600; color:var(--muted); font-size:11.5px}
+  .stepper b{text-align:center; font-family:"Shrikhand",cursive; font-weight:400; font-size:22px; color:var(--tomato)}
+  .st-btn{all:unset; cursor:pointer; width:36px; height:32px; display:grid; place-items:center; border:2.5px solid var(--ink); border-radius:10px; background:var(--mustard); font-weight:800; font-size:20px; box-shadow:0 2px 0 var(--ink)}
+  .st-btn:active{transform:translateY(2px); box-shadow:none}
+  .st-btn:disabled{opacity:.35; cursor:default}
+  .st-btn:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+  .cost small{font-weight:600; color:var(--muted); font-size:12px}
+  .cost.per{background:#FFF8EA; font-size:13.5px; border-bottom:0}
+  .cost.total{border-bottom:2px dashed #E6DFD2}
+  .top-r{display:flex; align-items:center; gap:10px}
+  .amb{all:unset; cursor:pointer; font-size:11.5px; font-weight:800; letter-spacing:.06em; text-transform:none; background:rgba(255,255,255,.2); padding:5px 10px; border-radius:999px; white-space:nowrap}
+  .amb.muted{opacity:.6; text-decoration:line-through}
+  @media (max-width:420px){ .ticket .top > span:first-child{font-size:10px; letter-spacing:.1em} }
+  /* ---------- Passport book ---------- */
+  .book-top{width:min(380px,92vw); display:flex; justify-content:space-between; align-items:center; color:#fff; font-weight:800; letter-spacing:.1em; font-size:12px; text-transform:uppercase}
+  .book{position:relative; width:min(380px,92vw); aspect-ratio:3/4.2; perspective:1800px; touch-action:pan-y}
+  .bpage{position:absolute; inset:0; background:#FFF8EA; border:3px solid var(--ink); border-radius:6px 18px 18px 6px; overflow:hidden; padding:18px;
+    background-image:repeating-radial-gradient(circle at 50% 45%, rgba(31,162,160,.09) 0 2px, transparent 2px 10px);
+    box-shadow:inset 16px 0 20px -14px rgba(0,0,0,.3), 0 10px 0 var(--ink); transform-origin:left center; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    transition:transform .65s cubic-bezier(.5,0,.3,1)}
+  .bpage.turned{transform:rotateY(-170deg)}
+  .bpage.cover{background:linear-gradient(135deg,#2B2D6E,#1C1D52); color:#F5C451; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center;
+    box-shadow:inset 0 0 0 10px #232463, inset 0 0 0 12px rgba(245,196,81,.5), 0 10px 0 var(--ink)}
+  .bpage.cover .crest{font-size:84px; filter:sepia(1) saturate(4) hue-rotate(5deg) brightness(1.1)}
+  .bpage.cover .t1{font-family:"Shrikhand",cursive; font-size:40px}
+  .bpage.cover .t2{font-weight:800; font-size:12px; letter-spacing:.32em; text-transform:uppercase; line-height:1.7}
+  .bp-h{font-size:10.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--teal); margin-bottom:10px}
+  .bp-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:14px}
+  .bp-stat{background:#fff; border:2px solid var(--ink); border-radius:10px; text-align:center; padding:6px 2px}
+  .bp-stat b{display:block; font-family:"Shrikhand",cursive; font-weight:400; font-size:22px; color:var(--tomato)}
+  .bp-stat span{font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+  .badges{display:grid; grid-template-columns:repeat(3,1fr); gap:7px}
+  .badge{text-align:center; border:2px dashed #CFC6B5; border-radius:12px; padding:7px 3px; filter:grayscale(1); opacity:.45}
+  .badge.on{filter:none; opacity:1; border:2px solid var(--ink); background:#fff; box-shadow:0 2px 0 var(--ink)}
+  .badge i{display:block; font-style:normal; font-size:24px}
+  .badge b{display:block; font-size:11px; line-height:1.15}
+  .badge span{display:block; font-size:9.5px; color:var(--muted); line-height:1.2; margin-top:2px}
+  .bp-grid{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:10px; height:calc(100% - 26px)}
+  .bp-slot{display:flex; align-items:center; justify-content:center; position:relative}
+  .bp-slot svg{width:100%; height:auto; opacity:.92}
+  .bp-slot small{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:10px; font-weight:800; color:var(--muted)}
+  .bp-empty{height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--muted); font-weight:700; gap:10px}
+  .bp-empty i{font-size:56px; font-style:normal}
+  .book-nav{width:min(380px,92vw); display:flex; justify-content:space-between; align-items:center; gap:10px}
+  .book-nav .btn{min-width:56px; text-align:center; font-size:18px}
+  .book-nav .btn:disabled{opacity:.35; cursor:default}
+  .book-hint{color:#fff; opacity:.7; font-size:12.5px; font-weight:700; text-align:center}
+  .toast{position:fixed; left:50%; bottom:24px; transform:translate(-50%,220%); visibility:hidden; z-index:60; background:var(--ink); color:#fff; font-weight:800; padding:12px 18px;
+    border-radius:999px; border:2.5px solid var(--mustard); box-shadow:0 6px 18px rgba(0,0,0,.3); transition:transform .4s cubic-bezier(.2,1.4,.4,1); max-width:90vw; text-align:center}
+  .toast.show{transform:translate(-50%,0); visibility:visible}
   /* ---------- Passport stamp FX ---------- */
   .pfx{position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; flex-direction:column;
     background:radial-gradient(circle at 50% 45%, rgba(43,45,110,.55), rgba(20,20,50,.85)); perspective:1600px; overflow:hidden}
@@ -260,7 +381,7 @@
       <div class="hint">Sets flight times, fares and the currency for everything.</div>
     </div>
     <div class="section">
-      <h2><span class="num">1</span> Budget per person / day</h2>
+      <h2><span class="num">1</span> Budget per adult / day</h2>
       <div class="budgets" id="budgets"></div>
     </div>
     <div class="section">
@@ -269,9 +390,20 @@
       <div class="hint">Pick none for anything goes, or stack a few.</div>
     </div>
     <div class="section">
+      <h2><span class="num">🍽</span> Board &amp; who's going</h2>
+      <div class="party">
+        <div class="stepper"><span>🧑 Adults</span><button class="st-btn" data-p="adults" data-d="-1" aria-label="Fewer adults">−</button><b id="nAdults">2</b><button class="st-btn" data-p="adults" data-d="1" aria-label="More adults">+</button></div>
+        <div class="stepper"><span>🧒 Children <small>2–11</small></span><button class="st-btn" data-p="kids" data-d="-1" aria-label="Fewer children">−</button><b id="nKids">0</b><button class="st-btn" data-p="kids" data-d="1" aria-label="More children">+</button></div>
+      </div>
+      <div class="hint" style="margin:0 0 8px">Meal plan (only shows places where it's widely offered):</div>
+      <div class="chips" id="boards"></div>
+      <label class="toggle" style="margin-top:12px"><span>👨‍👩‍👧 Family friendly only<small>Good for kids: easy logistics, things to do, no strict age limits</small></span>
+        <span class="switch"><input type="checkbox" id="family"><span></span></span></label>
+    </div>
+    <div class="section">
       <h2><span class="num">3</span> Trip length</h2>
       <div class="chips" id="nights"></div>
-      <div class="hint">Used to total up flights + spending on your result.</div>
+      <div class="hint" id="nightsHint">Used to total up flights + spending on your result.</div>
     </div>
     <div class="section">
       <h2><span class="num">4</span> House rules</h2>
@@ -282,6 +414,8 @@
           <span class="switch"><input type="checkbox" id="sound" checked><span></span></span></label>
         <label class="toggle"><span>No repeats<small>Skip places already picked this session</small></span>
           <span class="switch"><input type="checkbox" id="norepeat" checked><span></span></span></label>
+        <label class="toggle"><span>Ambient sounds<small>Waves, city buzz, temple bells… on your result</small></span>
+          <span class="switch"><input type="checkbox" id="ambient" checked><span></span></span></label>
       </div>
     </div>
   </aside>
@@ -301,16 +435,18 @@
       <button class="btn alt" id="shuffleBtn">🔀 Reshuffle wheel</button>
       <button class="btn" id="resetBtn">🧽 Clear stamps</button>
     </div>
+    <div id="countdown"></div>
     <div class="stamps">
       <h3>🛂 Passport stamps</h3>
       <div class="stamp-list" id="stamps"></div>
+      <div class="row" style="margin-top:14px"><button class="btn primary" id="bookBtn">📖 Open my passport</button></div>
     </div>
   </section>
 </main>
 
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="resName">
   <div class="ticket">
-    <div class="top"><span>Boarding pass · one way to fun</span><button class="close" id="closeBtn" aria-label="Close">✕</button></div>
+    <div class="top"><span>Boarding pass · one way to fun</span><span class="top-r"><button class="amb" id="ambBtn" hidden></button><button class="close" id="closeBtn" aria-label="Close">✕</button></span></div>
     <div class="body">
       <div class="big" id="resEmoji"></div>
       <h2 id="resName"></h2>
@@ -319,6 +455,7 @@
       <div class="costs" id="resCost"></div>
       <div class="facts" id="resFacts"></div>
       <div class="socials" id="resSocials"></div>
+      <div id="resInfo"></div>
       <div class="perf"></div>
       <h3 class="todo-h">Things to do</h3>
       <div class="acts" id="resActs"></div>
@@ -360,7 +497,10 @@
     </svg>
   </div>
   <div class="pfx-caption" id="pfxCaption"><b>Bon voyage!</b><span id="pfxSub"></span></div>
-  <div class="pfx-btns row"><button class="btn primary" id="pfxDone">✈️ Let's go!</button></div>
+  <div class="pfx-btns">
+    <label class="pfx-date">📅 When are you going? <input type="date" id="pfxDate"></label>
+    <div class="row"><button class="btn primary" id="pfxDone">✈️ Let's go!</button></div>
+  </div>
 </div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTag">
@@ -376,9 +516,53 @@
   </div>
 </div>
 
+<div class="sheet" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirmQ">
+  <div class="sheet-card">
+    <div class="sheet-grab"></div>
+    <div class="sheet-tag" id="confirmQ" style="font-size:22px"></div>
+    <div class="sheet-btns"><button class="btn" id="confirmNo">Keep them</button><button class="btn primary" id="confirmYes">Yes, clear</button></div>
+  </div>
+</div>
+
+<div class="fx-layer" id="scratchFx" role="dialog" aria-modal="true" aria-label="Scratch to reveal your destination">
+  <div class="scratch-title">Scratch to reveal! 🪙</div>
+  <div class="scratch-card" id="scratchCard">
+    <div class="scratch-under">
+      <div class="su-emoji" id="suEmoji"></div>
+      <div class="su-name" id="suName"></div>
+      <div class="su-country" id="suCountry"></div>
+    </div>
+    <canvas id="scratchCanvas"></canvas>
+  </div>
+  <div class="row fx-row">
+    <button class="btn primary" id="scratchGo" hidden>✈️ Let's fly!</button>
+    <button class="fx-skip" id="scratchSkip">Just show me</button>
+  </div>
+</div>
+
+<div class="fx-layer globe-layer" id="globeFx" aria-label="Flight animation">
+  <canvas id="globeCanvas"></canvas>
+  <div class="globe-cap" id="globeCap"></div>
+  <button class="fx-skip globe-skip" id="globeSkip">Skip ⏭</button>
+</div>
+
+<div class="fx-layer" id="bookFx" role="dialog" aria-modal="true" aria-label="My passport">
+  <div class="book-top"><span id="bookPageNo"></span><button class="fx-skip" id="bookClose">Close ✕</button></div>
+  <div class="book" id="book"></div>
+  <div class="book-nav">
+    <button class="btn" id="bookPrev" aria-label="Previous page">◀</button>
+    <div class="book-hint">Swipe or tap the arrows to flip</div>
+    <button class="btn" id="bookNext" aria-label="Next page">▶</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <canvas id="confetti"></canvas>
 <footer>All costs are rough estimates per person. Daily spend covers your stay, food and getting around. Flights are an estimated economy return from your starting city, booked a couple of months ahead, outside school holidays. Currency conversions are approximate. Prices swing a lot with season, so treat them as a guide, not a quote. Activity photos come from Wikimedia Commons; credits are shown on each photo.</footer>
 
+<script src="vendor/d3-array.min.js"></script>
+<script src="vendor/d3-geo.min.js"></script>
+<script src="vendor/land.js"></script>
 <script>
 const BUDGETS = [
   {id:0, icon:"🎒", t:"Shoestring",        d:"Hostels, street food, buses",     lo:0,   hi:50},
@@ -458,7 +642,14 @@ const RAW = [
 // ---------- Where you're flying from ----------
 // rate = units of local currency per 1 USD (approximate)
 const ORIGINS = [
-  {id:"uk", flag:"🇬🇧", name:"United Kingdom", city:"London",      lat:51.47, lon:-0.45,   sym:"£",   pip:"£", rate:0.78},
+  {id:"uk",    flag:"🇬🇧", name:"United Kingdom", city:"London",     lat:51.47, lon:-0.45, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukman", flag:"🇬🇧", name:"United Kingdom", city:"Manchester", lat:53.35, lon:-2.27, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukbhx", flag:"🇬🇧", name:"United Kingdom", city:"Birmingham", lat:52.45, lon:-1.74, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukedi", flag:"🇬🇧", name:"United Kingdom", city:"Edinburgh",  lat:55.95, lon:-3.37, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukgla", flag:"🇬🇧", name:"United Kingdom", city:"Glasgow",    lat:55.87, lon:-4.43, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukbrs", flag:"🇬🇧", name:"United Kingdom", city:"Bristol",    lat:51.38, lon:-2.72, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukncl", flag:"🇬🇧", name:"United Kingdom", city:"Newcastle",  lat:55.04, lon:-1.69, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
+  {id:"ukbfs", flag:"🇬🇧", name:"United Kingdom", city:"Belfast",    lat:54.66, lon:-6.22, sym:"£", pip:"£", rate:0.78, group:"United Kingdom"},
   {id:"ie", flag:"🇮🇪", name:"Ireland",        city:"Dublin",      lat:53.42, lon:-6.27,   sym:"€",   pip:"€", rate:0.92},
   {id:"fr", flag:"🇫🇷", name:"France",         city:"Paris",       lat:49.01, lon:2.55,    sym:"€",   pip:"€", rate:0.92},
   {id:"de", flag:"🇩🇪", name:"Germany",        city:"Frankfurt",   lat:50.03, lon:8.57,    sym:"€",   pip:"€", rate:0.92},
@@ -529,6 +720,15 @@ function flightFor(d, o){
   const km = distKm(o.lat,o.lon,lat,lon);
   if(km < 120) return {home:true, hours:0, stops:0, fare:0, airport};
   if(o.id==="uk" && UK_FARE[d.name]) return {hours:UK_TIME[d.name][0], stops:UK_TIME[d.name][1], fare:UK_FARE[d.name], airport};
+  if(o.id.startsWith("uk") && UK_FARE[d.name]){
+    // Regional UK airports: start from the London figures, adjust for distance, and add a connection on most long-haul routes
+    const L = ORIGINS[0], kmL = distKm(L.lat,L.lon,lat,lon);
+    let hours = UK_TIME[d.name][0] + (km-kmL)/800, stops = UK_TIME[d.name][1], fare = UK_FARE[d.name];
+    const longHaul = fare >= 300 || hours > 6, directOK = (["ukman","ukedi"].includes(o.id) && d.name==="New York City");
+    if(longHaul){ if(stops===0 && !directOK){ stops = 1; hours += 2.5; } else hours += .3; fare = fare*1.08 + 40; }
+    else fare = fare*1.1;
+    return {hours:Math.max(1, hours), stops, fare:nice(fare), airport};
+  }
   let stops = (km < 600 || km <= REACH_KM[reach]) ? 0 : (km > 15000 || (reach===0 && km > 9000)) ? 2 : 1;
   const hours = stops===0 ? km/800 + 0.6 : km*1.12/800 + 0.6 + stops*2.5;
   let usd = km < 600 ? 80 : km < 2500 ? 50 + km*0.05 : 150 + km*0.072;
@@ -545,6 +745,188 @@ const local = usd => nice(usd*ORIGIN.rate);
 const DESTS = RAW.map(([name,country,emoji,tier,vibes,blurb,cost,best],i)=>
   ({i,name,country,emoji,tier,vibes,blurb,best, dailyUSD:+cost.replace(/[^0-9]/g,"")}));
 const NIGHTS = [4,7,10,14];
+
+// ---------- Board basis + family ----------
+// Board types commonly offered at each destination: RO room only, BB bed & breakfast, HB half board, FB full board, AI all-inclusive
+const BOARD_NAMES = {any:"Any", RO:"Room only", BB:"B&B", HB:"Half board", FB:"Full board", AI:"All-inclusive"};
+// Extra per person per day (USD) for meals on each board basis, scaled up for pricier tiers
+const BOARD_EXTRA = {RO:0, BB:6, HB:20, FB:32, AI:50};
+const TIER_SCALE = [1, 1.4, 2, 3, 4];
+const B_ALL = "RO BB HB FB AI";
+const BOARD = {
+  "Hoi An":"RO BB HB AI","Luang Prabang":"RO BB","Pokhara":"RO BB HB","Goa":B_ALL,"Siem Reap":"RO BB","Antigua":"RO BB","Ella":"RO BB HB",
+  "Yogyakarta":"RO BB","Rishikesh":"RO BB FB","Sucre":"RO BB","Hanoi":"RO BB","Manali":"RO BB HB","Chiang Mai":"RO BB","Tbilisi":"RO BB",
+  "Oaxaca":"RO BB","Budapest":"RO BB","Kraków":"RO BB","Istanbul":"RO BB","Marrakech":"RO BB HB AI","Medellín":"RO BB","Penang":"RO BB HB",
+  "Ksamil":"RO BB HB","Ubud, Bali":"RO BB HB FB","Bansko":"RO BB HB AI","Lisbon":"RO BB","Seoul":"RO BB","Tokyo":"RO BB","Taipei":"RO BB",
+  "Cape Town":"RO BB","Naxos":"RO BB HB","Split & Hvar":"RO BB HB","Petra & Wadi Rum":"RO BB HB FB","Buenos Aires":"RO BB","Barcelona":"RO BB",
+  "Hokkaido":"RO BB HB","Reykjavík & Ring Road":"RO BB","Amalfi Coast":"RO BB HB","Kyoto":"RO BB HB","Santorini":"RO BB HB AI","Zermatt":"RO BB HB",
+  "New York City":"RO BB","Banff":"RO BB","Patagonia":"RO BB FB AI","Copenhagen":"RO BB","Queenstown":"RO BB","The Maldives":"BB HB FB AI",
+  "Bora Bora":"BB HB FB AI","Serengeti Safari":"FB AI","Antarctica Expedition":"FB AI","Seychelles":"BB HB FB AI","Okavango Delta":"FB AI",
+  "St. Moritz":"RO BB HB","Fiji Private Island":"FB AI","Monaco & Riviera":"RO BB","Venice":"RO BB","Rajasthan Palaces":"RO BB HB FB","Machu Picchu":"RO BB FB"
+};
+// Daily estimates for these already include meals (safari camps, expedition ships, private islands)
+const BOARD_BASE = {"Serengeti Safari":"FB","Antarctica Expedition":"FB","Okavango Delta":"FB","Fiji Private Island":"FB"};
+const FAMILY = new Set(["Hoi An","Luang Prabang","Pokhara","Goa","Siem Reap","Ella","Yogyakarta","Hanoi","Manali","Chiang Mai","Tbilisi","Oaxaca","Budapest",
+  "Kraków","Istanbul","Marrakech","Penang","Ksamil","Ubud, Bali","Bansko","Lisbon","Seoul","Tokyo","Taipei","Cape Town","Naxos","Split & Hvar","Petra & Wadi Rum",
+  "Buenos Aires","Barcelona","Hokkaido","Reykjavík & Ring Road","Kyoto","Zermatt","New York City","Banff","Copenhagen","Queenstown","The Maldives","Serengeti Safari",
+  "Seychelles","St. Moritz","Fiji Private Island","Venice","Rajasthan Palaces"]);
+const boards = d => (BOARD[d.name]||"RO BB").split(" ");
+function boardFor(d){ return state.board==="any" ? (BOARD_BASE[d.name]||"RO") : state.board; }
+function dailyUSD(d){ const base = BOARD_BASE[d.name]||"RO", b = boardFor(d);
+  return Math.max(d.dailyUSD*.8, d.dailyUSD + (BOARD_EXTRA[b] - BOARD_EXTRA[base]) * TIER_SCALE[d.tier]); }
+
+// ---------- Destination facts: [IANA time zone, currency, UK FCDO slug, continent, (weather lat, lon)] ----------
+const META = {
+  "Hoi An":["Asia/Ho_Chi_Minh","VND","vietnam","Asia",15.88,108.33],"Luang Prabang":["Asia/Vientiane","LAK","laos","Asia"],
+  "Pokhara":["Asia/Kathmandu","NPR","nepal","Asia"],"Goa":["Asia/Kolkata","INR","india","Asia"],"Siem Reap":["Asia/Phnom_Penh","KHR","cambodia","Asia"],
+  "Antigua":["America/Guatemala","GTQ","guatemala","N. America",14.56,-90.73],"Ella":["Asia/Colombo","LKR","sri-lanka","Asia",6.87,81.05],
+  "Yogyakarta":["Asia/Jakarta","IDR","indonesia","Asia"],"Rishikesh":["Asia/Kolkata","INR","india","Asia",30.09,78.27],
+  "Sucre":["America/La_Paz","BOB","bolivia","S. America"],"Hanoi":["Asia/Ho_Chi_Minh","VND","vietnam","Asia",21.03,105.85],
+  "Manali":["Asia/Kolkata","INR","india","Asia",32.24,77.19],"Chiang Mai":["Asia/Bangkok","THB","thailand","Asia"],
+  "Tbilisi":["Asia/Tbilisi","GEL","georgia","Asia"],"Oaxaca":["America/Mexico_City","MXN","mexico","N. America"],
+  "Budapest":["Europe/Budapest","HUF","hungary","Europe"],"Kraków":["Europe/Warsaw","PLN","poland","Europe"],
+  "Istanbul":["Europe/Istanbul","TRY","turkey","Europe"],"Marrakech":["Africa/Casablanca","MAD","morocco","Africa"],
+  "Medellín":["America/Bogota","COP","colombia","S. America"],"Penang":["Asia/Kuala_Lumpur","MYR","malaysia","Asia"],
+  "Ksamil":["Europe/Tirane","ALL","albania","Europe",39.77,20.00],"Ubud, Bali":["Asia/Makassar","IDR","indonesia","Asia",-8.51,115.26],
+  "Bansko":["Europe/Sofia","EUR","bulgaria","Europe",41.84,23.49],"Lisbon":["Europe/Lisbon","EUR","portugal","Europe"],
+  "Seoul":["Asia/Seoul","KRW","south-korea","Asia",37.57,126.98],"Tokyo":["Asia/Tokyo","JPY","japan","Asia"],
+  "Taipei":["Asia/Taipei","TWD","taiwan","Asia",25.03,121.56],"Cape Town":["Africa/Johannesburg","ZAR","south-africa","Africa"],
+  "Naxos":["Europe/Athens","EUR","greece","Europe"],"Split & Hvar":["Europe/Zagreb","EUR","croatia","Europe"],
+  "Petra & Wadi Rum":["Asia/Amman","JOD","jordan","Asia",30.33,35.44],"Buenos Aires":["America/Argentina/Buenos_Aires","ARS","argentina","S. America",-34.60,-58.38],
+  "Barcelona":["Europe/Madrid","EUR","spain","Europe"],"Hokkaido":["Asia/Tokyo","JPY","japan","Asia",42.80,140.69],
+  "Reykjavík & Ring Road":["Atlantic/Reykjavik","ISK","iceland","Europe",64.15,-21.94],"Amalfi Coast":["Europe/Rome","EUR","italy","Europe",40.63,14.60],
+  "Kyoto":["Asia/Tokyo","JPY","japan","Asia",35.01,135.77],"Santorini":["Europe/Athens","EUR","greece","Europe"],
+  "Zermatt":["Europe/Zurich","CHF","switzerland","Europe",46.02,7.75],"New York City":["America/New_York","USD","usa","N. America",40.71,-74.01],
+  "Banff":["America/Edmonton","CAD","canada","N. America",51.18,-115.57],"Patagonia":["America/Punta_Arenas","CLP","chile","S. America",-50.94,-72.97],
+  "Copenhagen":["Europe/Copenhagen","DKK","denmark","Europe"],"Queenstown":["Pacific/Auckland","NZD","new-zealand","Oceania"],
+  "The Maldives":["Indian/Maldives","MVR","maldives","Asia"],"Bora Bora":["Pacific/Tahiti","XPF","french-polynesia","Oceania"],
+  "Serengeti Safari":["Africa/Dar_es_Salaam","TZS","tanzania","Africa",-2.33,34.83],"Antarctica Expedition":["America/Argentina/Ushuaia","USD","argentina","Antarctica",-64.8,-62.8],
+  "Seychelles":["Indian/Mahe","SCR","seychelles","Africa"],"Okavango Delta":["Africa/Gaborone","BWP","botswana","Africa",-19.3,22.9],
+  "St. Moritz":["Europe/Zurich","CHF","switzerland","Europe",46.50,9.84],"Fiji Private Island":["Pacific/Fiji","FJD","fiji","Oceania"],
+  "Monaco & Riviera":["Europe/Monaco","EUR","monaco","Europe",43.74,7.42],"Venice":["Europe/Rome","EUR","italy","Europe",45.44,12.33],
+  "Rajasthan Palaces":["Asia/Kolkata","INR","india","Asia"],"Machu Picchu":["America/Lima","PEN","peru","S. America",-13.16,-72.55]
+};
+// Origin extras: [time zone, currency code, passport demonym used by Wikipedia's "Visa requirements for … citizens" pages]
+const ORIGIN_META = {
+  uk:["Europe/London","GBP","British"], ukman:["Europe/London","GBP","British"], ukbhx:["Europe/London","GBP","British"], ukedi:["Europe/London","GBP","British"],
+  ukgla:["Europe/London","GBP","British"], ukbrs:["Europe/London","GBP","British"], ukncl:["Europe/London","GBP","British"], ukbfs:["Europe/London","GBP","British"], ie:["Europe/Dublin","EUR","Irish"], fr:["Europe/Paris","EUR","French"], de:["Europe/Berlin","EUR","German"],
+  nl:["Europe/Amsterdam","EUR","Dutch"], es:["Europe/Madrid","EUR","Spanish"], use:["America/New_York","USD","United States"],
+  usw:["America/Los_Angeles","USD","United States"], ca:["America/Toronto","CAD","Canadian"], ae:["Asia/Dubai","AED","Emirati"],
+  in:["Asia/Kolkata","INR","Indian"], th:["Asia/Bangkok","THB","Thai"], sg:["Asia/Singapore","SGD","Singaporean"],
+  hk:["Asia/Hong_Kong","HKD","Hong Kong"], jp:["Asia/Tokyo","JPY","Japanese"], au:["Australia/Sydney","AUD","Australian"],
+  nz:["Pacific/Auckland","NZD","New Zealand"], za:["Africa/Johannesburg","ZAR","South African"]
+};
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+// "May–Jun, Sep–Oct" / "Sep–Mar (lights)" / "Dec–Feb (snow), May–Jun" -> Set of month indexes
+function bestMonths(str){
+  const set = new Set();
+  str.replace(/\([^)]*\)/g,"").split(",").forEach(part=>{
+    const m = part.trim().match(/([A-Z][a-z]{2})(?:\s*[–-]\s*([A-Z][a-z]{2}))?/); if(!m) return;
+    const a = MONTHS.indexOf(m[1]), b = m[2] ? MONTHS.indexOf(m[2]) : a; if(a<0||b<0) return;
+    for(let i=a;;i=(i+1)%12){ set.add(i); if(i===b) break; }
+  });
+  return set;
+}
+function seasonText(d){
+  const set = bestMonths(d.best), now = new Date().getMonth();
+  if(set.has(now)) return {ok:true, text:`In season right now. Best: ${d.best}`};
+  let k=1; while(k<12 && !set.has((now+k)%12)) k++;
+  return {ok:false, text:`Off-season now. Best: ${d.best}${k<12 ? ` (starts in ${k} month${k>1?"s":""})` : ""}`};
+}
+// --- time zones ---
+function tzOffsetMin(tz, date=new Date()){
+  try{
+    const p = Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:tz, hourCycle:"h23", year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})
+      .formatToParts(date).map(x=>[x.type,x.value]));
+    return Math.round((Date.UTC(+p.year, +p.month-1, +p.day, +p.hour % 24, +p.minute) - date.getTime())/60000);
+  }catch(e){ return null; }
+}
+function timeInfo(d){
+  const o = ORIGIN_META[ORIGIN.id], m = META[d.name]; if(!o||!m) return null;
+  const a = tzOffsetMin(o[0]), b = tzOffsetMin(m[0]); if(a===null||b===null) return null;
+  const diff = (b-a)/60, f = flightFor(d, ORIGIN);
+  const fmtDiff = diff===0 ? `Same time as ${ORIGIN.city}` : `${Math.abs(diff)%1 ? Math.abs(diff).toFixed(1).replace(".0","") : Math.abs(diff)}h ${diff>0?"ahead of":"behind"} ${ORIGIN.city}`;
+  if(f.home) return {diff:fmtDiff, land:""};
+  const departMin = 10*60, arriveMin = departMin + Math.round(f.hours*4)*15 + diff*60;
+  const dayShift = Math.floor(arriveMin/1440), mins = ((arriveMin%1440)+1440)%1440;
+  const hh = String(Math.floor(mins/60)).padStart(2,"0"), mm = String(Math.round(mins%60)).padStart(2,"0");
+  const day = dayShift===0 ? "" : dayShift===1 ? " (next day)" : dayShift>1 ? ` (+${dayShift} days)` : " (day before!)";
+  return {diff:fmtDiff, land:`Leave ${ORIGIN.city} at 10:00, land around ${hh}:${mm} local${day}`};
+}
+// --- live exchange rates (falls back to built-in rates) ---
+let LIVE_RATES = null;
+function loadRates(){
+  try{ const c = JSON.parse(localStorage.getItem("hr_rates")||"null"); if(c && Date.now()-c.t < 12*3600e3){ applyRates(c.r); return; } }catch(e){}
+  fetch("https://open.er-api.com/v6/latest/USD").then(r=>r.json()).then(j=>{
+    if(j && j.rates){ applyRates(j.rates); try{ localStorage.setItem("hr_rates", JSON.stringify({t:Date.now(), r:j.rates})); }catch(e){} }
+  }).catch(()=>{});
+}
+function applyRates(r){
+  LIVE_RATES = r;
+  ORIGINS.forEach(o=>{ const code = ORIGIN_META[o.id][1]; if(r[code]) o.rate = r[code]; });
+  renderBudgets(); if($("overlay").classList.contains("show") && state.current) renderCosts(state.current), renderInfo(state.current);
+}
+function moneyText(d){
+  const code = META[d.name][1], from = ORIGIN_META[ORIGIN.id][1];
+  if(code===from) return `They use ${code} too, so no exchange needed`;
+  if(!LIVE_RATES || !LIVE_RATES[code] || !LIVE_RATES[from]) return `Local currency: ${code}`;
+  const per = LIVE_RATES[code]/LIVE_RATES[from], unit = per < 0.2 ? 100 : 1, val = per*unit;
+  const shown = val >= 100 ? Math.round(val).toLocaleString("en-GB") : val >= 10 ? val.toFixed(1) : val.toFixed(2);
+  return `${ORIGIN.sym.trim()}${unit} ≈ ${shown} ${code} (live rate)`;
+}
+// --- entry rules link ---
+function entryLink(d){
+  const m = META[d.name], o = ORIGIN_META[ORIGIN.id];
+  if(ORIGIN.id.startsWith("uk") && m[2]) return {href:`https://www.gov.uk/foreign-travel-advice/${m[2]}/entry-requirements`, text:`UK government entry rules for ${d.country}`};
+  const page = o[2]==="Hong Kong" ? "Visa_requirements_for_Hong_Kong_Special_Administrative_Region_passport_holders" : `Visa_requirements_for_${o[2].replace(/ /g,"_")}_citizens`;
+  return {href:`https://en.wikipedia.org/wiki/${page}`, text:`Visa rules for ${o[2]} passports (check ${d.country})`};
+}
+// --- estimated fare pattern by month ---
+function farePattern(d){
+  const f = flightFor(d, ORIGIN); if(f.home) return null;
+  const best = bestMonths(d.best), south = ["au","nz","za"].includes(ORIGIN.id);
+  const hol = south ? {0:.25, 6:.12, 11:.3} : {6:.22, 7:.25, 11:.18, 3:.08};
+  const vals = MONTHS.map((_,i)=> f.fare * (1 + (best.has(i)?.15:-.1) + (hol[i]||0)));
+  const min = Math.min(...vals), max = Math.max(...vals);
+  return {vals, min, max, cheapest: MONTHS.filter((_,i)=> vals[i] <= min*1.02)};
+}
+// --- weather (Open-Meteo, no key) ---
+const WMO = c => c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=57?"🌦️":c<=67?"🌧️":c<=77?"🌨️":c<=82?"🌦️":c<=86?"🌨️":"⛈️";
+const WX_CACHE = {};
+function loadWeather(d){
+  const el = $("wxBody"), m = META[d.name], air = DEST_AIR[d.name];
+  const lat = m[4] ?? air[0], lon = m[5] ?? air[1], key = d.name;
+  const render = j=>{
+    if(state.current !== d) return;
+    const dd = j.daily; if(!dd) throw 0;
+    el.innerHTML = `<div class="wx-days">` + dd.time.slice(0,5).map((t,i)=>{
+      const day = i===0 ? "Today" : new Date(t+"T12:00").toLocaleDateString("en-GB",{weekday:"short"});
+      return `<div class="wx-day"><span>${day}</span><b>${WMO(dd.weather_code[i])}</b><span>${Math.round(dd.temperature_2m_max[i])}° / ${Math.round(dd.temperature_2m_min[i])}°</span>${dd.precipitation_probability_max && dd.precipitation_probability_max[i]!=null ? `<small>💧${dd.precipitation_probability_max[i]}%</small>`:""}</div>`;
+    }).join("") + `</div>`;
+  };
+  if(WX_CACHE[key]) { try{ render(WX_CACHE[key]); return; }catch(e){} }
+  el.innerHTML = `<div class="info-sub">Checking the skies…</div>`;
+  const ctl = typeof AbortController!=="undefined" ? new AbortController() : null; if(ctl) setTimeout(()=>ctl.abort(), 8000);
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=5`, ctl ? {signal:ctl.signal} : {})
+    .then(r=>r.json()).then(j=>{ WX_CACHE[key]=j; render(j); })
+    .catch(()=>{ if(state.current===d) el.innerHTML = `<div class="info-sub">Live weather isn't available here. Open the website version to see the 5-day forecast.</div>`; });
+}
+function renderInfo(d){
+  const s = seasonText(d), t = timeInfo(d), e = entryLink(d), fp = farePattern(d);
+  $("resInfo").innerHTML = `
+    <h3 class="todo-h">Know before you go</h3>
+    <div class="info-grid">
+      <div class="info wide"><div class="info-h">🌤️ Next 5 days</div><div id="wxBody"></div></div>
+      <div class="info ${s.ok?"good":"warn"}"><div class="info-h">📅 Season</div><div class="info-b">${s.ok?"✅":"⚠️"} ${s.text}</div></div>
+      ${t ? `<div class="info"><div class="info-h">🕒 Time</div><div class="info-b">${t.diff}</div>${t.land?`<div class="info-sub">${t.land}</div>`:""}</div>` : ""}
+      <div class="info"><div class="info-h">💱 Money</div><div class="info-b">${moneyText(d)}</div></div>
+      <div class="info"><div class="info-h">🛂 Entry rules</div><a class="info-link" href="${e.href}" target="_blank" rel="noopener">${e.text} ↗</a><div class="info-sub">Always check official advice before booking.</div></div>
+      ${fp ? `<div class="info wide"><div class="info-h">📉 When flights are cheapest <span class="info-tag">estimate</span></div>
+        <div class="bars">${fp.vals.map((v,i)=>`<div class="bar ${v<=fp.min*1.02?"lo":""}" title="${MONTHS[i]}: ~${fmt(nice(v))}"><i style="height:${Math.round(20+80*(v-fp.min)/(fp.max-fp.min||1))}%"></i><span>${MONTHS[i][0]}</span></div>`).join("")}</div>
+        <div class="info-sub">Cheapest: ${fp.cheapest.join(", ")} (from ~${fmt(nice(fp.min))}). Peak season and school holidays cost more.</div></div>` : ""}
+    </div>`;
+  loadWeather(d);
+}
 
 // ---------- Things to do: emoji|category|title|description ----------
 // categories: w water/beach, n nature, c culture, f food, x night, s snow, u city, a wildlife, d thrills
@@ -854,8 +1236,16 @@ const COLORS = ["#FF5A36","#FFB627","#1FA2A0","#2B2D6E","#FF8FB1","#6CC17A"];
 const TEXTC  = {"#FF5A36":"#fff","#FFB627":"#22224A","#1FA2A0":"#fff","#2B2D6E":"#FFF4E2","#FF8FB1":"#22224A","#6CC17A":"#22224A"};
 const MAX_SEG = 12;
 
-const state = { nights: 7, budget: 1, vibes: new Set(), wheel: [], angle: 0, spinning:false, picked:new Set(), stamps:[], respins:0, lastIdx:-1, current:null };
-try{ const s = JSON.parse(localStorage.getItem("hr_stamps")||"[]"); if(Array.isArray(s)) state.stamps = s.slice(0,12); }catch(e){}
+const WEEKEND_MAX_H = 4.5;
+const state = { adults:2, kids:0, board:"any", family:false, weekend:false, weekendMax: WEEKEND_MAX_H, nights: 7, budget: 1, vibes: new Set(), wheel: [], angle: 0, spinning:false, picked:new Set(), stamps:[], respins:0, lastIdx:-1, current:null };
+// Stamps: {n:name, e:emoji, c:country, s:stamped date, t:trip date or null, p:{packed items}}
+function toStamp(x){
+  if(typeof x !== "string") return x;
+  const [e,...r] = x.split(" "), n = r.join(" "), d = DESTS.find(z=>z.name===n);
+  return {n, e, c: d ? d.country : "", s: null, t: null, p:{}};
+}
+function saveStamps(){ try{ localStorage.setItem("hr_stamps", JSON.stringify(state.stamps)); }catch(e){} }
+try{ const s = JSON.parse(localStorage.getItem("hr_stamps")||"[]"); if(Array.isArray(s)) state.stamps = s.map(toStamp).slice(0,80); }catch(e){}
 
 const $ = id => document.getElementById(id);
 const canvas = $("wheel"), ctx = canvas.getContext("2d");
@@ -889,37 +1279,78 @@ function budgetRange(b){
   return `${fmt(r(b.lo))}–${r(b.hi).toLocaleString("en-GB")}/day`;
 }
 function renderOrigins(){
-  $("origin").innerHTML = ORIGINS.map(o=>`<option value="${o.id}" ${o===ORIGIN?"selected":""}>${o.flag} ${o.name} (${o.city})</option>`).join("");
+  const opt = o=>`<option value="${o.id}" ${o===ORIGIN?"selected":""}>${o.group ? `${o.flag} ${o.city}` : `${o.flag} ${o.name} (${o.city})`}</option>`;
+  const uk = ORIGINS.filter(o=>o.group), rest = ORIGINS.filter(o=>!o.group);
+  $("origin").innerHTML = `<optgroup label="United Kingdom">${uk.map(opt).join("")}</optgroup><optgroup label="Elsewhere">${rest.map(opt).join("")}</optgroup>`;
 }
 $("origin").onchange = e=>{
   ORIGIN = ORIGINS.find(o=>o.id===e.target.value) || ORIGINS[0];
   try{ localStorage.setItem("hr_origin", ORIGIN.id); }catch(err){}
-  renderBudgets(); sfx("pop");
+  renderBudgets(); renderNights(); if(state.weekend) buildWheel(); sfx("pop");
 };
 try{ const saved = localStorage.getItem("hr_origin"); if(saved) ORIGIN = ORIGINS.find(o=>o.id===saved) || ORIGIN; }catch(e){}
 renderOrigins();
 $("mystery").onchange = drawWheel;
+function renderBoards(){
+  $("boards").innerHTML = Object.entries(BOARD_NAMES).map(([k,v])=>`<button class="chip" data-b="${k}" aria-pressed="${state.board===k}">${v}</button>`).join("");
+  $("boards").querySelectorAll(".chip").forEach(el=>el.onclick=()=>{ if(state.spinning) return; state.board = el.dataset.b; renderBoards(); buildWheel(); sfx("pop"); });
+}
+function renderParty(){ $("nAdults").textContent = state.adults; $("nKids").textContent = state.kids;
+  document.querySelectorAll(".st-btn").forEach(b=>{ const v = state[b.dataset.p] + +b.dataset.d; b.disabled = b.dataset.p==="adults" ? (v<1||v>9) : (v<0||v>8); }); }
+document.querySelectorAll(".st-btn").forEach(b=> b.onclick = ()=>{
+  const k = b.dataset.p, v = state[k] + +b.dataset.d; if(k==="adults" ? (v<1||v>9) : (v<0||v>8)) return;
+  state[k] = v; renderParty(); sfx("pop");
+  try{ localStorage.setItem("hr_party", JSON.stringify({a:state.adults, k:state.kids})); }catch(e){}
+  if($("overlay").classList.contains("show") && state.current) renderCosts(state.current);
+});
+try{ const pp = JSON.parse(localStorage.getItem("hr_party")||"null"); if(pp){ state.adults = Math.min(9,Math.max(1,pp.a|0)); state.kids = Math.min(8,Math.max(0,pp.k|0)); } }catch(e){}
+renderParty();
+$("family").onchange = ()=>{ state.family = $("family").checked; buildWheel(); sfx("pop"); };
 function renderNights(){
-  $("nights").innerHTML = NIGHTS.map(n=>`<button class="chip" data-n="${n}" aria-pressed="${state.nights===n}">🌙 ${n} nights</button>`).join("");
-  $("nights").querySelectorAll(".chip").forEach(el=>el.onclick=()=>{ state.nights = +el.dataset.n; renderNights(); sfx("pop"); });
+  $("nights").innerHTML = NIGHTS.map(n=>`<button class="chip" data-n="${n}" aria-pressed="${!state.weekend && state.nights===n}">🌙 ${n} nights</button>`).join("")
+    + `<button class="chip" data-n="wk" aria-pressed="${state.weekend}">🧳 Weekend away</button>`;
+  $("nights").querySelectorAll(".chip").forEach(el=>el.onclick=()=>{
+    if(state.spinning) return;
+    const wasWk = state.weekend;
+    if(el.dataset.n==="wk"){ state.weekend = !state.weekend; state.nights = state.weekend ? 3 : 7; }
+    else { state.weekend = false; state.nights = +el.dataset.n; }
+    renderNights(); sfx("pop");
+    if(wasWk !== state.weekend) buildWheel();
+  });
+  $("nightsHint").textContent = state.weekend
+    ? `3 nights, only places with a direct flight under ${WEEKEND_MAX_H}h from ${ORIGIN.city}.`
+    : "Used to total up flights + spending on your result.";
 }
 renderNights();
+renderBoards();
 
+function fitsTrip(d){
+  if(state.board!=="any" && !boards(d).includes(state.board)) return false;
+  if(state.family && !FAMILY.has(d.name)) return false;
+  if(!state.weekend) return true;
+  const f = flightFor(d, ORIGIN);
+  return f.home || (f.stops===0 && f.hours <= state.weekendMax);
+}
 function pool(ignoreRepeats){
   return DESTS.filter(d =>
     (state.budget===-1 || d.tier===state.budget) &&
-    (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) &&
+    (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) && fitsTrip(d) &&
     (ignoreRepeats || !$("norepeat").checked || !state.picked.has(d.i)));
 }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
 function buildWheel(){
+  state.weekendMax = WEEKEND_MAX_H;
   let p = pool(false), note = "";
+  if(state.weekend && p.length < 3){
+    const anyBudget = DESTS.filter(d => (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) && fitsTrip(d)).length;
+    if(anyBudget < 3){ state.weekendMax = 8; p = pool(false); note = `Few short hops from ${ORIGIN.city}, so I've stretched to flights under 8h. `; }
+  }
   if(p.length===0 && pool(true).length){ state.picked.clear(); p = pool(false); note = "You've seen every match! Wheel refilled. "; }
   if(p.length < 3 && state.budget !== -1){
     const have = new Set(p.map(d=>d.i)), want = 6;
     const near = DESTS.filter(d => !have.has(d.i) && d.tier!==state.budget &&
-        (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) &&
+        (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) && fitsTrip(d) &&
         (!$("norepeat").checked || !state.picked.has(d.i)))
       .sort((a,b)=> Math.abs(a.tier-state.budget)-Math.abs(b.tier-state.budget) || Math.random()-.5);
     const added = near.slice(0, want - p.length);
@@ -1043,22 +1474,41 @@ function land(k){
   state.spinning = false; $("bulbs").classList.remove("chase"); $("spinBtn").disabled = false;
   const d = state.wheel[k]; state.current = d; state.picked.add(d.i);
   setStatus(`${d.emoji} ${d.name}! ${d.emoji}`);
+  revealFlow(d);
+}
+let revealing = false;
+async function revealFlow(d){
+  revealing = true; $("spinBtn").disabled = true;
+  try{
+    if($("mystery").checked) await scratchReveal(d);
+    await globeFlight(d);
+  }catch(e){ console.error(e); }
+  revealing = false; $("spinBtn").disabled = false;
   sfx("win"); confetti(); showResult(d);
 }
 
 // ---------- Result ----------
 const RESPIN_LINES = ["","Picky, picky 😏","The wheel is starting to take this personally.","Third time's the charm?","You know this is how people end up staying home, right?","The wheel has filed a formal complaint.","Okay, the next one is final. (It's not. But pretend.)"];
+// Party pricing: children (2–11) ≈ 85% of an adult fare and ~50% of adult daily spend; one adult alone pays ~30% more (single room)
+const CHILD_FARE = .85, CHILD_SPEND = .5, SOLO_SUPPLEMENT = 1.3;
+function partyText(){ const a = state.adults, c = state.kids;
+  return `${a} adult${a>1?"s":""}${c ? ` + ${c} child${c>1?"ren":""}` : ""}`; }
 function renderCosts(d){
-  const f = flightFor(d, ORIGIN), daily = local(d.dailyUSD), spend = daily*state.nights;
+  const f = flightFor(d, ORIGIN), daily = local(dailyUSD(d)), a = state.adults, k = state.kids, n = state.nights;
+  const adultDaily = daily * (a===1 ? SOLO_SUPPLEMENT : 1);
+  const spend = nice((adultDaily*a + daily*CHILD_SPEND*k) * n);
+  const fares = nice(f.fare*a + f.fare*CHILD_FARE*k);
+  const total = (f.home ? 0 : fares) + spend, people = a + k;
+  const bLabel = state.board==="any" ? "" : ` · ${BOARD_NAMES[state.board]}`;
   const via = !d.name.startsWith(f.airport) && !f.home ? ` (to ${f.airport})` : "";
-  $("resCost").innerHTML = f.home ? `
-    <div class="cost"><span>🏠 You're already here!</span><b>No flight needed</b></div>
-    <div class="cost"><span>💸 Spending (${fmt(daily)}/day × ${state.nights})</span><b>~${fmt(spend)}</b></div>
-    <div class="cost total"><span>🧾 ${state.nights}-night staycation, per person</span><b>~${fmt(spend)}</b></div>` : `
+  const party = partyText(), single = people===1;
+  $("resCost").innerHTML = `
+    ${f.home ? `<div class="cost"><span>🏠 You're already here!</span><b>No flight needed</b></div>` : `
     <div class="cost"><span>🕒 Flight time from ${ORIGIN.city}</span><b>${fmtHours(f.hours)} · ${stopsText(f.stops)}</b></div>
-    <div class="cost"><span>✈️ Return flight${via}</span><b>~${fmt(f.fare)}</b></div>
-    <div class="cost"><span>💸 Spending (${fmt(daily)}/day × ${state.nights})</span><b>~${fmt(spend)}</b></div>
-    <div class="cost total"><span>🧾 ${state.nights}-night trip, per person</span><b>~${fmt(f.fare+spend)}</b></div>`;
+    <div class="cost"><span>✈️ Return flight${single?"":"s"}${via}${single?"":` <small>(${party})</small>`}</span><b>~${fmt(fares)}</b></div>`}
+    <div class="cost"><span>💸 Spending${bLabel} <small>(${fmt(daily)}/adult/day × ${n}${a===1?", solo room":""}${k?`, kids ~half`:""})</small></span><b>~${fmt(spend)}</b></div>
+    <div class="cost total"><span>🧾 ${n}-night ${f.home?"staycation":"trip"}${single ? ", per person" : ` for ${people}`}</span><b>~${fmt(total)}</b></div>
+    ${single ? "" : `<div class="cost per"><span>That's about</span><b>${fmt(nice(total/people))} per person</b></div>`}`;
 }
 const TAG_OVERRIDE = {"Antigua":"antiguaguatemala","Ella":"ellasrilanka","Sucre":"sucrebolivia","Reykjavík & Ring Road":"iceland","Ubud, Bali":"ubud","Split & Hvar":"hvar","Petra & Wadi Rum":"petra",
   "Serengeti Safari":"serengeti","Antarctica Expedition":"antarctica","Fiji Private Island":"fiji","Monaco & Riviera":"monaco",
@@ -1085,16 +1535,19 @@ function showResult(d){
   $("resEmoji").textContent = d.emoji; $("resName").textContent = d.name; $("resCountry").textContent = d.country;
   $("resBlurb").textContent = d.blurb;
   renderCosts(d);
-  $("resFacts").innerHTML = [`🗓️ Best: ${d.best}`, `${b.icon} ${b.t}`, ...d.vibes.map(v=>VIBES[v])]
+  const bAvail = boards(d).map(x=>BOARD_NAMES[x]).join(" · ");
+  $("resFacts").innerHTML = [`🗓️ Best: ${d.best}`, `${b.icon} ${b.t}`, ...d.vibes.map(v=>VIBES[v]), ...(FAMILY.has(d.name)?["👨‍👩‍👧 Family friendly"]:[]), `🍽️ ${bAvail}`]
     .map(f=>`<span class="fact">${f}</span>`).join("");
   renderActs(d);
   renderSocials(d);
+  renderInfo(d);
+  Ambient.forDest(d);
   $("flightsLink").href = "https://www.google.com/travel/flights?q=" + encodeURIComponent(`flights from ${ORIGIN.city} to ${DEST_AIR[d.name][4]} ${d.country}`);
   $("respinNote").textContent = RESPIN_LINES[Math.min(state.respins, RESPIN_LINES.length-1)];
   $("overlay").classList.add("show"); $("lockBtn").focus({preventScroll:true});
   document.querySelector(".ticket .body").scrollTop = 0;
 }
-function closeResult(){ $("overlay").classList.remove("show"); $("spinBtn").focus(); }
+function closeResult(){ $("overlay").classList.remove("show"); Ambient.stop(); $("spinBtn").focus(); }
 $("closeBtn").onclick = closeResult;
 $("sheetCancel").onclick = closeSocialSheet;
 $("sheet").addEventListener("click", e=>{ if(e.target.id==="sheet") closeSocialSheet(); });
@@ -1108,12 +1561,16 @@ document.addEventListener("keydown", e=>{
 });
 $("lockBtn").onclick = ()=>{
   const d = state.current; if(!d) return;
-  state.stamps.unshift(`${d.emoji} ${d.name}`); state.stamps = state.stamps.slice(0,12);
-  try{ localStorage.setItem("hr_stamps", JSON.stringify(state.stamps)); }catch(e){}
+  state.stamps.unshift({n:d.name, e:d.emoji, c:d.country, s:new Date().toISOString().slice(0,10), t:null, p:{}}); state.stamps = state.stamps.slice(0,80);
+  saveStamps();
   state.respins = 0; closeResult();
   setStatus(`📌 ${d.name} it is. Start the group chat!`);
   buildWheelQuiet();
-  passportStamp(d).then(renderStamps);
+  const before = earnedBadges(state.stamps.slice(1));
+  passportStamp(d).then(()=>{ renderStamps();
+    const fresh = earnedBadges(state.stamps).filter(t=>!before.includes(t));
+    if(fresh.length){ const b = BADGES.find(x=>x.t===fresh[0]); toast(`🏅 Badge unlocked: ${b.e} ${b.t}${fresh.length>1?` (+${fresh.length-1} more)`:""}`); fxSound("ding"); }
+  });
 };
 
 // ---------- Passport stamp animation ----------
@@ -1166,6 +1623,23 @@ function fxSound(type){
       f2.type="bandpass"; f2.frequency.setValueAtTime(900,t+.05); f2.frequency.exponentialRampToValueAtTime(250,t+.25); f2.Q.value=3;
       g3.gain.setValueAtTime(.0001,t+.04); g3.gain.exponentialRampToValueAtTime(.25,t+.08); g3.gain.exponentialRampToValueAtTime(.0001,t+.25);
       n2.connect(f2); f2.connect(g3); g3.connect(out); n2.start(t+.04); n2.stop(t+.3);
+    } else if(type==="scratch"){
+      const n = noise(.06), f = actx.createBiquadFilter(), g = actx.createGain();
+      f.type="highpass"; f.frequency.value = 3000 + Math.random()*2500; g.gain.setValueAtTime(.08,t); g.gain.exponentialRampToValueAtTime(.0001,t+.05);
+      n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+.06);
+    } else if(type==="ding"){
+      [[1318,0],[1760,.12]].forEach(([fq,o])=>{ const os = actx.createOscillator(), g = actx.createGain(); os.type="sine"; os.frequency.value = fq;
+        g.gain.setValueAtTime(.0001,t+o); g.gain.exponentialRampToValueAtTime(.18,t+o+.01); g.gain.exponentialRampToValueAtTime(.0001,t+o+.9);
+        os.connect(g); g.connect(out); os.start(t+o); os.stop(t+o+.95); });
+    } else if(type==="jet"){
+      const dur = 2.4, n = noise(dur), f = actx.createBiquadFilter(), g = actx.createGain();
+      f.type="lowpass"; f.frequency.setValueAtTime(250,t); f.frequency.exponentialRampToValueAtTime(1400,t+dur*.45); f.frequency.exponentialRampToValueAtTime(300,t+dur);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.3,t+.5); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+      n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+dur);
+      const o = actx.createOscillator(), g2 = actx.createGain(); o.type="sawtooth"; o.frequency.setValueAtTime(70,t); o.frequency.linearRampToValueAtTime(110,t+dur*.5);
+      const lf = actx.createBiquadFilter(); lf.type="lowpass"; lf.frequency.value = 220;
+      g2.gain.setValueAtTime(.0001,t); g2.gain.exponentialRampToValueAtTime(.08,t+.4); g2.gain.exponentialRampToValueAtTime(.0001,t+dur);
+      o.connect(lf); lf.connect(g2); g2.connect(out); o.start(t); o.stop(t+dur);
     } else if(type==="lift"){
       const o = actx.createOscillator(), g = actx.createGain(); o.type="triangle";
       o.frequency.setValueAtTime(220,t); o.frequency.exponentialRampToValueAtTime(880,t+.25);
@@ -1185,8 +1659,8 @@ async function passportStamp(d){
   const date = new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase();
   const prev = state.stamps.slice(1,6);
   const spots = [[8,14,-12],[118,22,9],[10,226,7],[122,232,-6],[64,120,-18]];
-  page.innerHTML = prev.map((s,i)=>{ const [em,...rest] = s.split(" "); const [x,y,r] = spots[i];
-      return `<div class="oldstamp" style="left:${x}px; top:${y}px; transform:rotate(${r}deg)">${stampSVG(rest.join(" "), "", INKS[(i+2)%INKS.length], "", em, true)}</div>`; }).join("")
+  page.innerHTML = prev.map((st,i)=>{ const [x,y,r] = spots[i];
+      return `<div class="oldstamp" style="left:${x}px; top:${y}px; transform:rotate(${r}deg)">${stampSVG(st.n, "", INKS[(i+2)%INKS.length], "", st.e, true)}</div>`; }).join("")
     + `<div class="newstamp" style="--rot:${rot}">${stampSVG(d.name, d.country, color, date, d.emoji)}</div>`
     + Array.from({length:9},(_,i)=>{ const a = i/9*Math.PI*2 + Math.random(), r = 70+Math.random()*30;
       return `<i class="splat" style="--ink-c:${color}; left:${120+Math.cos(a)*30}px; top:${170+Math.sin(a)*24}px; width:${3+Math.random()*5}px; height:${3+Math.random()*5}px; --dx:${Math.cos(a)*r*.5}px; --dy:${Math.sin(a)*r*.4}px"></i>`; }).join("");
@@ -1212,8 +1686,10 @@ async function passportStamp(d){
     fx.classList.remove("shake"); fx.classList.add("lift"); fxSound("lift"); await wait(450);
     fx.classList.add("done"); fxSound("fanfare"); confetti();
   }
+  $("pfxDate").value = ""; $("pfxDate").min = new Date().toISOString().slice(0,10);
   $("pfxDone").focus({preventScroll:true});
   await new Promise(r=> pfxResolve = r);
+  if($("pfxDate").value && state.stamps[0] && state.stamps[0].n===d.name){ state.stamps[0].t = $("pfxDate").value; saveStamps(); }
   removeEventListener("resize", fit);
   fx.classList.add("out"); sfx("pop"); await wait(reduce ? 0 : 520);
   fx.className = "pfx";
@@ -1227,10 +1703,12 @@ function buildWheelQuiet(){ const s = $("status").textContent; buildWheel(); set
 
 function renderStamps(){
   $("stamps").innerHTML = state.stamps.length
-    ? state.stamps.map((s,i)=>`<span class="stamp" style="--r:${(i%2?3:-3)+(i%3-1)}deg">${s.replace(/</g,"&lt;")}</span>`).join("")
+    ? state.stamps.slice(0,12).map((s,i)=>`<span class="stamp" style="--r:${(i%2?3:-3)+(i%3-1)}deg">${esc(s.e+" "+s.n)}</span>`).join("")
+      + (state.stamps.length>12 ? `<span class="stamp-empty">+${state.stamps.length-12} more in your passport</span>` : "")
     : `<span class="stamp-empty">No stamps yet. Lock in a destination to earn one.</span>`;
+  renderCountdown();
 }
-$("resetBtn").onclick = ()=>{ state.stamps=[]; state.picked.clear(); try{localStorage.removeItem("hr_stamps")}catch(e){}; renderStamps(); buildWheel(); };
+$("resetBtn").onclick = ()=>{ openConfirm("Clear every stamp and countdown?", ()=>{ state.stamps=[]; state.picked.clear(); try{localStorage.removeItem("hr_stamps")}catch(e){}; renderStamps(); buildWheel(); }); };
 $("shuffleBtn").onclick = ()=>{ if(!state.spinning){ buildWheel(); sfx("pop"); } };
 $("spinBtn").onclick = spin;
 
@@ -1251,7 +1729,338 @@ function tickConfetti(){
   if(parts.length) requestAnimationFrame(tickConfetti); else { running=false; cx.clearRect(0,0,cc.width,cc.height); }
 }
 
+
+
+// ---------- Scratch-off reveal (mystery mode) ----------
+function scratchReveal(d){
+  return new Promise(resolve=>{
+    const fx = $("scratchFx"), cv = $("scratchCanvas"), card = $("scratchCard");
+    $("suEmoji").textContent = d.emoji; $("suName").textContent = d.name; $("suCountry").textContent = d.country;
+    $("scratchGo").hidden = true; cv.classList.remove("gone");
+    fx.classList.add("show");
+    const r = card.getBoundingClientRect(), dpr = Math.min(devicePixelRatio||1, 2);
+    cv.width = Math.round(r.width*dpr); cv.height = Math.round(r.height*dpr);
+    const c = cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0);
+    const W = r.width, H = r.height;
+    const g = c.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,"#B9BEC7"); g.addColorStop(.35,"#F4F5F8"); g.addColorStop(.55,"#A4AAB4"); g.addColorStop(.8,"#E9EBEF"); g.addColorStop(1,"#9EA4AE");
+    c.globalCompositeOperation = "source-over"; c.fillStyle = g; c.fillRect(0,0,W,H);
+    for(let i=0;i<260;i++){ c.fillStyle = `rgba(255,255,255,${Math.random()*.6})`; c.fillRect(Math.random()*W, Math.random()*H, 1.5, 1.5); }
+    c.fillStyle = "rgba(34,34,74,.55)"; c.textAlign = "center"; c.font = `800 ${Math.round(W*.085)}px "DM Sans", sans-serif`;
+    c.fillText("SCRATCH HERE", W/2, H*.46); c.font = `${Math.round(W*.16)}px serif`; c.fillText("✨🪙✨", W/2, H*.64);
+    c.globalCompositeOperation = "destination-out"; c.lineCap = c.lineJoin = "round"; c.lineWidth = Math.max(36, W*.14);
+    let down = false, last = null, moves = 0, done = false, lastSound = 0;
+    const pt = e=>{ const b = cv.getBoundingClientRect(); return [e.clientX-b.left, e.clientY-b.top]; };
+    const cleared = ()=>{ const data = c.getImageData(0,0,cv.width,cv.height).data; let n=0, t=0;
+      for(let i=3;i<data.length;i+=64){ t++; if(data[i]<40) n++; } return n/t; };
+    const finish = ()=>{
+      if(done) return; done = true; cv.classList.add("gone"); fxSound("ding"); confetti();
+      $("scratchGo").hidden = false; $("scratchGo").focus({preventScroll:true});
+    };
+    const draw = (e)=>{
+      const p = pt(e); c.beginPath(); c.moveTo(...(last||p)); c.lineTo(...p); c.stroke(); last = p;
+      const now = performance.now(); if(now - lastSound > 70){ lastSound = now; fxSound("scratch"); }
+      if(++moves % 12 === 0 && cleared() > .5) finish();
+    };
+    cv.onpointerdown = e=>{ down = true; last = null; cv.setPointerCapture(e.pointerId); draw(e); };
+    cv.onpointermove = e=>{ if(down) draw(e); };
+    cv.onpointerup = cv.onpointercancel = ()=>{ down = false; last = null; if(!done && cleared() > .45) finish(); };
+    const close = ()=>{ fx.classList.remove("show"); cv.onpointerdown = cv.onpointermove = cv.onpointerup = null; resolve(); };
+    $("scratchGo").onclick = close;
+    $("scratchSkip").onclick = ()=>{ if(!done){ finish(); setTimeout(close, 700); } else close(); };
+  });
+}
+
+// ---------- Globe flight animation ----------
+function globeFlight(d){
+  return new Promise(resolve=>{
+    if(!window.d3 || !d3.geoOrthographic || !window.LAND || matchMedia("(prefers-reduced-motion: reduce)").matches) return resolve();
+    const fx = $("globeFx"), cv = $("globeCanvas"), f = flightFor(d, ORIGIN);
+    const air = DEST_AIR[d.name], m = META[d.name] || [];
+    const A = [ORIGIN.lon, ORIGIN.lat], B = [m[5] ?? air[1], m[4] ?? air[0]];
+    $("globeCap").innerHTML = f.home ? `<b>${esc(d.name)}</b>No flight needed, you're already here!`
+      : `<b>${ORIGIN.city} → ${esc(d.name)}</b>${fmtHours(f.hours)} · ${stopsText(f.stops)}`;
+    fx.classList.add("show");
+    const dpr = Math.min(devicePixelRatio||1, 2), W = innerWidth, H = innerHeight;
+    cv.width = W*dpr; cv.height = H*dpr; const c = cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0);
+    const R0 = Math.min(W, H*0.78) * 0.4, cy = H*0.44;
+    const proj = d3.geoOrthographic().translate([W/2, cy]).clipAngle(90).precision(.6);
+    const path = d3.geoPath(proj, c), grat = d3.geoGraticule10(), interp = d3.geoInterpolate(A, B);
+    const dist = d3.geoDistance(A, B);                       // radians
+    const stars = Array.from({length:120},()=>[Math.random()*W, Math.random()*H, Math.random()*1.4+.3, Math.random()]);
+    const ease = t=> t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+    const rotTo = p => [-p[0], -p[1]];
+    const lerpRot = (a,b,t)=>{ let dl = b[0]-a[0]; dl = ((dl+540)%360)-180; return [a[0]+dl*t, a[1]+(b[1]-a[1])*t]; };
+    const start = [ (A[0]-70), A[1]*0.4 ], T1 = 900, T2 = f.home ? 0 : 1900 + Math.min(1400, dist*700), T3 = 1000, total = T1+T2+T3;
+    let t0 = null, raf, skipped = false, sounded = {}, trail = [];
+    const drawPin = (p, label, color)=>{
+      const q = proj(p); if(!q || d3.geoDistance(p, proj.invert([W/2,cy])) > Math.PI/2) return;
+      c.fillStyle = color; c.strokeStyle = "#22224A"; c.lineWidth = 3;
+      c.beginPath(); c.arc(q[0], q[1], 7, 0, Math.PI*2); c.fill(); c.stroke();
+      c.font = "800 14px 'DM Sans', sans-serif"; c.textAlign = "center"; c.lineWidth = 4; c.strokeStyle = "rgba(11,12,38,.85)";
+      c.strokeText(label, q[0], q[1]-14); c.fillStyle = "#fff"; c.fillText(label, q[0], q[1]-14);
+    };
+    const frame = now=>{
+      if(t0===null){ t0 = now; fxSound("whoosh"); }
+      const el = now - t0; let rot, scale = R0, prog = 0;
+      if(el < T1){ const t = ease(el/T1); rot = lerpRot(rotTo(start), rotTo(A), t); scale = R0*(0.75+0.25*t); }
+      else if(el < T1+T2){ prog = ease((el-T1)/T2); const mid = interp(prog*0.98+0.01); rot = rotTo(mid); scale = R0*(1 - 0.18*Math.sin(prog*Math.PI)*Math.min(1, dist)); if(!sounded.jet){ sounded.jet = 1; fxSound("jet"); } }
+      else { prog = 1; rot = rotTo(B); const t = Math.min(1,(el-T1-T2)/T3); scale = R0*(1+0.12*ease(t)); if(!sounded.ding){ sounded.ding = 1; if(!f.home) fxSound("ding"); } }
+      proj.rotate(rot).scale(scale);
+      // background
+      c.clearRect(0,0,W,H);
+      stars.forEach(s=>{ c.fillStyle = `rgba(255,255,255,${.3+.7*Math.abs(Math.sin(now/900+s[3]*6))})`; c.fillRect(s[0], s[1], s[2], s[2]); });
+      // glow + ocean
+      const glow = c.createRadialGradient(W/2, cy, scale*.9, W/2, cy, scale*1.25);
+      glow.addColorStop(0,"rgba(120,200,255,.35)"); glow.addColorStop(1,"rgba(120,200,255,0)");
+      c.fillStyle = glow; c.beginPath(); c.arc(W/2, cy, scale*1.25, 0, Math.PI*2); c.fill();
+      const sea = c.createRadialGradient(W/2-scale*.35, cy-scale*.4, scale*.1, W/2, cy, scale);
+      sea.addColorStop(0,"#3FC4C1"); sea.addColorStop(1,"#14707A");
+      c.beginPath(); path({type:"Sphere"}); c.fillStyle = sea; c.fill();
+      c.beginPath(); path(grat); c.strokeStyle = "rgba(255,255,255,.12)"; c.lineWidth = 1; c.stroke();
+      c.beginPath(); path(LAND); c.fillStyle = "#F3D58A"; c.fill(); c.strokeStyle = "#22224A"; c.lineWidth = 1.2; c.stroke();
+      c.beginPath(); path({type:"Sphere"}); c.strokeStyle = "#22224A"; c.lineWidth = 3; c.stroke();
+      // route
+      if(!f.home && el >= T1){
+        const n = 80, pts = []; for(let i=0;i<=n*prog;i++) pts.push(interp(i/n)); pts.push(interp(prog));
+        c.beginPath(); path({type:"LineString", coordinates:pts}); c.setLineDash([8,7]); c.strokeStyle = "#FF5A36"; c.lineWidth = 4; c.lineCap = "round"; c.stroke(); c.setLineDash([]);
+      }
+      drawPin(A, `${ORIGIN.flag} ${ORIGIN.city}`, "#FFB627");
+      if(prog > .97 || f.home) drawPin(B, `${d.emoji} ${d.name}`, "#FF5A36");
+      // plane
+      if(!f.home && el >= T1 && prog < 1){
+        const p = proj(interp(prog)), q = proj(interp(Math.min(1, prog+.01)));
+        if(p && q){
+          const ang = Math.atan2(q[1]-p[1], q[0]-p[0]);
+          c.save(); c.translate(p[0], p[1]); c.rotate(ang + Math.PI/4);
+          c.font = `${Math.round(30 + 10*Math.sin(prog*Math.PI))}px serif`; c.textAlign = "center"; c.textBaseline = "middle";
+          c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 10; c.shadowOffsetY = 8; c.fillText("✈️", 0, 0); c.restore();
+        }
+      }
+      if(el < total && !skipped) raf = requestAnimationFrame(frame); else end();
+    };
+    const end = ()=>{ cancelAnimationFrame(raf); fx.classList.remove("show"); resolve(); };
+    $("globeSkip").onclick = ()=>{ skipped = true; end(); };
+    raf = requestAnimationFrame(frame);
+  });
+}
+
+
+// ---------- Passport book + badges ----------
+const destOf = st => DESTS.find(x=>x.name===st.n);
+const BADGES = [
+  {e:"🎫", t:"First stamp",      d:"Lock in a trip",          ok:S=>S.list.length>=1},
+  {e:"🧭", t:"Globetrotter",     d:"5 stamps",                ok:S=>S.list.length>=5},
+  {e:"✈️", t:"Frequent flyer",   d:"10 stamps",               ok:S=>S.list.length>=10},
+  {e:"🗺️", t:"Continent hopper", d:"3 continents",            ok:S=>S.conts>=3},
+  {e:"🌐", t:"World tour",       d:"5 continents",            ok:S=>S.conts>=5},
+  {e:"🏖️", t:"Beach bum",        d:"3 beach trips",           ok:S=>S.vibe("beach")>=3},
+  {e:"⛷️", t:"Snow bunny",       d:"2 snow trips",            ok:S=>S.vibe("snow")>=2},
+  {e:"🏛️", t:"Culture vulture",  d:"3 culture trips",         ok:S=>S.vibe("culture")>=3},
+  {e:"🍜", t:"Foodie",           d:"3 foodie trips",          ok:S=>S.vibe("food")>=3},
+  {e:"🎒", t:"Shoestring hero",  d:"3 shoestring trips",      ok:S=>S.tier(0)>=3},
+  {e:"💎", t:"High roller",      d:"2 money-no-object trips", ok:S=>S.tier(4)>=2},
+  {e:"🐧", t:"Penguin pal",      d:"Visit Antarctica",        ok:S=>S.list.some(st=>st.n==="Antarctica Expedition")}
+];
+function passportStats(list = state.stamps){
+  const ds = list.map(destOf).filter(Boolean);
+  return { list, countries: new Set(list.map(st=>st.c).filter(Boolean)).size,
+    conts: new Set(ds.map(d=>(META[d.name]||[])[3]).filter(Boolean)).size,
+    planned: list.filter(st=>st.t).length,
+    vibe: v=> ds.filter(d=>d.vibes.includes(v)).length, tier: t=> ds.filter(d=>d.tier===t).length };
+}
+const earnedBadges = list => { const S = passportStats(list); return BADGES.filter(b=>b.ok(S)).map(b=>b.t); };
+let bookPage = 0, bookBusy = false;
+function bookPages(){
+  const S = passportStats(), pages = [];
+  pages.push(`<div class="bpage cover"><div class="crest">🌍</div><div class="t1">Passport</div><div class="t2">Holiday Roulette<br>Wanderlust Division</div></div>`);
+  pages.push(`<div class="bpage"><div class="bp-h">Traveller record</div>
+    <div class="bp-stats">
+      <div class="bp-stat"><b>${S.list.length}</b><span>Stamps</span></div>
+      <div class="bp-stat"><b>${S.countries}</b><span>Countries</span></div>
+      <div class="bp-stat"><b>${S.conts}</b><span>Continents</span></div>
+      <div class="bp-stat"><b>${S.planned}</b><span>Dated</span></div>
+    </div>
+    <div class="bp-h">Badges · ${BADGES.filter(b=>b.ok(S)).length}/${BADGES.length}</div>
+    <div class="badges">${BADGES.map(b=>`<div class="badge ${b.ok(S)?"on":""}"><i>${b.e}</i><b>${b.t}</b><span>${b.d}</span></div>`).join("")}</div></div>`);
+  const list = [...state.stamps].reverse();       // oldest first, like a real passport
+  if(!list.length) pages.push(`<div class="bpage"><div class="bp-empty"><i>🛂</i>No stamps yet.<br>Spin the wheel and lock in a trip!</div></div>`);
+  for(let i=0;i<list.length;i+=4){
+    pages.push(`<div class="bpage"><div class="bp-h">Visas &amp; entries · page ${i/4+1}</div><div class="bp-grid">${list.slice(i,i+4).map((st,j)=>{
+      const date = st.s ? new Date(st.s+"T12:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase() : "";
+      const rot = ((i+j)*37 % 17) - 8;
+      return `<div class="bp-slot" style="transform:rotate(${rot}deg)">${stampSVG(st.n, st.c||"", INKS[(i+j)%INKS.length], date, st.e)}${st.t?`<small>✈️ ${new Date(st.t+"T12:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</small>`:""}</div>`;
+    }).join("")}</div></div>`);
+  }
+  return pages;
+}
+function showBookPage(n, dir){
+  const pages = bookPages(), book = $("book"); n = Math.max(0, Math.min(pages.length-1, n));
+  $("bookPrev").disabled = n===0; $("bookNext").disabled = n===pages.length-1;
+  $("bookPageNo").textContent = n===0 ? "Cover" : `Page ${n} of ${pages.length-1}`;
+  if(!dir){ book.innerHTML = pages[n]; bookPage = n; return; }
+  if(bookBusy || n===bookPage) return; bookBusy = true; fxSound("flip");
+  const tmp = document.createElement("div"); tmp.innerHTML = pages[n]; const next = tmp.firstElementChild;
+  const cur = book.lastElementChild;
+  if(dir > 0){                                     // turn current page away to reveal the next underneath
+    book.insertBefore(next, cur);
+    requestAnimationFrame(()=> cur.classList.add("turned"));
+    setTimeout(()=>{ cur.remove(); bookBusy = false; }, 660);
+  } else {                                         // bring the previous page back over the top
+    next.classList.add("turned"); book.appendChild(next);
+    requestAnimationFrame(()=> requestAnimationFrame(()=> next.classList.remove("turned")));
+    setTimeout(()=>{ cur.remove(); bookBusy = false; }, 660);
+  }
+  bookPage = n;
+}
+$("bookBtn").onclick = ()=>{ $("bookFx").classList.add("show"); showBookPage(state.stamps.length ? 1 : 0); sfx("pop"); };
+$("bookClose").onclick = ()=> $("bookFx").classList.remove("show");
+$("bookNext").onclick = ()=> showBookPage(bookPage+1, 1);
+$("bookPrev").onclick = ()=> showBookPage(bookPage-1, -1);
+(()=>{ let x0 = null; const b = $("book");
+  b.addEventListener("pointerdown", e=> x0 = e.clientX);
+  b.addEventListener("pointerup", e=>{ if(x0===null) return; const dx = e.clientX - x0; x0 = null;
+    if(dx < -45) showBookPage(bookPage+1, 1); else if(dx > 45) showBookPage(bookPage-1, -1); });
+})();
+document.addEventListener("keydown", e=>{ if(!$("bookFx").classList.contains("show")) return;
+  if(e.key==="Escape") $("bookFx").classList.remove("show");
+  if(e.key==="ArrowRight") showBookPage(bookPage+1, 1); if(e.key==="ArrowLeft") showBookPage(bookPage-1, -1); });
+let toastT = null;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(()=> t.classList.remove("show"), 3200); }
+
+
+// ---------- Ambient soundscapes (all generated live with Web Audio, no files) ----------
+const Ambient = (()=>{
+  const LABEL = {waves:"🌊 Waves", city:"🏙️ City buzz", bells:"🔔 Temple bells", wind:"🌬️ Mountain wind", birds:"🐦 Birdsong", cafe:"☕ Café chatter"};
+  let master = null, nodes = [], timers = [], kind = null, muted = false;
+  const ctx = ()=> (actx = actx || new (window.AudioContext||window.webkitAudioContext)());
+  function noiseBuf(type){
+    const c = ctx(), len = c.sampleRate*3, b = c.createBuffer(1, len, c.sampleRate), d = b.getChannelData(0);
+    let last = 0, b0=0,b1=0,b2=0;
+    for(let i=0;i<len;i++){ const w = Math.random()*2-1;
+      if(type==="brown"){ last = (last + .02*w)/1.02; d[i] = last*3.5; }
+      else if(type==="pink"){ b0 = .99765*b0 + w*.099; b1 = .963*b1 + w*.2965; b2 = .57*b2 + w*1.0526; d[i] = (b0+b1+b2+w*.1848)*.2; }
+      else d[i] = w; }
+    return b;
+  }
+  function loop(type){ const s = ctx().createBufferSource(); s.buffer = noiseBuf(type); s.loop = true; s.start(); nodes.push(s); return s; }
+  function filt(type, f, q=0.7){ const n = ctx().createBiquadFilter(); n.type = type; n.frequency.value = f; n.Q.value = q; nodes.push(n); return n; }
+  function gain(v){ const g = ctx().createGain(); g.gain.value = v; nodes.push(g); return g; }
+  function lfo(rate, depth, param){ const o = ctx().createOscillator(), g = ctx().createGain(); o.frequency.value = rate; g.gain.value = depth; o.connect(g); g.connect(param); o.start(); nodes.push(o,g); }
+  function every(min, max, fn){ const go = ()=>{ timers.push(setTimeout(()=>{ if(kind) { fn(); go(); } }, min + Math.random()*(max-min))); }; go(); }
+  function tone(f, dur, vol, type="sine", glideTo){ const c = ctx(), t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t+dur*.8);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol, t+.01); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+.05); }
+  const BUILD = {
+    waves(){ const s = loop("brown"), lp = filt("lowpass", 520), g = gain(.45); s.connect(lp); lp.connect(g); g.connect(master); lfo(.085, .38, g.gain);
+             const f = loop("white"), bp = filt("bandpass", 1800, .6), g2 = gain(.025); f.connect(bp); bp.connect(g2); g2.connect(master); lfo(.085, .022, g2.gain); },
+    city(){ const s = loop("brown"), lp = filt("lowpass", 260), g = gain(.5); s.connect(lp); lp.connect(g); g.connect(master);
+            const p = loop("pink"), bp = filt("bandpass", 750, .9), g2 = gain(.09); p.connect(bp); bp.connect(g2); g2.connect(master); lfo(.3, .04, g2.gain);
+            every(3500, 9000, ()=>{ const f = [380,420,470][Math.floor(Math.random()*3)]; tone(f, .25, .03, "square"); setTimeout(()=>tone(f*1.25, .3, .03, "square"), 180); }); },
+    bells(){ const s = loop("pink"), lp = filt("lowpass", 380), g = gain(.12); s.connect(lp); lp.connect(g); g.connect(master); lfo(.1, .06, g.gain);
+             const strike = ()=>{ const f = [196,220,262,294,330][Math.floor(Math.random()*5)];
+               [[1,.16,5],[2.76,.07,3.2],[5.4,.035,2],[8.9,.015,1.2]].forEach(([m,v,dur])=> tone(f*m, dur, v)); };
+             setTimeout(strike, 600); every(3500, 7500, strike); },
+    wind(){ const s = loop("white"), bp = filt("bandpass", 600, 1.4), g = gain(.12); s.connect(bp); bp.connect(g); g.connect(master);
+            lfo(.07, 350, bp.frequency); lfo(.11, .08, g.gain);
+            every(5000, 11000, ()=> tone(900+Math.random()*400, 2.5, .012, "sine", 700+Math.random()*300)); },
+    birds(){ const s = loop("pink"), hp = filt("highpass", 2500), g = gain(.05); s.connect(hp); hp.connect(g); g.connect(master); lfo(.2, .02, g.gain);
+             every(700, 3000, ()=>{ const base = 2400 + Math.random()*2200, n = 2 + Math.floor(Math.random()*4);
+               for(let i=0;i<n;i++) setTimeout(()=> tone(base*(1+Math.random()*.15), .09, .045, "sine", base*(Math.random()<.5 ? 1.35 : .8)), i*110); }); },
+    cafe(){ const s = loop("pink"), bp = filt("bandpass", 600, 1.1), g = gain(.16); s.connect(bp); bp.connect(g); g.connect(master);
+            every(250, 600, ()=>{ if(g.gain && ctx()) g.gain.setTargetAtTime(.1 + Math.random()*.12, ctx().currentTime, .15); });
+            every(1800, 5000, ()=>{ const f = 3000 + Math.random()*2200; tone(f, .35, .025); tone(f*1.52, .25, .012); }); }
+  };
+  function pick(d){ const v = d.vibes; return v.includes("beach") ? "waves" : v.includes("snow") ? "wind" : ({city:"city", culture:"bells", adventure:"birds", food:"cafe"})[v[0]] || "birds"; }
+  function stop(){
+    kind = null; timers.forEach(clearTimeout); timers = [];
+    if(master && actx){ const m = master, ns = nodes; m.gain.setTargetAtTime(0, actx.currentTime, .25);
+      setTimeout(()=>{ ns.forEach(n=>{ try{ n.stop && n.stop(); }catch(e){} try{ n.disconnect(); }catch(e){} }); try{ m.disconnect(); }catch(e){} }, 1200); }
+    master = null; nodes = [];
+  }
+  function start(k){
+    stop(); if(!$("sound").checked || !$("ambient").checked || muted) return;
+    try{ const c = ctx(); if(c.state==="suspended") c.resume();
+      master = c.createGain(); master.gain.value = 0; master.connect(c.destination); master.gain.setTargetAtTime(.55, c.currentTime, .6);
+      kind = k; BUILD[k](); }catch(e){ console.warn(e); }
+  }
+  function forDest(d){
+    const k = pick(d), btn = $("ambBtn");
+    btn.hidden = !$("ambient").checked || !$("sound").checked;
+    btn.textContent = LABEL[k]; btn.classList.toggle("muted", muted);
+    btn.onclick = ()=>{ muted = !muted; btn.classList.toggle("muted", muted); muted ? stop() : start(k); };
+    setTimeout(()=>{ if($("overlay").classList.contains("show") && state.current===d) start(k); }, 400);
+  }
+  return {start, stop, forDest, pick};
+})();
+$("ambient").addEventListener("change", ()=>{ if(!$("ambient").checked) Ambient.stop(); });
+$("sound").addEventListener("change", ()=>{ if(!$("sound").checked) Ambient.stop(); });
+
+// ---------- Confirm sheet ----------
+let confirmFn = null;
+function openConfirm(q, fn){ $("confirmQ").textContent = q; confirmFn = fn; $("confirm").classList.add("show"); }
+$("confirmNo").onclick = ()=> $("confirm").classList.remove("show");
+$("confirmYes").onclick = ()=>{ $("confirm").classList.remove("show"); if(confirmFn) confirmFn(); };
+$("confirm").addEventListener("click", e=>{ if(e.target.id==="confirm") $("confirm").classList.remove("show"); });
+
+// ---------- Countdown + packing list ----------
+const PACK = {
+  base:["Passport (6+ months left)","Travel insurance docs","Phone charger + plug adapter","Bank card + a little local cash","Copies of bookings"],
+  beach:["Swimwear","Reef-safe sunscreen","Sunglasses","Flip-flops","After-sun"],
+  snow:["Thermal layers","Waterproof gloves","Goggles","Warm hat","Lip balm"],
+  city:["Comfy walking shoes","Day bag","Power bank","One smart outfit"],
+  culture:["Cover-up for temples & churches","Light scarf","Offline map / guidebook"],
+  adventure:["Hiking boots","Reusable water bottle","Rain jacket","Mini first-aid kit"],
+  food:["Stretchy trousers 😄","Antacids","Hand sanitiser"]
+};
+function packList(d){ const out = [...PACK.base]; (d ? d.vibes : []).forEach(v=> (PACK[v]||[]).forEach(x=>{ if(!out.includes(x)) out.push(x); })); return out; }
+let cdTimer = null, cdOpen = false;
+function daysUntil(iso){ return Math.ceil((new Date(iso+"T00:00:00") - new Date().setHours(0,0,0,0))/864e5); }
+function renderCountdown(){
+  clearInterval(cdTimer);
+  const el = $("countdown"), today = new Date().toISOString().slice(0,10);
+  const upcoming = state.stamps.filter(s=>s.t && s.t >= today).sort((a,b)=> a.t.localeCompare(b.t))[0];
+  const undated = state.stamps.find(s=>!s.t);
+  if(!upcoming){
+    el.innerHTML = undated ? `<div class="cd cd-empty"><div class="cd-q">${esc(undated.e)} When are you off to <b>${esc(undated.n)}</b>?</div>
+      <label class="cd-set">Pick a date to start the countdown <input type="date" id="cdSet" min="${today}"></label></div>` : "";
+    const inp = $("cdSet"); if(inp) inp.onchange = ()=>{ if(inp.value){ undated.t = inp.value; saveStamps(); renderCountdown(); sfx("pop"); } };
+    return;
+  }
+  const d = DESTS.find(x=>x.name===upcoming.n), ph = PHOTOS[`${upcoming.n}|0`], items = packList(d), packed = upcoming.p || (upcoming.p = {});
+  const done = items.filter(x=>packed[x]).length;
+  el.innerHTML = `<div class="cd">
+    <div class="cd-bg" ${ph ? `style="background-image:url('${ph.src}')"` : ""}></div>
+    <div class="cd-in">
+      <div class="cd-top"><span>${esc(upcoming.e)} ${esc(upcoming.n)}</span><span class="cd-date">${new Date(upcoming.t+"T00:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}</span></div>
+      <div class="cd-nums">${["days","hrs","min","sec"].map(u=>`<div class="cd-u"><b id="cd-${u}">–</b><span>${u}</span></div>`).join("")}</div>
+      <div class="cd-actions">
+        <label class="cd-edit">✏️ Change date<input type="date" id="cdEdit" min="${today}" value="${upcoming.t}"></label>
+        <button class="cd-link" id="cdRemove">Remove countdown</button>
+      </div>
+      <button class="cd-pack-h" id="cdPackToggle" aria-expanded="${cdOpen}">🎒 Packing list <b>${done}/${items.length}</b> <span>${cdOpen?"▴":"▾"}</span></button>
+      <div class="cd-pack ${cdOpen?"open":""}">${items.map(x=>`<label class="pk"><input type="checkbox" data-item="${esc(x)}" ${packed[x]?"checked":""}><span>${esc(x)}</span></label>`).join("")}</div>
+    </div></div>`;
+  $("cdEdit").onchange = e=>{ if(e.target.value){ upcoming.t = e.target.value; saveStamps(); renderCountdown(); } };
+  $("cdRemove").onclick = ()=>{ upcoming.t = null; saveStamps(); renderCountdown(); };
+  $("cdPackToggle").onclick = ()=>{ cdOpen = !cdOpen; renderCountdown(); };
+  el.querySelectorAll('.pk input').forEach(cb=> cb.onchange = ()=>{ packed[cb.dataset.item] = cb.checked; saveStamps(); sfx("pop");
+    $("cdPackToggle").querySelector("b").textContent = `${items.filter(x=>packed[x]).length}/${items.length}`; });
+  const target = new Date(upcoming.t+"T00:00:00").getTime(), last = {};
+  const tick = ()=>{
+    let ms = Math.max(0, target - Date.now());
+    const v = {days:Math.floor(ms/864e5), hrs:Math.floor(ms/36e5)%24, min:Math.floor(ms/6e4)%60, sec:Math.floor(ms/1e3)%60};
+    for(const k in v){ const b = $("cd-"+k); if(!b) return clearInterval(cdTimer);
+      const txt = k==="days" ? String(v[k]) : String(v[k]).padStart(2,"0");
+      if(last[k]!==txt){ b.textContent = txt; b.classList.remove("flip"); void b.offsetWidth; b.classList.add("flip"); last[k]=txt; } }
+    if(ms===0){ clearInterval(cdTimer); $("cd-days").parentElement.parentElement.innerHTML = `<div class="cd-go">🎉 It's travel day! Have the best time.</div>`; }
+  };
+  tick(); cdTimer = setInterval(tick, 1000);
+}
+
 // ---------- Init ----------
+loadRates();
 renderBudgets(); renderVibes(); renderStamps(); buildWheel();
 window.addEventListener("resize", sizeCanvas);
 (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(sizeCanvas);
