@@ -1595,7 +1595,7 @@ function renderNights(){
     if(wasWk !== state.weekend) buildWheel();
   });
   $("nightsHint").textContent = state.weekend
-    ? `3 nights, only places with a direct flight under ${WEEKEND_MAX_H}h from ${ORIGIN.city}.`
+    ? `3 nights, only places roughly ${WEEKEND_MAX_H}h or less from ${ORIGIN.city}.`
     : "Used to total up flights + spending on your result.";
 }
 renderNights();
@@ -1606,7 +1606,7 @@ function fitsTrip(d){
   if(state.family && !FAMILY.has(d.name)) return false;
   if(!state.weekend) return true;
   const f = flightFor(d, ORIGIN);
-  return f.home || (f.stops===0 && f.hours <= state.weekendMax);
+  return f.home || f.hours <= state.weekendMax;
 }
 function pool(ignoreRepeats){
   return DESTS.filter(d =>
@@ -1621,7 +1621,7 @@ function buildWheel(){
   let p = pool(false), note = "";
   if(state.weekend && p.length < 3){
     const anyBudget = DESTS.filter(d => (state.vibes.size===0 || d.vibes.some(v=>state.vibes.has(v))) && fitsTrip(d)).length;
-    if(anyBudget < 3){ state.weekendMax = 8; p = pool(false); note = `Few short hops from ${ORIGIN.city}, so I've stretched to flights under 8h. `; }
+    if(anyBudget < 3){ state.weekendMax = 8; p = pool(false); note = `Few short hops from ${ORIGIN.city}, so I've stretched to trips under ~8h. `; }
   }
   if(p.length===0 && pool(true).length){ state.picked.clear(); p = pool(false); note = "You've seen every match! Wheel refilled. "; }
   if(p.length < 3 && state.budget !== -1){
@@ -1781,7 +1781,7 @@ function renderCosts(d){
   const party = partyText(), single = people===1;
   $("resCost").innerHTML = `
     ${f.home ? `<div class="cost"><span>🏠 You're already here!</span><b>No flight needed</b></div>` : `
-    <div class="cost"><span>🕒 Flight time from ${ORIGIN.city}</span><b>${fmtHours(f.hours)} · ${stopsText(f.stops)}</b></div>
+    <div class="cost"><span>🕒 Travel time from ${ORIGIN.city} <small>(approx.)</small></span><b>${fmtHours(f.hours)}</b></div>
     <div class="cost"><span>✈️ Return flight${single?"":"s"}${via}${single?"":` <small>(${party})</small>`}</span><b>~${fmt(fares)}</b></div>`}
     <div class="cost"><span>💸 Spending${bLabel} <small>(${fmt(daily)}/adult/day × ${n}${a===1?", solo room":""}${k?`, kids ~half`:""})</small></span><b>~${fmt(spend)}</b></div>
     <div class="cost total"><span>🧾 ${n}-night ${f.home?"staycation":"trip"}${single ? ", per person" : ` for ${people}`}</span><b>~${fmt(total)}</b></div>
@@ -1794,8 +1794,22 @@ const TAG_OVERRIDE = {"Orlando":"orlando","Disneyland Paris":"disneylandparis","
 function tagFor(d){
   return TAG_OVERRIDE[d.name] || d.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
 }
+// Hashtag pairs for places whose plain name is ambiguous (a generic phrase, a brand, a person's name, or shared with another town)
+const TAG_PAIR = {
+  "Sunny Beach":["sunnybeachbulgaria","nessebar"], "Gold Coast":["goldcoastaustralia","surfersparadise"], "Rhodes":["rhodesgreece","lindos"],
+  "Goa":["goaindia","goabeach"], "Naxos":["naxosisland","naxosgreece"], "Petra & Wadi Rum":["petrajordan","wadirum"],
+  "Patagonia":["torresdelpaine","patagoniachile"], "Queenstown":["queenstownnz","queenstownnewzealand"], "Venice":["veniceitaly","venezia"],
+  "Orlando":["orlandoflorida","waltdisneyworld"], "Ella":["ellasrilanka","ninearchbridge"], "Antigua":["antiguaguatemala","acatenango"],
+  "Sucre":["sucrebolivia","boliviatravel"], "Side & Belek":["sideturkey","belek"], "Split & Hvar":["hvar","splitcroatia"],
+  "Hokkaido":["hokkaido","niseko"], "Amalfi Coast":["amalficoast","positano"], "Monaco & Riviera":["monaco","cotedazur"],
+  "Fiji Private Island":["fiji","fijiislands"], "Okavango Delta":["okavangodelta","botswanasafari"], "Serengeti Safari":["serengeti","tanzaniasafari"],
+  "Antarctica Expedition":["antarctica","antarcticaexpedition"],
+  "Disneyland Paris":["disneylandparis","disneyparis"], "Legoland Billund":["legolandbillund","legohouse"],
+  "PortAventura":["portaventura","portaventuraworld"], "Europa-Park":["europapark","rulantica"], "Rajasthan Palaces":["rajasthan","udaipur"], "Cape Verde":["capeverde","salcaboverde"]
+};
+function tagsFor(d){ const p = TAG_PAIR[d.name]; if(p) return p; const t = tagFor(d); return [t, t + "travel"]; }
 function renderSocials(d){
-  const t = tagFor(d), tags = [t, t + "travel"];
+  const tags = tagsFor(d);
   $("resSocials").innerHTML = `<div class="soc-h">Watch it on socials</div><div class="soc-chips">` +
     tags.map(tag=>`<button class="soc-chip" data-tag="${tag}">#${tag}</button>`).join("") + `</div>`;
   $("resSocials").querySelectorAll(".soc-chip").forEach(b=> b.onclick = ()=> openSocialSheet(b.dataset.tag));
@@ -2057,7 +2071,7 @@ function globeFlight(d){
     const air = DEST_AIR[d.name], m = META[d.name] || [];
     const A = [ORIGIN.lon, ORIGIN.lat], B = [m[5] ?? air[1], m[4] ?? air[0]];
     $("globeCap").innerHTML = f.home ? `<b>${esc(d.name)}</b>No flight needed, you're already here!`
-      : `<b>${ORIGIN.city} → ${esc(d.name)}</b>${fmtHours(f.hours)} · ${stopsText(f.stops)}`;
+      : `<b>${ORIGIN.city} → ${esc(d.name)}</b>about ${fmtHours(f.hours).replace("~","")} away`;
     fx.classList.add("show");
     const dpr = Math.min(devicePixelRatio||1, 2), W = innerWidth, H = innerHeight;
     cv.width = W*dpr; cv.height = H*dpr; const c = cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0);
